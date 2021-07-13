@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/user/common :: commonHead(註冊會員帳號)">
+<meta charset="UTF-8">
+<style>
+.error {
+	color: red;
+}
+</style>
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+<title>編輯留言</title>
+</head>
+<body>
+	<div th:replace="/user/common :: commonTop"></div>
+	<div id="login-page">
+		<div class="container">
+			<form class="dark-matter" method="POST" th:object="${mb}"
+				enctype="multipart/form-data" th:action="@{'/saveReply/'+${mb.replyId}}">
+				<div class="login-wrap">
+<!-- 					 <input type="hidden" class="form-control"  name="textGood" th:field="*{textGood}" /> -->
+<!-- 					 <input type="hidden" class="form-control"  name="textBad" th:field="*{textBad}" /> -->
+<!-- 					 <input type="hidden" class="form-control"  name="textType" th:field="*{textType}" /> -->
+<!-- 					 <input type="hidden" class="form-control"  name="userName" th:field="*{userName}" /> -->
+					<label for="title">發文者</label> <input
+						type="text" class="form-control"  name="*{userName}"
+					    th:field="*{userName}" readonly style='width:100px;'/>
+					<label for="title">文章編號</label> <input
+						type="text" class="form-control"  name="forum.forumId"
+					    th:field="*{forumBean.forumId}" readonly style='width:100px;'/>
+						 <br> <br> <label for="text">內容</label>
+					<textarea class="form-control" th:field="*{text}" name="text"
+						cols="40" rows="5" scrolling="yes" value='' th:inline="text"></textarea>
+					<p th:if="${#fields.hasErrors('text')}" th:errorclass="error"
+						th:errors="*{text}"  style='width:700px;'/>
+
+					<label> <span> </span> <input type="submit" class="button"
+						value="確認送出" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
+						type="button" class="button" onclick="history.back()" value="取消" />
+					</label>
+
+				</div>
+			</form>
+		</div>
+		
+		
+	</div>
+	
+</body>
+</html>

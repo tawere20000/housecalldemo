@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>會員政策</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/ico" sizes="16x16" href="images/favicon.ico">
+    <!-- Custom Stylesheet -->
+    <link th:href="@{css/style.css}" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+   <div th:replace="common :: commonpreloader"></div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+    
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+       <div th:replace="common :: commonnavHeader"></div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div th:replace="common :: commonheader"></div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+       <div th:replace="common :: commonsidebar"></div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    
+                </div>
+            </div>
+            <!-- row -->
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <h4>會員停權政策</h4>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>違規原因</th>
+                                                <th>違規區域</th>
+                                                <th>違規事件</th>
+                                                <th>罰則</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>內容與主題不相關</td>
+                                                <td>住房經驗分享區</td>
+                                                <td>發文</td>
+                                                <td>刪除及發信通知</td>
+                                            </tr>
+                                             <tr>
+                                                <td>內容帶有不雅字眼</td>
+                                                <td>住房經驗分享區</td>
+                                                <td>發文</td>
+                                                <td>刪除及發信通知</td>
+                                            </tr>
+                                             <tr>
+                                                <td>內容帶有不雅字眼</td>
+                                                <td>住房經驗分享區</td>
+                                                <td>留言</td>
+                                                <td>直接刪除及發信通知並禁用該區域留言功能一個月</td>
+                                            </tr>
+                                            <tr>
+                                                <td>內容帶有不雅字眼</td>
+                                                <td>討論區</td>
+                                                <td>發文/回文</td>
+                                                <td>刪除及發信通知</td>
+                                            </tr>
+                                             <tr>
+                                                <td>內容帶有不雅字眼</td>
+                                                <td>討論區</td>
+                                                <td>留言</td>
+                                                <td>直接刪除及發信通知並禁用該區域留言功能一個月</td>
+                                            </tr>
+                                            <tr>
+                                                <td>於商城1次訂單不收</td>
+                                                <td>商城</td>
+                                                <td>訂單</td>
+                                                <td>禁用商城功能</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <h4>積分規則</h4>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>動作名稱</th>
+                                                <th>有效區域</th>
+                                                <th>週期範圍</th>
+                                                <th>週期內最多獎勵次數</th>
+                                                <th>獲得積分對象</th>
+                                                <th>獲得積分</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>發表貼文</td>
+                                                <td>住房經驗分享區</td>
+                                                <td>不限週期</td>
+                                                <td>不限次數</td>
+                                                <td>發表貼文者</td>
+                                                <td>20</td>
+                                            </tr>
+                                             <tr>
+                                                <td>貼文被點讚</td>
+                                                <td>全站</td>
+                                                <td>不限週期</td>
+                                                <td>不限次數</td>
+                                                <td>發表貼文者</td>
+                                                <td>1</td>
+                                            </tr>
+                                             <tr>
+                                                <td>每天登入</td>
+                                                <td>全站</td>
+                                                <td>每天</td>
+                                                <td>1次</td>
+                                                <td>會員</td>
+                                                <td>2</td>
+                                            </tr>
+                                            <tr>
+                                                <td>於商城100點折抵1元</td>
+                                                <td>商城</td>
+                                                <td>不限週期</td>
+                                                <td>不限次數</td>
+                                                <td>會員</td>
+                                                <td>-100</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #/ container -->
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+        
+        
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div th:replace="common :: commonfooter"></div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+     <div th:replace="common :: commonscripts"></div>
+
+</body>
+
+</html>

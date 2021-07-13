@@ -1,0 +1,288 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>我的訂單</title>
+		<th:block th:replace="/mall/mallCommon :: commonhead"></th:block>
+		<style type="text/css">
+			.tab {
+				font-size: 17px;
+				letter-spacing: 10px;
+			}
+			.single-order-info {
+  				float: left;
+ 				width: 14%;
+			}
+			.double-order-info {
+  				float: left;
+ 				width: 28%;
+			}
+			.content {
+				font-size: 14px;
+			}
+			.paymenttext {
+				font-size: 16px;
+			}
+		</style>
+		<script type="text/javascript">
+			$(function() {
+				
+				// 發送ajax請求查詢購物車品項數量
+				function getCartQuantity() {
+					$.ajax({
+						url: '/shoppingCartQuantity',
+						type: 'get',
+						success: function(data){
+							$('#cart_quantity').html(data);
+						}
+					});
+				};
+				
+			
+				// 發送ajax請求(購物車內容Quickview)
+				function getCartQuickview() {
+					if ($('#cartQuantity').text() != 0) {
+						$.ajax({
+							url: '/shoppingCart/quickview',
+							type: 'get',
+							success: function(data) {
+								$('#cart_info').html(data);
+							}
+						});
+					}
+				};
+			
+				
+				// 轉換數字為含千分位的文字
+				function toCurrency(num){
+				    num.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+				}
+				
+				
+				// toastr提示參數設置
+				toastr.options = {
+						  "closeButton": false,
+						  "debug": false,
+						  "newestOnTop": false,
+						  "progressBar": false,
+						  "positionClass": "toast-bottom-right",
+						  "preventDuplicates": false,
+						  "onclick": null,
+						  "showDuration": "2500",
+						  "hideDuration": "3000",
+						  "timeOut": "1000",
+						  "extendedTimeOut": "1000",
+						  "showEasing": "swing",
+						  "hideEasing": "linear",
+						  "showMethod": "fadeIn",
+						  "hideMethod": "fadeOut"
+				}
+				
+				
+				// 購物車內容Quickview事件繫結
+				$(document).on('mouseenter', '.cart-icon', function() {
+					getCartQuickview();
+				});
+				
+				
+				// 發送ajax請求(刪除Quickview購物車內容)
+				$(document).on('click', '.cartQuickviewDelete', function() {
+					$.ajax({
+						url: this.href,
+						type: 'delete',
+						success: function() {
+							toastr.success('已將商品自購物車刪除');
+							getCartQuantity();
+							getCartQuickview();
+						}
+					});
+					return false;
+				});
+				
+				
+				// 訂單詳情按鈕依顯示與否更換圖標
+				$(document).on('click', '.detailButton', function() {
+					$(this).toggleClass('bi-plus-square bi-dash-square');
+				})
+				
+				
+				$('.cancelButton, .returnButton').on('click', function() {
+					$(this).closest('form').submit();
+				})
+				
+				
+				$('.toPayByCredit').on('click', function() {
+					$(this).closest("[name='statusOrder']").attr('disabled', true);
+					$(this).closest('form').attr('action','/payByCredit').submit();
+				})
+			})
+		</script>
+	</head>
+	<body>	
+		<!-- WRAPPER START -->
+		<div class="wrapper bg-dark-white">
+
+			<!-- COMMONHEADAREA INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commonheadarea"></th:block>
+			<!-- COMMONHEADAREA INSERT END -->
+			
+			<!-- COMMONMOBILEMENU INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commonmobilemenu"></th:block>
+			<!-- COMMONMOBILEMENU INSERT END -->
+			
+			<!-- ORDER-LIST-AREA START -->
+			<div class="order-list-area  pt-80 pb-80">
+				<div class="container">	
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+							<div class="order-list">
+								<div>
+									<h2 class="title-1 title-border text-uppercase mb-30" style="font-size: 20px;">您的訂單</h2>
+								</div>
+
+								<!-- Tab panes -->
+								<div class="tab-content">
+									<!-- order-list start -->
+									<div class="tab-pane active" id="order-complete">
+										<form th:if="${userOrder == null}" action="#" class="mb-30">
+											<div class="order-info bg-white text-center clearfix">
+												<h4 class="title-1 text-uppercase text-light-black mb-0">尚無任何訂單</h4>
+											</div>
+										</form>
+									<th:block th:each="order : ${userOrder}">
+										<form th:method="post" th:action="@{/crconfirm.html}" class="mb-30">
+											<div class="order-info bg-white text-center clearfix">
+												<div class="single-order-info">
+													<h4 class="title-1 text-uppercase text-light-black mb-0">訂單編號</h4>
+													<p class="text-uppercase text-light-black mb-0 content"><strong>[[${order.orderNo}]]</strong></p>
+												</div>
+												<div class="single-order-info">
+													<h4 class="title-1 text-uppercase text-light-black mb-0">訂購日期</h4>
+													<p class="text-uppercase text-light-black mb-0 content"><strong>[[${#dates.format(order.orderedTimestamp, 'yyyy-MM-dd')}]]</strong></p>
+												</div>
+												<div class="single-order-info">
+													<h4 class="title-1 text-uppercase text-light-black mb-0">金額</h4>
+													<p class="text-uppercase text-light-black mb-0 content"><strong>$ [[${#numbers.formatDecimal(order.netPrice,1,'COMMA',0,'POINT')}]]</strong></p>
+												</div>
+												<div class="single-order-info">
+													<h4 class="title-1 text-uppercase text-light-black mb-0">訂單狀態</h4>
+													<p class="text-uppercase text-light-black mb-0 content" th:if="${order.statusOrder.equals('ordered')}"><strong>已下訂</strong></p>
+													<p class="text-uppercase text-light-black mb-0 content" th:if="${order.statusOrder.equals('readyForShipping')}"><strong>準備配送中</strong></p>
+													<p class="text-uppercase text-light-black mb-0 content" th:if="${order.statusOrder.equals('shipping')}"><strong>配送中</strong></p>
+													<p class="text-uppercase text-light-black mb-0 content" th:if="${order.statusOrder.equals('shipped')}"><strong>已送達</strong></p>
+													<p class="text-uppercase text-light-black mb-0 content" th:if="${order.statusOrder.equals('finished')}"><strong>訂單已完成</strong></p>
+													<p class="text-uppercase text-light-black mb-0 content" th:if="${order.statusOrder.equals('cancelled')}"><strong>訂單已取消</strong></p>
+													<p class="text-uppercase text-light-black mb-0 content" th:if="${order.statusOrder.equals('returning')}"><strong>退貨中</strong></p>
+												</div>
+												<th:block th:unless="${order.statusOrder.equals('cancelled') || order.statusOrder.equals('returning')}">
+													<div class="single-order-info">
+														<h4 class="title-1 text-uppercase text-light-black mb-0">付款方式</h4>
+														<p class="text-uppercase text-light-black mb-0 content" th:if="${order.paymentMethod.equals('cashOnDelivery')}"><strong>貨到付款</strong></p>
+														<p class="text-uppercase text-light-black mb-0 content" th:if="${order.paymentMethod.equals('creditCard')}"><strong>信用卡付款</strong></p>
+													</div>
+													<div class="single-order-info">
+														<h4 class="title-1 text-uppercase text-light-black mb-0">付款狀態</h4>
+														<p class="text-uppercase text-light-black mb-0 content" th:if="${order.statusPayment.equals('unpaid')}"><strong>尚未付款</strong></p>
+														<p class="text-uppercase text-light-black mb-0 content" th:if="${order.statusPayment.equals('paid')}"><strong>已付款</strong></p>
+													</div>
+												</th:block>
+												<div class="double-order-info" th:if="${order.statusOrder.equals('cancelled') || order.statusOrder.equals('returning')}">
+													<h4 class="title-1 text-uppercase text-light-black mb-0">取消訂單/退貨 原因</h4>
+													<p class="text-uppercase text-light-black mb-0 content"><strong>[[${order.crReason}]]</strong></p>
+												</div>
+												<div class="single-order-info"> 
+													<h4 class="title-1 text-uppercase text-light-black mb-0">訂單詳情</h4>
+													<a data-toggle="collapse" th:data-target="${'#' + order.orderNo}"><i class="bi bi-plus-square detailButton content"></i></a>
+												</div>
+											</div>
+											<div th:id="${order.orderNo}" class="collapse">
+												<div class="shop-cart-table check-out-wrap" style="padding-top: 15px;">
+													<div class="row">
+														<div class="col-md-12 col-sm-12 col-sm-12">
+															<div class="our-order payment-details pr-30 pl-30">
+																<h4 class="title-1 text-uppercase text-light-black mb-10">訂單內容</h4>
+																<table>
+																	<thead>
+																		<tr>
+																			<th class="content"><strong>商品</strong></th>
+																			<th class="text-right content"><strong>金額</strong></th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		<th:block th:each="orderItem : ${order.cartAndOrder}">
+																			<tr>
+																				<td class="content">
+																					[[${orderItem.productItem.productName}]] x  [[${orderItem.shoppingAmount}]]
+																				</td>
+																				<td class="text-right content">
+																					$ [[${#numbers.formatDecimal((orderItem.productItem.productPrice * orderItem.shoppingAmount),1,'COMMA',0,'POINT')}]]
+																				</td>
+																			</tr>
+																		</th:block>
+																		<tr>
+																			<td class="content">商品金額小計</td>
+																			<td class="text-right content">
+																				$ [[${#numbers.formatDecimal(order.totalPrice,1,'COMMA',0,'POINT')}]]
+																			</td>
+																		</tr>
+																		<tr>
+																			<td class="content">運費</td>
+																			<td class="text-right content">
+																				$ [[${#numbers.formatDecimal(order.deliveryFee,1,'COMMA',0,'POINT')}]]
+																			</td>
+																		</tr>
+																		<tr th:if="${order.discount != null}">
+																			<td class="content">會員積分折抵金額</td>
+																			<td class="text-right content">
+																				$ [[${#numbers.formatDecimal(order.discount,1,'COMMA',0,'POINT')}]]
+																			</td>
+																		</tr>
+																		<tr>
+																			<td class="content">訂單總金額</td>
+																			<td class="text-right content">
+																				$ [[${#numbers.formatDecimal(order.netPrice,1,'COMMA',0,'POINT')}]]
+																			</td>
+																		</tr>
+																	</tbody>
+																</table>
+															</div>
+														</div>
+														<div class="col-md-12 col-sm-12 col-sm-12 mt-40">
+															<input type="hidden" name="orderNo" th:value="${order.orderNo}">
+															<th:block th:if="${order.statusOrder.equals('ordered') || order.statusOrder.equals('readyForShipping')}">
+																<input type="hidden" name="statusOrder" th:value="cancelled">
+																<button class="button-one submit-button cancelButton" data-text="取消訂單" type="button" th:data-href="@{/crconfirm.html(orderNo=${order.orderNo},statusOrder='cancelled')}" style="float: right; margin-right: 30px;">取消訂單</button>
+															</th:block>
+															<th:block th:if="${order.statusOrder.equals('shipped')}">
+																<input type="hidden" name="statusOrder" th:value="returning">
+																<button class="button-one submit-button returnButton" data-text="申請退貨" type="button" th:data-href="@{/crconfirm.html(orderNo=${order.orderNo,statusOrder='returning'})}" style="float: right; margin-right: 30px;">申請退貨</button>
+															</th:block>
+															<button th:if="${order.paymentMethod.equals('creditCard') && order.statusPayment.equals('unpaid')}" class="button-one submit-button toPayByCredit" data-text="前往付款" type="button" th:data-href="@{/payByCredit(orderNo=${order.orderNo})}" style="float: right; margin-right: 30px;">前往付款</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</form>		
+									</th:block>
+									</div>
+									<!-- order-list end -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- ORDER-LIST-AREA END -->
+			
+			<!-- COMMONFOOTER INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commmonfooter"></th:block>
+			<!-- COMMONFOOTER INSERT END -->
+			
+			
+		</div>
+		<!-- WRAPPER END -->
+
+		<!-- COMMONJS INSERT START -->
+		<th:block th:replace="/mall/mallcommon :: commonjs"></th:block>
+		<!-- COMMONJS INSERT END -->
+	</body>
+</html>

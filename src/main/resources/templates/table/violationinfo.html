@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>檢舉事件詳細資訊</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon.png}">
+    <!-- Custom Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+	$(function (){
+		//通過
+		$("[name=targetdelete]").click(function(){
+			let result = confirm("確定通過審核嗎？")
+			if(result){
+			let violationRefId = $(this).data("value");
+			let target = "#"+violationRefId;
+			let targettitle = $(target).attr("name");
+			let userId = $(this).data("userid");
+			$.ajax({
+				url:"/violationPass",
+				type:"DELETE",
+				data:{"violationRefId":violationRefId,"target":targettitle,"userId":userId},
+				dataType: "text",
+				success:function(data){
+					if(data==="true"){
+						alert("已成功刪除該內容並寄發信件告知違規者");
+						$(window).attr('location',"/violationhandling");
+					}else{
+						alert("發生錯誤,請稍後再試");
+						$(window).attr('location',"/violationhandling");
+					}
+				}
+			});
+			}
+			
+		});
+		
+		//駁回
+		$("[name=vdelete]").click(function(){
+			let result = confirm("確定駁回嗎？")
+			if(result){
+				let violationRefId = $(this).data("value");
+				$.ajax({
+					url:"/violationCancle",
+					type:"DELETE",
+					data:{"violationRefId":violationRefId},
+					dataType: "text",
+					success:function(data){
+						if(data==="true"){
+							alert("已成功駁回");
+							$(window).attr('location',"/violationhandling");
+						}else{
+							alert("發生錯誤,請稍後再試");
+							$(window).attr('location',"/violationhandling");
+						}
+					}
+				});
+			}
+		});
+		//返回
+		$("#btnn").click(function(){
+			$(window).attr('location',"/violationhandling");
+		});
+	});
+	</script>
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div th:replace="common :: commonpreloader"></div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+    
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div th:replace="common :: commonnavHeader"></div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+       <div th:replace="common :: commonheader"></div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+       <div th:replace="common :: commonsidebar"></div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    
+                </div>
+            </div>
+            <!-- row -->
+
+            <div class="container-fluid">
+                <!-- row -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 style="width:980px; float:left" class="card-title">檢舉事件(編號ID:[[${violation.violationRefId}]])</h3>
+                                <button id="btnn" type="button" class="btn mb-1 btn-primary btn-sm">返回</button>
+                                <div class="basic-list-group">
+                                    <ul class="list-group">
+                                        <li class="list-group-item"><h5>違規原因 :</h5>[[${violation.violationRule.violationReason}]]</li>
+                                        <li class="list-group-item"><h5>發生區域 :</h5>[[${violation.violationRule.violationArea}]]</li>
+                                        <li class="list-group-item"><h5>發生事件 :</h5>[[${violation.violationRule.violationEvent}]]</li>
+                                        <li class="list-group-item"><h5>違規者ID :</h5>[[${violation.userBean.userId}]]</li>
+                                        <li th:id="${violation.violationRefId}" th:name="${violation.commentArticle.title}" class="list-group-item" th:if="${violation.commentArticle!=null}"><h4>內容 :</h4>[[${violation.commentArticle.text}]]</li>
+                                    	<li th:id="${violation.violationRefId}" th:name="${violation.commentReply.text}" class="list-group-item" th:if="${violation.commentReply!=null}"><h4>內容 :</h4>[[${violation.commentReply.text}]]</li>
+                                    	<li th:id="${violation.violationRefId}" th:name="${violation.forumBean.title}" class="list-group-item" th:if="${violation.forumBean!=null}"><h4>內容 :</h4>[[${violation.forumBean.text}]]</li>
+                                    	<li th:id="${violation.violationRefId}" th:name="${violation.forumReplayBean.text}" class="list-group-item" th:if="${violation.forumReplayBean!=null}"><h4>內容 :</h4>[[${violation.forumReplayBean.text}]]</li>
+                                    	<li class="list-group-item"><span><button style='margin-right: 4px' class='btn mb-1 btn-primary btn-xs' name="targetdelete" th:data-value="${violation.violationRefId}" th:data-userid="${violation.userBean.userId}">通過</button><button style='margin-left: 4px' class='btn mb-1 btn-primary btn-xs' name="vdelete" th:data-value="${violation.violationRefId}">駁回</button></span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            <!-- #/ container -->
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+        
+        
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div th:replace="common :: commonfooter"></div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <div th:replace="common :: commonscripts"></div>
+
+</body>
+
+</html>

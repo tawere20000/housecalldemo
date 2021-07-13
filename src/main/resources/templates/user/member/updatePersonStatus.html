@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+
+<script th:src="@{/data/js/jquery.min.js}"></script>
+
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+
+<link rel="stylesheet" href="/data/css/default.css">
+<style>
+.error {
+	color: red;
+}
+</style>
+<link href="/data/css/updateMember.css" rel="stylesheet">
+<title>修改個人資料</title>
+</head>
+<body>
+
+	<div th:replace="/user/common :: commonTop"></div>
+
+
+
+	<div id="login-page">
+		<div class="container">
+			<form class="dark-matter" method="POST" th:object="${Person}"
+				>
+								<h2 class="form-login-heading">修改個人資料</h2>
+				<div>
+					<p th:if="${#fields.hasErrors('invalidCredentials')}"
+						th:errorclass="error" th:errors="*{invalidCredentials}" />
+				</div>
+
+				<div class="login-wrap">
+					
+					<label for="userImage">照片</label> 
+					<img height='100px' width='100px' th:src="@{'/picture/'+${Person.userId}}">
+					
+					<br>
+					<br> <label for="name">姓名</label> <input type="text"
+						class="form-control" th:field="*{name}" name="name" readonly/>
+
+					<br>
+				
+
+					<label for="status">狀態</label><br> <select class="form-control"
+						th:field="*{status}">
+						<option th:value="'正常'" th:text="正常"></option>
+						<option th:value="'審核中'" th:text="審核中"></option>
+						<option th:value="'停權中'" th:text="停權中"></option>
+					</select>
+					<br>
+					<div>
+
+
+						
+						<label> <span> </span> <input type="submit" class="button"
+			value="確認送出" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="button"
+			onclick="history.back()" value="取消" />
+		</label>
+
+					</div>
+
+
+
+
+
+
+
+				</div>
+			</form>
+
+		</div>
+	</div>
+
+
+
+
+
+
+
+
+	<div th:replace="/user/common :: commonBottom"></div>
+	<div th:replace="/user/common :: commonIndexJS"></div>
+
+</body>
+</html>

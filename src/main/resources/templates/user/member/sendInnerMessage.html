@@ -1,0 +1,148 @@
+
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>寄站內信</title>
+<link rel="stylesheet" th:href="@{/data/css/bootstrapIndex.css}">
+
+<script th:src="@{/data/js/jquery.min.js}"></script>
+
+<link rel="stylesheet" th:href="@{/data/css/styleIndex.css}">
+
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+
+<link rel="stylesheet" th:href="@{/data/css/default.css}">
+
+
+<style type="text/css">
+.customer-login {
+	background: #fff none repeat scroll 0 0;
+	padding: 40px;
+}
+</style>
+
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+<script type="text/javascript">
+	$(function() {
+		$("#accountValue").keyup(function() {
+
+			let accountValue = $("#accountValue").val()
+			console.log(accountValue);
+			if (accountValue == "") {
+				$("#result0c").html("帳號不能為空")
+
+			}
+			if (accountValue != "") {
+				$("#result0c").html("")
+			}
+
+		});
+	});
+</script>
+<style>
+.error {
+	color: red;
+}
+</style>
+</head>
+<body>
+
+	<div th:replace="/user/common :: commonTop"></div>
+
+
+	<!-- WRAPPER START -->
+	<div class="wrapper bg-dark-white">
+		<div class="login-area  pt-80 pb-80  ">
+			<div style="margin-left: 22%; height: 1000px;">
+				<form method="POST" th:object="${innerMessage}"
+					th:action="@{/member/sendInnerMessage}">
+					<div class="row ">
+						<div class="col-md-9 col-sm-6 col-xs-3">
+							<div class="customer-login text-left">
+								<h4 class="title-1 title-border text-uppercase mb-30">發送站內信</h4>
+								<!-- 								<p class="text-gray">請輸入您發送的對象及	內容</p> -->
+
+								<input type="text" placeholder="請輸入收件者帳號..."
+									name="receiveAccount" id="receiveAccount">
+								<h5 style="margin-left: 3%; color: red"
+									th:if="${errors != null}" th:text="${errors}"></h5>
+									<span id='resultreceiveAccount' class="error"></span>
+								<br>
+								<br> <input type="text" placeholder="請輸入站內信標題..."
+									name="mailTitle" id="mailTitle">
+									<span id='resultmailTitle' class="error"></span>
+									<br>
+								<br>
+
+								<textArea style="width: 720px; height: 300px; font-size: 14px;"
+									placeholder="請輸入站內信內容..." name="mailContent" id="mailContent"></textArea>
+									<span id='resultmailContent' class="error"></span>
+								<br>
+
+
+
+
+								<button type="submit" data-text="發送"
+									class="button-one submit-button mt-15">發送</button>
+
+								<input style="border-color: transparent;"
+									onclick="history.back()" type="button"
+									class="button-one submit-button mt-15 num" value="取消">
+
+
+
+
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 就程式碼 -->
+
+
+
+
+
+
+	<div th:replace="/user/common :: commonBottom"></div>
+	<div th:replace="/user/common :: commonIndexJS"></div>
+</body>
+</html>

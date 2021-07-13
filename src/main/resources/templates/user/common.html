@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="commonHead(title)">
+<!-- <head th:fragment = "commonHead"> -->
+<meta charset="UTF-8">
+<title th:text="${title}">Title</title>
+<style>
+.copyrights {
+	text-indent: -9999px;
+	height: 0;
+	line-height: 0;
+	font-size: 0;
+	overflow: hidden;
+}
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="./data/css/style.css" rel="stylesheet" type="text/css"
+	media="all" />
+
+
+<link
+	href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic'
+	rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Varela+Round'
+	rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700,900'
+	rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Bree+Serif'
+	rel='stylesheet' type='text/css'>
+
+
+<!-- 	會員INFO -->
+
+<link rel="stylesheet" href="./data/css/font.css">
+<link rel="stylesheet" href="./data/css/splitlayout.css">
+<link rel="stylesheet" href="./data/css/animations.css">
+<link rel="stylesheet" href="./data/css/responsiveslides.css">
+<link rel="stylesheet" href="./data/css/slick.css">
+<link rel="stylesheet" href="./data/css/slick-theme.css">
+<link rel="stylesheet" href="./data/css/magnific-popup.css">
+<link rel="stylesheet" href="./data/css/font-awesome.min.css">
+<link rel="stylesheet" href="./data/css/pe-icon-7-stroke.min.css">
+<link rel="stylesheet" href="./data/css/responsive.css">
+<!-- 	會員INFO -->
+
+<!-- =======新版首頁用======== -->
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+
+<script th:src="@{/data/js/jquery.min.js}"></script>
+
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+<!-- =======新版首頁用======== -->
+
+<!-- ================舊版首頁用 =============================-->
+
+<link rel="stylesheet" href="/data/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/data/css/jquery-ui.min.css">
+
+<link rel="stylesheet" href="/data/css/default.css">
+
+<link rel="stylesheet" href="./data/css/style.css">
+<!-- responsive css -->
+<link rel="stylesheet" href="/data/css/responsive.css">
+
+<!-- ================舊版首頁用 =============================-->
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- header-section-starts-here ==============只有最上面黑色那條================  commonMostTop-->
+	<div class="header " th:fragment="commonMostTop">
+		<div class="header-top navbar-fixed-top">
+			<div class="wrap">
+				<!-- 			直變橫 -->
+				<div class="top-menu">
+					<ul>
+						<li><a th:href="@{/}"> 首頁 </a></li>
+						<li><a th:href="@{/}">關於我們</a></li>
+						<li><a th:href="@{/}">本站條例</a></li>
+						<li><a th:href="@{/member/chat}">聊天室</a></li>
+					</ul>
+				</div>
+				<!-- 			num	讓字在最右邊 -->
+
+				<div class="num dropdown" th:if="${session.LoginID == null}">
+
+					<a id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown"
+						aria-controls="myTabDrop1-contents" aria-expanded="false">註冊</a>
+					<ul class="dropdown-menu  num" role="menu"
+						aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
+						<li><a th:href="@{/registerMember}">會員註冊</a></li>
+						<li><a th:href="@{/registerVendor}">廠商註冊</a></li>
+					</ul>
+				</div>
+
+				<div class="num top-menu">
+					<!-- 登入在這邊 -->
+					<a th:href="@{/login}" th:if="${session.LoginID == null}"
+						style="color: white;">登入 </a>
+				</div>
+
+
+
+
+
+
+				<div class="num top-menu">
+					<!-- 登出在這邊 -->
+					<a th:href="@{/logout}" th:if="${session.LoginID != null}">登出 </a>
+				</div>
+
+
+				<div class="num top-menu" th:if="${session.Person != null}">
+					<span th:text="${session.Person.name}"
+						style="color: #dddddd; font-size: 0.93em; text-decoration: none; font-weight: 400; text-transform: capitalize;"></span>
+				</div>
+				<div class="num top-menu" th:if="${session.Vendor != null}">
+					<span th:text="${session.Vendor.name}"
+						style="color: #dddddd; font-size: 0.93em; text-decoration: none; font-weight: 400; text-transform: capitalize;"></span>
+				</div>
+
+
+				<div class="num top-menu" th:if="${session.LoginID != null}">
+					<a th:href="@{/member/memberIndex}"><img height='30px'
+						width='30px' class="img-rounded"
+						th:src="@{'/picture/'+${session.LoginID}}"></a>
+				</div>
+
+				<div class="clearfix"></div>
+			</div>
+		</div>
+
+		<!-- 原nav -->
+	</div>
+	<!-- header-section-end-here ==============只有最上面黑色那條================  commonMostTop-->
+
+
+
+
+
+
+
+
+
+	<!-- header-section-starts-here=================最上面黑色+主選單===========================  commontop-->
+	<div class="header " th:fragment="commonTop">
+		<div class="header-top navbar-fixed-top">
+			<div class="wrap">
+				<!-- 			直變橫 -->
+				<div class="top-menu">
+					<ul>
+						<li><a th:href="@{/index}"> 首頁 </a></li>
+						<li><a th:href="@{/index}">關於我們</a></li>
+						<li><a th:href="@{/index}">本站條例</a></li>
+
+						<li><a th:href="@{/member/chat}">聊天室</a></li>
+					</ul>
+				</div>
+				<!-- 				讓字在最右邊 -->
+
+				<div class="num top-menu dropdown"
+					th:if="${session.LoginID == null}">
+
+					<a th:href="@{/}" id="myTabDrop1" class="dropdown-toggle"
+						data-toggle="dropdown" aria-controls="myTabDrop1-contents"
+						aria-expanded="false">註冊 <span class="caret"></span></a>
+					<ul class="dropdown-menu  num" role="menu"
+						aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
+						<li><a style="color: black" th:href="@{/registerMember}">會員註冊</a></li>
+						<li><a style="color: black" th:href="@{/registerVendor}">廠商註冊</a></li>
+					</ul>
+				</div>
+
+				<div class="num top-menu">
+					<!-- 登入在這邊 -->
+					<a th:href="@{/login}" th:if="${session.LoginID == null}"
+						style="color: white;">登入 </a>
+				</div>
+
+
+
+
+
+
+				<div class="num top-menu">
+					<!-- 登出在這邊 -->
+					<a th:href="@{/logout}" th:if="${session.LoginID != null}">登出 </a>
+				</div>
+
+
+				<div class="num top-menu" th:if="${session.Person != null}">
+					<span th:text="${session.Person.name}"
+						style="color: #dddddd; font-size: 0.93em; text-decoration: none; font-weight: 400; text-transform: capitalize;"></span>
+				</div>
+				<div class="num top-menu" th:if="${session.Vendor != null}">
+					<span th:text="${session.Vendor.name}"
+						style="color: #dddddd; font-size: 0.93em; text-decoration: none; font-weight: 400; text-transform: capitalize;"></span>
+				</div>
+
+
+				<div class="num top-menu" th:if="${session.LoginID != null}">
+					<a th:href="@{/member/memberIndex}"><img height='20px'
+						width='30px' class="img-rounded"
+						th:src="@{'/picture/'+${session.LoginID}}"></a>
+				</div>
+
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		<!-- 		最上面黑色部分結束 -->
+
+		<div class="header-bottom ">
+			<div class="logo text-center ">
+				<a th:href="@{/index}"><img th:src="@{/data/images/logo.jpg}"></a>
+			</div>
+			<div class="navigation">
+				<!-- 原nav -->
+				<!-- 					選單字形 -->
+				<div class="navbar navbar-default" role="navigation">
+					<div class="wrap">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle"
+								data-toggle="collapse"
+								data-target="#bs-example-navbar-collapse-1">
+								<span class="sr-only">Toggle navigation</span> <span
+									class="icon-bar"></span> <span class="icon-bar"></span> <span
+									class="icon-bar"></span>
+							</button>
+
+						</div>
+						<!--/.navbar-header-->
+
+						<div class="collapse navbar-collapse"
+							id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav">
+								<li class="active"><a th:href="@{/index}"> 首頁 </a></li>
+								<!-- <li><a href="sports.html">Sports</a></li> -->
+
+								<li class="dropdown"><a th:href="@{/}"
+									class="dropdown-toggle" data-toggle="dropdown">評論區<b
+										class="caret"></b></a>
+									<ul class="dropdown-menu">
+										<li><a th:href="@{/CommentArticles}">評論區</a></li>
+										<li class="divider"></li>
+<!--0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改 -->
+										<li><a th:href="@{/PostCommentArticles}">你發的文章</a></li>
+										<li class="divider"></li>
+										<li><a th:href="@{/CheckCommentArticles}">最近看過的文章</a></li>
+										<li class="divider"></li>
+										<li><a th:href="@{/StoreCommentArticles}">收藏的文章</a></li>
+										<li class="divider"></li>
+										<li><a th:href="@{/GoodCommentArticles}">按讚的文章</a></li>
+										<li class="divider"></li>
+										<li><a th:href="@{/BadCommentArticles}">倒讚的文章</a></li>
+										<li class="divider"></li>
+										<li><a th:href="@{/ReportCommentArticles}">檢舉的文章</a></li>
+										<li class="divider"></li>
+<!--0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改0705改 -->
+									</ul></li>
+
+								<li class="dropdown"><a th:href="@{/}"
+									class="dropdown-toggle" data-toggle="dropdown">討論區<b
+										class="caret"></b></a>
+									<ul class="dropdown-menu">
+										<li><a th:href="@{/AllForumsP}">討論區</a></li>
+										<li class="divider"></li>
+										<li><a th:href="@{/member/AddForum}">發布文章</a></li>
+										<li class="divider"></li>
+									</ul></li>
+
+
+								<li class="dropdown"><a th:href="@{/}"
+									class="dropdown-toggle" data-toggle="dropdown">商城<b
+										class="caret"></b></a>
+										<ul class="dropdown-menu">
+										<li><a th:href="@{/mallindex.html}">商城首頁</a></li>
+										<li class="divider"></li>
+										<li><a th:href="@{/shop.html}">商品總覽</a></li>
+										<li class="divider"></li>
+										<li><a th:href="@{/shoppingCart/cart}">購物車</a></li>
+										<li class="divider"></li>
+										<li><a th:href="@{/shoppingCart/wishlist}">願望清單</a></li>
+										<li class="divider"></li>
+										<li><a th:href="@{/orderlist.html}">我的訂單</a></li>
+									</ul></li>
+
+								<li class="dropdown"><a th:href="@{/}"
+									class="dropdown-toggle" data-toggle="dropdown">疑難雜症<b
+										class="caret"></b></a>
+									<ul class="dropdown-menu">
+										<li><a th:href="@{/troubleindex}">疑難雜症首頁</a></li>
+										<li class="divider"></li>
+										<li><a th:href="@{/addTrouble}">新增表單</a></li>
+										<li class="divider"></li>
+									</ul></li>
+
+								<!-- 								<li class="dropdown"><a th:href="@{/}" -->
+								<!-- 									class="dropdown-toggle" data-toggle="dropdown">個人資訊<b -->
+								<!-- 										class="caret"></b></a> -->
+								<!-- 									<ul class="dropdown-menu"> -->
+								<!-- 										<li><a th:href="@{/login}">登入</a></li> -->
+								<!-- 										<li class="divider"></li> -->
+								<!-- 										<li><a th:href="@{/registerMember}">會員註冊</a></li> -->
+								<!-- 										<li class="divider"></li> -->
+								<!-- 										<li><a th:href="@{/registerVendor}">廠商註冊</a></li> -->
+								<!-- 										<li class="divider"></li> -->
+
+								<!-- 									</ul></li> -->
+
+
+								<!-- <li><a href="technology.html">Technology</a></li> -->
+								<div class="clearfix"></div>
+							</ul>
+							<div class="search">
+								<!-- start search-->
+								<div class="search-box">
+									<div id="sb-search" class="sb-search">
+										<form>
+											<input class="sb-search-input" style="color: black"
+												placeholder="Enter your search term..." type="search"
+												name="search" id="search"> <input
+												class="sb-search-submit" type="submit" value=""> <span
+												style="color: black" class="sb-icon-search"> </span>
+										</form>
+									</div>
+								</div>
+
+							</div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+					<!--/.navbar-collapse-->
+					<!--/.navbar-->
+				</div>
+				<!-- 原nav -->
+			</div>
+		</div>
+	</div>
+	<!-- header-section-ends-here commontop-->
+	<!-- header-section-end-here=================最上面黑色+主選單===========================  commontop-->
+
+
+	<!-- 	底部開始================================== commonbottom ====================================== -->
+
+
+	<!-- footer-section-starts-here  commonbottom -->
+	<div class="footer" th:fragment="commonBottom">
+		<div class="footer-top">
+			<div class="wrap">
+				<div class="col-md-3 col-xs-6 col-sm-4 footer-grid">
+					<h4 class="footer-head">關於我</h4>
+					<p>米奇不妙屋希望能幫助到正在找租屋的您，這裡有各式各樣的租客心得分享，時常瀏覽我們的網站，將會幫助您擁有更愉快的租屋經驗</p>
+					<p>米奇不妙屋也歡迎各位租客，能踴躍分享您的租屋經驗，這將會使台灣的租屋環境越來越友善，在此先謝謝您的瀏覽及心得分享</p>
+				</div>
+				<div class="col-md-2 col-xs-6 col-sm-2 footer-grid">
+					<h4 class="footer-head">分類</h4>
+					<ul class="cat">
+						<li><a th:href="@{/CommentArticles}">租屋評論區</a></li>
+						<li><a th:href="@{/AllForumsP}">綜合討論區</a></li>
+						<li><a th:href="@{/troubleindex}">疑難雜症區</a></li>
+						<li><a th:href="@{/mallindex.html}">線上商城</a></li>
+					</ul>
+				</div>
+				<div class="col-md-4 col-xs-6 col-sm-6 footer-grid">
+					<h4 class="footer-head">相簿</h4>
+					<ul class="flickr">
+						<li><a th:href="@{/}"><img
+								th:src="@{/data/images/bus4.jpg}"></a></li>
+						<li><a th:href="@{/}"><img
+								th:src="@{/data/images/bus2.jpg}"></a></li>
+						<li><a th:href="@{/}"><img
+								th:src="@{/data/images/bus3.jpg}"></a></li>
+						<li><a th:href="@{/}"><img
+								th:src="@{/data/images/bus4.jpg}"></a></li>
+						<li><a th:href="@{/}"><img
+								th:src="@{/data/images/bus2.jpg}"></a></li>
+						<li><a th:href="@{/}"><img
+								th:src="@{/data/images/bus3.jpg}"></a></li>
+						<li><a th:href="@{/}"><img
+								th:src="@{/data/images/bus2.jpg}"></a></li>
+						<li><a th:href="@{/}"><img
+								th:src="@{/data/images/bus3.jpg}"></a></li>
+						<div class="clearfix"></div>
+					</ul>
+				</div>
+				<div class="col-md-3 col-xs-12 footer-grid">
+					<h4 class="footer-head">聯絡我們</h4>
+					<span class="hq">米奇不妙屋　總部</span>
+					<address>
+						<ul class="location">
+							<li><span class="glyphicon glyphicon-map-marker"></span></li>
+							<li>106台北市大安區信義路三段153號3樓B300</li>
+							<div class="clearfix"></div>
+						</ul>
+						<ul class="location">
+							<li><span class="glyphicon glyphicon-earphone"></span></li>
+							<li>02 2708 9215</li>
+							<div class="clearfix"></div>
+						</ul>
+						<ul class="location">
+							<li><span class="glyphicon glyphicon-envelope"></span></li>
+							<li><a href="mailto:info@example.com">housecalltw@gmail.com</a></li>
+							<div class="clearfix"></div>
+						</ul>
+					</address>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+	<!-- footer-section-ends-here -->
+
+
+	<!-- 底部結束 commonbottom -->
+
+
+	<!-- header-section-end-here=================最上面黑色+主選單===========================  commontop-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!--============================ 會員用 ====================================-->
+
+
+	<div class="intro" th:fragment="commonMemberIndex">
+
+		<!--Start Home-->
+		<div class="home_type full-height">
+			<div class="side side-left container"
+				style="background-image: url(data/images/personlogo.jpg);">
+				<div class="overlayer">
+					<div id="particles-js">
+						<canvas class="particles-js-canvas-el" width="499" height="878"></canvas>
+					</div>
+
+					<div class="display-table">
+						<div class="display-table-cell">
+							<h1 class="fit__text">
+								歡迎蒞臨 <span id="typed"></span><span class="typed-cursor">|</span>
+							</h1>
+							<div id="typed-strings">
+								<span>米奇不妙屋</span>
+								<!-- <span>DEVELOPER</span>
+								<span>FROM UK</span> -->
+							</div>
+							<div class="more_info" th:if="${session.Person != null} ">
+
+								<div class="item">
+									<span class="info-title">帳號 : </span> <span class="info-body"
+										th:text="${session.Person.account}"></span>
+								</div>
+								<div class="item">
+									<span class="info-title">暱稱 : </span> <span class="info-body"
+										th:text="${session.Person.nickName}"></span>
+								</div>
+								<div class="item">
+									<span class="info-title">性別 : </span> <span class="info-body"
+										th:text="${session.Person.gender}"></span>
+								</div>
+								<div class="item">
+									<span class="info-title">地址 : </span> <span class="info-body"
+										th:text="${session.Person.addressCounty}+
+											${session.Person.addressDistrict}+
+											${session.Person.addressZipcode}+
+											${session.Person.addressDetail}"></span>
+								</div>
+								<div class="item">
+									<span class="info-title">生日 : </span> <span class="info-body"
+										th:text="${session.Person.birthday}"></span>
+								</div>
+								<div class="item">
+									<span class="info-title">手機號碼 : </span> <span class="info-body"
+										th:text="${session.Person.phoneNumber}"></span>
+								</div>
+								<div class="item">
+									<span class="info-title">Email : </span> <span
+										class="info-body" th:text="${session.Person.email}"></span>
+								</div>
+
+
+								<a style="margin-left: 25%"
+									th:href="@{/member/showInnerMessage}">站內信箱</a>
+
+							</div>
+
+
+							<div class="more_info" th:if="${session.Vendor != null}">
+
+								<div class="item">
+									<span class="info-title">帳號 : </span> <span class="info-body"
+										th:text="${session.Vendor.account}"></span>
+								</div>
+								<div class="item">
+									<span class="info-title">行業別 : </span> <span class="info-body"
+										th:text="${session.Vendor.industry}"></span>
+								</div>
+								<div class="item">
+									<span class="info-title">地址 : </span> <span class="info-body"
+										th:text="${session.Vendor.addressCounty}+
+											${session.Vendor.addressDistrict}+
+											${session.Vendor.addressZipcode}+
+											${session.Vendor.addressDetail}"></span>
+								</div>
+								<div class="item">
+									<span class="info-title">手機號碼 : </span> <span class="info-body"
+										th:text="${session.Vendor.phoneNumber}"></span>
+								</div>
+								<div class="item">
+									<span class="info-title">Email : </span> <span
+										class="info-body" th:text="${session.Vendor.email}"></span>
+								</div>
+
+
+								<a style="margin-left: 25%"
+									th:href="@{/member/showInnerMessage}">站內信箱</a>
+
+							</div>
+
+
+							<!--.more_info-->
+						</div>
+						<!--.display-table-cell-->
+					</div>
+					<!--.display-table-->
+
+				</div>
+				<!--.overlayer-->
+			</div>
+			<!--.side-->
+		</div>
+		<!--.home_type-->
+		<!--End Home-->
+
+		<!--Start Menu-->
+
+		<div class="side side-right">
+			<div class="intro-content">
+				<div class="profile">
+					<img alt="profile" th:src="@{'/picture/'+${session.LoginID}}">
+				</div>
+				<br>
+				<h1>
+					<span th:if="${session.Person != null}"
+						th:text="${session.Person.name}"></span> <span
+						th:if="${session.Vendor != null}" th:text="${session.Vendor.name}"></span>
+				</h1>
+
+				<div class="menu">
+
+					<!--Social links-->
+
+
+					<!--Menu Items-->
+					<ul class="list-unstyled menu_list" id="">
+
+						<li><a id="memberIndex" th:href="@{/member/memberIndex}">個人首頁</a></li>
+
+						<li th:if="${session.Person != null}"><a id="updateMember"
+							th:href="@{/member/updateMemberInfo}">修改資料</a></li>
+						<li th:if="${session.Vendor != null}"><a id="updateMember"
+							th:href="@{/member/updateVendorInfo}">修改資料</a></li>
+						<li><a id="updatePassword"
+							th:href="@{/member/updatePassword}">修改密碼</a></li>
+						<li><a id="showViolation" th:href="@{/member/showViolation}">違規紀錄</a></li>
+						<li><a id="showPoints" th:href="@{/member/showPoints}">查看積分</a></li>
+						<li><a id="blacklist" th:href="@{/member/blacklist}">黑名單</a></li>
+						<li><a id="poArticle" th:href="@{/member/poArticle}">評論區文章</a></li>
+						<li><a id="userPoForumArticle"
+							th:href="@{/member/userPoForumArticle}">討論區文章</a></li>
+						<li><a id="trouble" th:href="@{/member/trouble}">疑難雜症</a></li>
+					</ul>
+
+				</div>
+				<!--.menu-->
+			</div>
+			<!--.intro-content-->
+		</div>
+		<!--.side-->
+		<!--End Menu-->
+
+	</div>
+	<!-- /intro -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!--Start Menu-->
+
+	<!-- 	<div class="side side-right" th:fragment="commonMemberIndexRight"> -->
+	<!-- 		<div class="intro-content"> -->
+	<!-- 			<div class="profile"> -->
+	<!-- 				<img alt="profile" th:src="@{'/picture/'+${session.LoginID}}"> -->
+	<!-- 			</div> -->
+	<!-- 			<h1> -->
+	<!-- 				<span th:if="${session.Person != null}" -->
+	<!-- 					th:text="${session.Person.name}"></span> <span -->
+	<!-- 					th:if="${session.Vendor != null}" th:text="${session.Vendor.name}"></span> -->
+	<!-- 			</h1> -->
+	<!-- 			<div class="menu"> -->
+
+	<!-- 				Social links -->
+
+	<!-- 				Menu Items -->
+	<!-- 				<ul class="list-unstyled menu_list" id=""> -->
+
+	<!-- 					<li><a th:href="@{/member/memberIndex}">個人首頁</a></li> -->
+
+	<!-- 					<li th:if="${session.Person != null}"><a -->
+	<!-- 						th:href="@{/member/updateMemberInfo}">修改資料</a></li> -->
+	<!-- 					<li th:if="${session.Vendor != null}"><a -->
+	<!-- 						th:href="@{/member/updateVendorInfo}">修改資料</a></li> -->
+	<!-- 					<li><a th:href="@{/member/updatePassword}">修改密碼</a></li> -->
+
+	<!-- 					<li><a th:href="@{/member/showPoints}" class="active_item">查看積分</a></li> -->
+	<!-- 					<li><a th:href="@{/member/blacklist}">黑名單</a></li> -->
+	<!-- 					<li><a th:href="@{/member/poArticle}">評論區文章</a></li> -->
+	<!-- 					<li><a th:href="@{/member/userPoForumArticle}">討論區文章</a></li> -->
+	<!-- 					<li><a th:href="@{/member/trouble}">疑難雜症</a></li> -->
+	<!-- 				</ul> -->
+
+	<!-- 			</div> -->
+	<!-- 			<!--.menu-->
+	-->
+	<!-- 		</div> -->
+	<!-- 		<!--.intro-content-->
+	-->
+	<!-- 	</div> -->
+	<!-- 	<!--.side-->
+	-->
+	<!--End Menu-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- ===========================================會員頁面共同部分================================ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 	--------------------------------------------會員個人頁面--------------------------------------------- -->
+
+
+	<!--Start Preloader-->
+	<div class="page-loader startLoad">
+		<div class="loader startLoad"></div>
+	</div>
+	<!--End Preloader-->
+
+	<div id="splitlayout" class="splitlayout reset-layout close-right"
+		th:fragment="commonMember">
+		<div class="intro">
+
+			<!--Start Home-->
+			<div class="home_type full-height">
+				<div class="side side-left container">
+					<!-- 					style="background-image: url(data/images/personlogo.jpg);" -->
+
+					<div class="overlayer">
+						<div id="particles-js">
+							<canvas class="particles-js-canvas-el" width="499" height="878"></canvas>
+						</div>
+
+						<div class="display-table">
+							<div class="display-table-cell">
+								<h1 class="fit__text">
+									歡迎蒞臨 <span id="typed"></span><span class="typed-cursor">|</span>
+								</h1>
+								<div id="typed-strings">
+									<span>米奇不妙屋</span>
+									<!-- <span>DEVELOPER</span>
+								<span>FROM UK</span> -->
+								</div>
+								<div class="more_info" th:if="${session.Person != null} "
+									th:object="${user}">
+
+									<div class="item">
+										<span class="info-title">帳號 : </span> <span class="info-body"
+											th:text="*{account}"></span>
+									</div>
+									<div class="item">
+										<span class="info-title">暱稱 : </span> <span class="info-body"
+											th:text="*{nickName}"></span>
+									</div>
+									<div class="item">
+										<span class="info-title">性別 : </span> <span class="info-body"
+											th:text="*{gender}"></span>
+									</div>
+									<div class="item">
+										<span class="info-title">地址 : </span> <span class="info-body"
+											th:text="*{addressCounty}+
+											*{addressDistrict}+
+											*{addressZipcode}+
+											*{addressDetail}"></span>
+									</div>
+									<div class="item">
+										<span class="info-title">生日 : </span> <span class="info-body"
+											th:text="*{birthday}"></span>
+									</div>
+									<div class="item">
+										<span class="info-title">手機號碼 : </span> <span
+											class="info-body" th:text="*{phoneNumber}"></span>
+									</div>
+									<div class="item">
+										<span class="info-title">Email : </span> <span
+											class="info-body" th:text="*{email}"></span>
+									</div>
+
+									<!-- ======新增 改掉原本的===== -->
+									<a style="margin-left: 25%"
+										th:href="@{/member/showInnerMessage}">站內信箱</a>
+									<!-- ======新增 改掉原本的===== -->
+
+								</div>
+
+
+								<div class="more_info" th:if="${session.Vendor != null}"
+									th:object="${user}">
+
+									<div class="item">
+										<span class="info-title">帳號 : </span> <span class="info-body"
+											th:text="*{account}"></span>
+									</div>
+									<div class="item">
+										<span class="info-title">行業別 : </span> <span class="info-body"
+											th:text="*{industry}"></span>
+									</div>
+									<div class="item">
+										<span class="info-title">地址 : </span> <span class="info-body"
+											th:text="*{addressCounty}+
+											*{addressDistrict}+
+											*{addressZipcode}+
+											*{addressDetail}"></span>
+									</div>
+									<div class="item">
+										<span class="info-title">手機號碼 : </span> <span
+											class="info-body" th:text="*{phoneNumber}"></span>
+									</div>
+									<div class="item">
+										<span class="info-title">Email : </span> <span
+											class="info-body" th:text="*{email}"></span>
+									</div>
+
+
+									<a style="margin-left: 25%"
+										th:href="@{/member/showInnerMessage}">站內信箱</a>
+
+								</div>
+
+
+								<!--.more_info-->
+							</div>
+							<!--.display-table-cell-->
+						</div>
+						<!--.display-table-->
+
+					</div>
+					<!--.overlayer-->
+				</div>
+				<!--.side-->
+			</div>
+			<!--.home_type-->
+			<!--End Home-->
+
+			<!--Start Menu-->
+
+			<div class="side side-right">
+				<div class="intro-content">
+					<div class="profile">
+						<img alt="profile" th:src="@{'/picture/'+${session.LoginID}}">
+					</div>
+					<br>
+					<h1>
+						<span th:if="${session.Person != null}"
+							th:text="${session.Person.name}"></span> <span
+							th:if="${session.Vendor != null}"
+							th:text="${session.Vendor.name}"></span>
+					</h1>
+
+					<div class="menu">
+
+						<!--Social links-->
+
+
+						<!--Menu Items-->
+						<ul class="list-unstyled menu_list" id="">
+
+							<li><a th:href="@{/member/memberIndex}" class="active_item">個人首頁</a></li>
+
+							<li th:if="${session.Person != null}"><a
+								th:href="@{/member/updateMemberInfo}">修改資料</a></li>
+							<li th:if="${session.Vendor != null}"><a
+								th:href="@{/member/updateVendorInfo}">修改資料</a></li>
+							<li><a th:href="@{/member/updatePassword}">修改密碼</a></li>
+							<li><a id="" th:href="@{/member/showViolation}">違規紀錄</a></li>
+							<li><a th:href="@{/member/showPoints}">查看積分</a></li>
+							<li><a th:href="@{/member/blacklist}">黑名單</a></li>
+							<li><a th:href="@{/member/poArticle}">評論區文章</a></li>
+							<li><a th:href="@{/member/userPoForumArticle}">討論區文章</a></li>
+							<li><a th:href="@{/member/trouble}">疑難雜症</a></li>
+						</ul>
+
+					</div>
+					<!--.menu-->
+				</div>
+				<!--.intro-content-->
+			</div>
+			<!--.side-->
+			<!--End Menu-->
+
+		</div>
+		<!-- /intro -->
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 	--------------------------------------------會員個人頁面--------------------------------------------- -->
+
+
+
+
+
+	<!-- 	會員側邊選單開始 -->
+
+	<!-- MAIN-MENU START   側邊-->
+	<div class="wrapper bg-dark-white" th:fragment="commonSide"
+		th:if="${session.Person != null}">
+		<header id="sticky-menu" class="header header-2">
+
+			<div class="menu-toggle hamburger hamburger--emphatic hidden-xs">
+				<div class="hamburger-box">
+					<div class="hamburger-inner"></div>
+				</div>
+			</div>
+			<div class="main-menu  hidden-xs">
+				<!-- 原nav -->
+				<div>
+					<ul>
+						<li><a th:href="@{/}">首頁</a></li>
+						<li><a th:href="@{/}">帳號管理</a>
+							<div class="sub-menu menu-scroll">
+								<ul>
+									<li class="menu-title">帳號管理</li>
+									<li><a th:href="@{/updateInfo}">修改個人資料</a></li>
+									<li><a th:href="@{/updatePassword}">修改密碼</a></li>
+									<li><a th:href="@{/showPoints}">查看當前積分</a></li>
+									<li><a th:href="@{/blacklist}">查看黑名單</a></li>
+								</ul>
+							</div></li>
+						<li><a th:href="@{/}">評論區管理</a>
+							<div class="sub-menu menu-scroll">
+								<ul>
+									<li class="menu-title">評論區管理</li>
+									<li><a th:href="@{/poArticle}">發表文章管理</a></li>
+									<li><a th:href="@{/userCommentReply}">留言過的文章</a></li>
+								</ul>
+							</div></li>
+						<li><a th:href="@{/}">討論區管理</a>
+							<div class="sub-menu menu-scroll">
+								<ul>
+									<li class="menu-title">討論區管理</li>
+									<li><a th:href="@{/userPoForumArticle}">發表文章管理</a></li>
+									<li><a th:href="@{/userReForumArticle}">回復文章管理</a></li>
+									<li><a th:href="@{/userForumReply}">留言過的文章</a></li>
+								</ul>
+							</div></li>
+						<li><a th:href="@{/}">商城管理</a>
+							<div class="sub-menu menu-scroll">
+								<ul>
+									<li class="menu-title">商城管理</li>
+									<li><a th:href="@{/}">訂單資訊</a></li>
+									<li><a th:href="@{/}">待定</a></li>
+									<li><a th:href="@{/}">待定</a></li>
+								</ul>
+							</div></li>
+						<li><a th:href="@{/}">疑難雜症區管理</a>
+							<div class="sub-menu menu-scroll">
+								<ul>
+									<li class="menu-title">疑難雜症區管理</li>
+									<li><a th:href="@{/}">發表文章管理</a></li>
+									<li><a th:href="@{/}">回復文章管理</a></li>
+									<li><a th:href="@{/}">留言過的文章</a></li>
+								</ul>
+							</div></li>
+					</ul>
+				</div>
+				<!-- 原nav -->
+			</div>
+
+		</header>
+	</div>
+	<!-- MAIN-MENU END 側邊-->
+
+
+
+
+
+	<!-- MAIN-MENU START 廠商  側邊-->
+	<div class="wrapper bg-dark-white" th:fragment="commonVendorSide"
+		th:if="${session.Vendor != null}">
+		<header id="sticky-menu" class="header header-2">
+
+			<div class="menu-toggle hamburger hamburger--emphatic hidden-xs">
+				<div class="hamburger-box">
+					<div class="hamburger-inner"></div>
+				</div>
+			</div>
+			<div class="main-menu  hidden-xs">
+				<!-- 原nav -->
+				<div>
+					<ul>
+						<li><a th:href="@{/}">首頁</a></li>
+						<li><a th:href="@{/}">帳號管理</a>
+							<div class="sub-menu menu-scroll">
+								<ul>
+									<li class="menu-title">帳號管理</li>
+									<li><a th:href="@{/updateVendorInfo}">修改個人資料</a></li>
+									<li><a th:href="@{/updatePassword}">修改密碼</a></li>
+									<li><a th:href="@{/showPoints}">查看當前積分</a></li>
+									<li><a th:href="@{/blacklist}">查看黑名單</a></li>
+								</ul>
+							</div></li>
+						<li><a th:href="@{/}">評論區管理</a>
+							<div class="sub-menu menu-scroll">
+								<ul>
+									<li class="menu-title">評論區管理</li>
+									<li><a th:href="@{/poArticle}">發表文章管理</a></li>
+									<li><a th:href="@{/userCommentReply}">留言過的文章</a></li>
+								</ul>
+							</div></li>
+						<li><a th:href="@{/}">討論區管理</a>
+							<div class="sub-menu menu-scroll">
+								<ul>
+									<li class="menu-title">討論區管理</li>
+									<li><a th:href="@{/userPoForumArticle}">發表文章管理</a></li>
+									<li><a th:href="@{/userReForumArticle}">回復文章管理</a></li>
+									<li><a th:href="@{/userForumReply}">留言過的文章</a></li>
+								</ul>
+							</div></li>
+						<li><a th:href="@{/}">商城管理</a>
+							<div class="sub-menu menu-scroll">
+								<ul>
+									<li class="menu-title">商城管理</li>
+									<li><a th:href="@{/}">訂單資訊</a></li>
+									<li><a th:href="@{/}">待定</a></li>
+									<li><a th:href="@{/}">待定</a></li>
+								</ul>
+							</div></li>
+						<li><a th:href="@{/}">疑難雜症區管理</a>
+							<div class="sub-menu menu-scroll">
+								<ul>
+									<li class="menu-title">疑難雜症區管理</li>
+									<li><a th:href="@{/}">發表文章管理</a></li>
+									<li><a th:href="@{/}">回復文章管理</a></li>
+									<li><a th:href="@{/}">留言過的文章</a></li>
+								</ul>
+							</div></li>
+					</ul>
+				</div>
+				<!-- 原nav -->
+			</div>
+
+		</header>
+	</div>
+	<!-- MAIN-MENU END 側邊-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 	側邊選單結束 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 	------------------------------------------------------------------------------------------ -->
+
+	<!-- ===========================================================首頁用JS========= -->
+	<div th:fragment="commonIndexJS">
+
+
+		<!-- search-scripts -->
+		<script th:src="@{/data/js/classie.js}"></script>
+		<script th:src="@{/data/js/uisearch.js}"></script>
+		<script>
+			new UISearch(document.getElementById('sb-search'));
+		</script>
+		<!-- //search-scripts -->
+
+
+
+		<!-- 首頁廣告輪播 ===========-->
+		<script>
+			$(function() {
+				$("#slider").responsiveSlides({
+					auto : true,
+					nav : true,
+					speed : 500,
+					namespace : "callbacks",
+					pager : true,
+				});
+			});
+		</script>
+		<script th:src="@{/data/js/responsiveslides.min.js}"></script>
+		<!-- =============首頁廣告輪播 ===========-->
+
+
+
+		<!-- ==========================首頁會動的字 -->
+		<script th:src="@{/data/js/jquery.marquee.min.js}"></script>
+
+
+		<script>
+			$('.marquee').marquee({
+				pauseOnHover : true
+			});
+			//@ sourceURL=pen.js
+		</script>
+		<!-- 首頁會動的字 -->
+
+
+		<!-- 		to top -->
+
+		<script type="text/javascript" th:src="@{/data/js/move-top.js}"></script>
+		<script type="text/javascript" th:src="@{/data/js/easing.js}"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				/*
+				var defaults = {
+				wrapID: 'toTop', // fading element id
+				wrapHoverID: 'toTopHover', // fading element hover id
+				scrollSpeed: 1200,
+				easingType: 'linear' 
+				};
+				 */
+				$().UItoTop({
+					easingType : 'easeOutQuart'
+				});
+			});
+		</script>
+
+		<!-- 		to top -->
+	</div>
+
+	<!-- =====================================首頁用JS=============================== -->
+
+
+
+	<div th:fragment="commonscripts">
+
+		<!-- jquery latest version -->
+		<script th:src="@{/data/js/vendor/jquery-1.12.0.min.js}"></script>
+
+		<!-- jquery.meanmenu js -->
+		<!-- 		<script th:src="@{/data/js/jquery.meanmenu.js}"></script> -->
+		<!-- 		<script th:src="@{/data/js/jquery-migrate-1.2.1.min.js}"></script> -->
+		<!-- 		<script th:src="@{/data/js/jquery.matchHeight-min.js}"></script> -->
+		<!-- 		<script th:src="@{/data/js/jquery.alterclass.js}"></script> -->
+
+
+
+		<!-- 		模板bootstrap放這邊 -->
+		<!-- 		<script th:src="@{/data/js/particles.min.js}"></script> -->
+		<!-- 		<script th:src="@{/data/js/app.js}"></script> -->
+		<!-- 		<script th:src="@{/data/js/modernizr.custom.js}"></script> -->
+		<!-- 		<script th:src="@{/data/js/typed.min.js}"></script> -->
+		<!-- 		<script th:src="@{/data/js/jquery.fittext.js}"></script> -->
+		<!-- 		<script th:src="@{/data/js/isotope.pkgd.min.js}"></script> -->
+		<!-- 		<script th:src="@{/data/js/jquery.magnific-popup.min.js}"></script> -->
+		<!-- 		<script th:src="@{/data/js/custom.js}"></script> -->
+
+
+
+
+
+
+
+		<!-- 		<a href="#to-top" id="toTop" style="display: block;" -->
+		<!-- 			class="back-to-top"> <span id="toTopHover" style="opacity: 1;"> -->
+		<!-- 		</span></a> -->
+
+
+
+
+
+
+
+		<!-- slick.min js -->
+		<script th:src="@{/data/js/slick.min.js}"></script>
+
+		<!-- wow js -->
+		<script th:src="@{/data/js/wow.min.js}"></script>
+		<!-- main js -->
+		<script th:src="@{/data/js/main.js}"></script>
+
+		<!-- bootstrap js -->
+		<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+
+
+
+
+
+
+
+
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>討論區首頁</title>
+
+
+
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+
+<script th:src="@{/data/js/jquery.min.js}"></script>
+
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+
+
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+<link
+	href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic'
+	rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Varela+Round'
+	rel='stylesheet' type='text/css'>
+
+
+<script src="js/responsiveslides.min.js"></script>
+<script>
+	$(function() {
+		$("#slider").responsiveSlides({
+			auto : true,
+			nav : true,
+			speed : 500,
+			namespace : "callbacks",
+			pager : true,
+		});
+	});
+</script>
+<script type="text/javascript" src="js/move-top.js"></script>
+<script type="text/javascript" src="js/easing.js"></script>
+<!--/script-->
+<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$(".scroll").click(function(event) {
+			event.preventDefault();
+			$('html,body').animate({
+				scrollTop : $(this.hash).offset().top
+			}, 900);
+		});
+	});
+</script>
+</head>
+<body>
+	<div th:replace="/user/common :: commonTop"></div>
+
+
+	<!-- 	------------------------首頁內容---------------------------------- -->
+
+
+	<div class="wrap">
+		<div class="move-text">
+			<div class="breaking_news">
+				<h2>本站頭條</h2>
+			</div>
+			<div class="marquee">
+				<div class="marquee1">
+					<a class="breaking" href="single.html">米奇不妙屋正式開幕歡慶!!!米奇不妙屋正式開幕歡慶!!!米奇不妙屋正式開幕歡慶!!!</a>
+				</div>
+				<div class="marquee2">
+					<a class="breaking" href="single.html">米奇不妙屋正式開幕歡慶!!!米奇不妙屋正式開幕歡慶!!!米奇不妙屋正式開幕歡慶!!!</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+
+	<!-- content-section-starts-here -->
+	<div class="main-body">
+		<div class="wrap">
+			<div class="single-page">
+				<div class="col-md-2 share_grid"></div>
+				<div class="col-md-6 content-left single-post">
+					<div class="blog-posts">
+
+						<h3 class="post" th:text="${forums.title}"></h3>
+						<div class="last-article">
+							<p class="artext" th:text="${forums.text}"></p>
+							<img th:src="@{'/forumPicture/'+${forums.forumId}}" width="690" 
+							height="500" >
+     
+							<p class="artext"></p>
+							<div class="clearfix"></div>
+							
+							
+							<div class="response">
+								<h4>留言區</h4>
+								<div class="media response-info" th:each="a:${forums.ForumReplyBean}">
+									<div class="media-left response-text-left" >
+										<a href="#" th:text="${a.userName}" style="margin-bottom:80%">user<img  src="images/c1.jpg"
+											alt="" />
+										</a>
+										<p th:text="${a.text}">內文</p>
+										<div style="position:relative;left:350px">			
+							<ul >
+								<li th:text="${a.replyDate}"></li>
+							</ul></div>
+									</div>
+									<div class="clearfix"></div><hr>
+								
+								
+<!-- 									<div th:if="${a.textType} != '1'or (${forums.textType} == '2' and == ${session.LoginID})"> -->
+										
+<!-- 										<div> -->
+<!-- 										<div class="media-left response-text-left"> -->
+<!-- 											<a href="#"> <img class="media-object" -->
+<!-- 												th:src="@{'/picture/'+${a.user.userId}}" alt="" title="" -->
+<!-- 												style="width: 50px; height: 50px" /> -->
+<!-- 											</a> -->
+<!-- 											<h5 th:text="${a.userName}" style="width: 50px; height: 15px"></h5> -->
+<!-- 											<div th:if="${a.user.userId} != ${session.LoginID}" -->
+<!-- 												style="float: left"> -->
+<!-- 												<a -->
+<!-- 													th:href="@{'/InsertBlack/'+${forums.forumId}+'/'+${a.${a.user.userId}}"> -->
+<!-- 													<button th:text="封鎖 " -->
+<!-- 														style="font-size: 10px; border: 2px solid red; height: 25px; color: red; width: 50px"> -->
+<!-- 													</button> -->
+<!-- 												</a> -->
+<!-- 											</div> -->
+<!-- 										</div> -->
+<!-- 										<div class="media-body response-text-right"> -->
+<!-- 											<p th:text="${a.text}" -->
+<!-- 												style="white-space: pre-wrap; word-break: break-all"></p> -->
+<!-- 											<ul> -->
+
+<!-- 												<li></li> -->
+
+<!-- 												<li th:text="|發文時間${a.replyDate}|"></li> -->
+<!-- 												<li th:text="|回覆編號:${a.replyId}&nbsp|"></li> -->
+
+<!-- 											</ul> -->
+<!-- 										</div> -->
+<!-- 										回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉 -->
+
+
+<!-- 										回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉 -->
+<!-- 										讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚 -->
+<!-- 										<div -->
+<!-- 											class="ReplyJudge0"> -->
+<!-- 											<input th:value="${a.textGood}" name="relyGood" -->
+<!-- 												type="hidden"> <input th:value="${a.textBad}" -->
+<!-- 												name="relyBad" type="hidden"> <input -->
+<!-- 												th:value="${a.replyId}" name="ajaxReplyId" type="hidden"> -->
+<!-- 											<img class="ReplyImg1" th:src="@{/comment/commentimages/空讚.jpg}" /> <span -->
+<!-- 												class="ReplyGood" th:text="|${a.textGood}|"></span> <img -->
+<!-- 												class="ReplyImg2" th:src="@{/comment/commentimages/空倒讚.jpg}" /> <span -->
+<!-- 												class="ReplyBad" th:text="|${a.textBad}|"></span> -->
+<!-- 										</div> -->
+<!-- 										讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚 -->
+<!-- 										<div class="clearfix"></div> -->
+<!-- 									</div> -->
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								</div>
+							</div>
+							
+										
+							
+							
+							
+							
+							
+							
+							<div class="coment-form">
+								<h4>留言</h4>
+								<form class="dark-matter" method="POST" th:object="${mb} "
+									enctype="multiple/form-data"
+									th:action="@{'/member/save/'+${forums.forumId}}">
+									<input hidden="${session.LoginID}" name="userName">
+									<!-- 						<input type="text" value="Name " onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Name';}" required=""> -->
+									<!-- 						<input type="email" value="Email (will not be published)*" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Email (will not be published)*';}" required=""> -->
+									<!-- 						<input type="text" value="Website" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Website';}" required=""> -->
+									<textarea name="text" onfocus="this.value = '';"
+										onblur="if (this.value == '') {this.value = '你的留言(限50字以內)...';}"
+										></textarea>
+									<input type="submit" value="Submit Comment">
+								</form>
+							</div>
+
+							<div class="clearfix"></div>
+						</div>
+					</div>
+
+				</div>
+				<div class="col-md-4 side-bar" style="position:relative;left:5%">
+					<div class="first_half">
+						<div class="categories">
+							<h3 class="side-title-head">作者資訊</h3>
+							<figure class="box2">
+								<img class="imgHeadShot" height='200px' width='200px'
+									th:src="@{'/picture/'+${forums.user.userId}}" alt="" title="">
+								<figcaption style="text-align: center; font-size: 16px;"
+									th:text=" ${forums.userName}"></figcaption>
+							</figure>
+						</div>
+						<div class="list_vertical">
+							<section class="accordation_menu">
+								<div>
+									<input id="label-1" name="lida" type="radio" checked /> <label
+										for="label-1" id="item1"><i class="ferme"> </i>觀看次數最多<i class="icon-plus-sign i-right1"></i><i
+										class="icon-minus-sign i-right2"></i></label>
+									<div class="content" id="a1">
+										<div class="scrollbar" id="style-2">
+											<div class="force-overflow">
+												<div class="popular-post-grids"th:each="c:${most}">
+													<div class="popular-post-grid">
+														<div class="post-img">
+														<a th:href="@{'/forum/'+${c.forumId}}">
+							<img th:src="@{'/forumPicture/'+${c.forumId}}">
+							</a>	
+														</div>
+														<div class="post-text">
+															<a class="title"  th:href="@{'/forum/'+${c.forumId}}"  th:text="${c.title}"> </a>
+															
+																<p th:text="${c.forumCreateTime}"> 
+															</p>
+														</div>
+														<div class="clearfix"></div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div>
+									<input id="label-2" name="lida" type="radio" /> <label
+										for="label-2" id="item2"><i class="icon-leaf" id="i2"></i>最新文章<i class="icon-plus-sign i-right1"></i><i
+										class="icon-minus-sign i-right2"></i></label>
+									<div class="content" id="a2">
+										<div class="scrollbar" id="style-2">
+											<div class="force-overflow">
+												<div class="popular-post-grids"th:each="c:${recent}">
+													<div class="popular-post-grid">
+														<div class="post-img">
+														<a th:href="@{'/forum/'+${c.forumId}}">
+							<img th:src="@{'/forumPicture/'+${c.forumId}}">
+							</a>	
+														</div>
+														<div class="post-text">
+															<a class="title"  th:href="@{'/forum/'+${c.forumId}}"  th:text="${c.title}"> </a>
+															
+																<p th:text="${c.forumCreateTime}"> 
+															</p>
+														</div>
+														<div class="clearfix"></div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</section>
+						
+						</div>
+					</div>
+					<div class="secound_half">
+					</div>
+					<div class="clearfix"></div>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+	<!-- content-section-ends-here -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*
+			var defaults = {
+			wrapID: 'toTop', // fading element id
+			wrapHoverID: 'toTopHover', // fading element hover id
+			scrollSpeed: 1200,
+			easingType: 'linear' 
+			};
+			 */
+			$().UItoTop({
+				easingType : 'easeOutQuart'
+			});
+		});
+	</script>
+	<a href="#to-top" id="toTop" style="display: block;"> <span
+		id="toTopHover" style="opacity: 1;"> </span></a>
+	<div th:replace="/user/common :: commonBottom"></div>
+	<div th:replace="/user/common :: commonIndexJS"></div>
+	<!---->
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+<meta charset="UTF-8">
+<title>查看積分</title>
+
+
+<link rel="stylesheet" th:href="@{/data/css/bootstrap.css}">
+<!-- <link rel="stylesheet" th:href="@{/data/css/font.css}"> -->
+<link rel="stylesheet" th:href="@{/data/css/splitlayout.css}">
+<link rel="stylesheet" th:href="@{/data/css/animations.css}">
+<link rel="stylesheet" th:href="@{/data/css/responsiveslides.css}">
+<link rel="stylesheet" th:href="@{/data/css/slick.css}">
+<link rel="stylesheet" th:href="@{/data/css/slick-theme.css}">
+<link rel="stylesheet" th:href="@{/data/css/magnific-popup.css}">
+<link rel="stylesheet" th:href="@{/data/css/font-awesome.min.css}">
+<link rel="stylesheet" th:href="@{/data/css/pe-icon-7-stroke.min.css}">
+<link rel="stylesheet" th:href="@{/data/css/personInfostyle.css}">
+<link rel="stylesheet" th:href="@{/data/css/responsive.css}">
+
+<!-- <link href="./data/css/style.css" rel="stylesheet" type="text/css" -->
+<!-- 	media="all" /> -->
+
+
+<style>
+.pointScroll {
+	WIDTH: 380px;
+	HEIGHT: 631px;
+	BACKGROUND-COLOR: #FFFFFF;
+	overflow-y: scroll;
+	SCROLLBAR-FACE-COLOR: #c2d3fc;
+	SCROLLBAR-HIGHLIGHT-COLOR: #c2d3fc;
+	SCROLLBAR-SHADOW-COLOR: BLACK;
+	SCROLLBAR-3DLIGHT-COLOR: #c2d3fc;
+	SCROLLBAR-ARROW-COLOR: #000000;
+	SCROLLBAR-TRACK-COLOR: FFFFFF;
+	SCROLLBAR-DARKSHADOW-COLOR: EAECEC;
+}
+</style>
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+<script>
+	$(function() {
+
+		$("#showPoints").addClass("active_item");
+
+	});
+</script>
+
+</head>
+<body>
+
+
+
+	<div th:replace="/user/common :: commonMostTop"></div>
+
+
+
+	<div id="splitlayout" class="splitlayout reset-layout open-right">
+
+		<div th:replace="/user/common :: commonMemberIndex"></div>
+
+
+
+		<!-- /intro -->
+		<div class="page page-right full-height page-right-normal-height">
+			<div id="pt-main" class="pt-perspective page-inner">
+
+
+
+
+				<!--Start Resume Section-->
+				<section class="resume padding-bottom-90 pt-page pt-page-current"
+					id="resume">
+					<div class="content">
+						<div class="container">
+							<div class="sec_title" style="text-align: center;">
+								<h2 th:text="'當前積分 :' + ${User.totalPoints}+分"></h2>
+							</div>
+							<div class="" style="text-align: center;">
+
+								<!--Education-->
+								<div class="timeline-small">
+									<div class="timeline-small-body pointScroll">
+										<h3 class="subtitle">積分獲得紀錄</h3>
+										<ul th:each="r:${record}">
+
+											<li>
+												<div class="bullet blue"></div>
+												<div class="date1" th:text="${r.eventDate}"></div>
+												<div class="desc">
+													<h4 th:text="${r.pointRule.points}*${r.times}+'分'"></h4>
+													<h3 th:text="${r.pointRule.useraction}"></h3>
+													<h4 th:text="${r.details}"></h4>
+												</div>
+											</li>
+
+										</ul>
+									</div>
+								</div>
+								<br>
+								<div class="bs-docs-example"
+									style="text-align: center; box-shadow: 0 0 40px #a0a0a0;">
+									<h4>獲取積分規則</h4>
+									<table class="table table-striped">
+										<tr>
+											<th></th>
+											<th>動作名稱</th>
+											<th>有效區域</th>
+											<th>週期範圍</th>
+											<th>週期內最多獎勵次數</th>
+											<th>獲得積分對象</th>
+											<th>獲得積分</th>
+											<th style="text-align: center;">備註</th>
+										</tr>
+
+
+										<tr th:each="r:${rule}">
+											<td></td>
+											<td th:text="${r.useraction}"></td>
+											<td th:text="${r.area}"></td>
+											<td th:text="${r.periodrange}"></td>
+											<td th:text="${r.maxNumberOfTimes}"></td>
+											<td th:text="${r.targetuser}"></td>
+											<td th:text="${r.points}"></td>
+											<td th:text="${r.remarks}"></td>
+
+										</tr>
+
+
+
+									</table>
+
+								</div>
+
+
+
+
+
+
+
+
+								<!--.col-md-6-->
+
+								<!--Experience-->
+
+								<!--.col-md-6-->
+							</div>
+							<!--.row-->
+						</div>
+						<!--.container-->
+					</div>
+					<!--.content-->
+				</section>
+				<!--End Resume Section-->
+
+
+				<!-- 共同頁面==================================== commonMemberBottom 開始===============================-->
+
+
+			</div>
+			<!--.page-inner-->
+		</div>
+		<!--.page-right-->
+	</div>
+	<!--.splitlayout-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<script th:src="@{/data/js/jquery.min.js}"></script>
+
+	<script th:src="@{/data/js/jquery-migrate-1.2.1.min.js}"></script>
+	<script th:src="@{/data/js/jquery.matchHeight-min.js}"></script>
+	<script th:src="@{/data/js/jquery.alterclass.js}"></script>
+
+	<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+	<script th:src="@{/data/js/particles.min.js}"></script>
+	<script th:src="@{/data/js/app.js}"></script>
+	<script th:src="@{/data/js/modernizr.custom.js}"></script>
+	<script th:src="@{/data/js/typed.min.js}"></script>
+	<script th:src="@{/data/js/responsiveslides.min.js}"></script>
+	<script th:src="@{/data/js/jquery.fittext.js}"></script>
+	<script th:src="@{/data/js/isotope.pkgd.min.js}"></script>
+	<script th:src="@{/data/js/jquery.magnific-popup.min.js}"></script>
+	<script th:src="@{/data/js/custom.js}"></script>
+
+
+
+
+
+
+
+
+
+	<!-- WRAPPER START -->
+
+
+
+
+</body>
+</html>

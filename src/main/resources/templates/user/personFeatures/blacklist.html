@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>黑名單</title>
+
+
+<link rel="stylesheet" href="/data/css/bootstrap.css">
+<!-- ===========修改0710============= -->
+<!-- <link rel="stylesheet" href="/data/css/font.css"> -->
+<!-- ===========修改0710============= -->
+<link rel="stylesheet" href="/data/css/splitlayout.css">
+<link rel="stylesheet" href="/data/css/animations.css">
+<link rel="stylesheet" href="/data/css/responsiveslides.css">
+<link rel="stylesheet" href="/data/css/slick.css">
+<link rel="stylesheet" href="/data/css/slick-theme.css">
+<link rel="stylesheet" href="/data/css/magnific-popup.css">
+<link rel="stylesheet" href="/data/css/font-awesome.min.css">
+<link rel="stylesheet" href="/data/css/pe-icon-7-stroke.min.css">
+<link rel="stylesheet" href="/data/css/personInfostyle.css">
+<link rel="stylesheet" href="/data/css/responsive.css">
+
+<!-- <link href="./data/css/style.css" rel="stylesheet" type="text/css" -->
+<!-- 	media="all" /> -->
+
+
+<style>
+.error {
+	color: red;
+}
+</style>
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+
+
+<script type="text/javascript">
+
+
+$(function(){
+	
+// 	$("#delete").click(function(){
+// 		if(confirm("確定把此人移出黑名單嗎")){
+// 			alert("刪除成功");
+// 			return true;
+// 		}
+// 		return false;
+// 	});
+
+	
+	$("#blacklist").addClass("active_item");
+	
+	$("#passwordCheckValue").keyup(function(){
+		
+		let passwordValue = $("#passwordValue").val()
+		let passwordCheckValue = $("#passwordCheckValue").val()
+		
+		
+		if(passwordValue!=passwordCheckValue){
+			$("#resultpasswordCheck").html("兩次密碼輸入的不一樣").css("color", "red");
+			return
+		}else{
+			$("#resultpasswordCheck").html("輸入相符").css("color", "green");
+			return
+		}
+		
+		
+	});
+
+});
+
+</script>
+
+<!-- <link href="/data/css/updateMember.css" rel="stylesheet"> -->
+</head>
+<body>
+
+
+
+	<div th:replace="/user/common :: commonMostTop"></div>
+
+
+
+	<div id="splitlayout" class="splitlayout reset-layout open-right">
+
+
+
+		<div th:replace="/user/common :: commonMemberIndex"></div>
+
+		<!-- /intro -->
+		<div class="page page-right full-height page-right-normal-height">
+			<div id="pt-main" class="pt-perspective page-inner">
+
+
+
+
+				<!--Start Resume Section-->
+				<section class="resume padding-bottom-90 pt-page pt-page-current"
+					id="resume">
+					<div class="content">
+						<div class="container">
+							<div class="sec_title" style="text-align: center;">
+								<h2>黑名單</h2>
+							</div>
+							<div class="aaa" style="text-align: center;">
+
+
+
+								<!--黑名單-->
+								<div class="testimonials margin-top-45"
+									style="text-align: center;">
+									<!-- ===========修改0710============= -->
+									<!-- 									====================新增====================== -->
+									<h3 th:if="${Blacklist.size() == 0}" class="subtitle">目前的黑名單人數為0!</h3>
+									<h3 th:if="${Blacklist.size() != 0}" class="subtitle">點擊頭像可將此人移出黑名單</h3>
+									<!-- 									====================新增====================== -->
+									<!-- ===========修改0710============= -->
+
+									<div class="owl slick-initialized slick-slider">
+
+
+
+										<div aria-live="polite" class="slick-list draggable">
+											<div class="slick-track" role="listbox">
+												<div th:each="b:${Blacklist}"
+													class="testimonial slick-slide slick-current slick-active"
+													tabindex="-1" role="option"
+													aria-describedby="slick-slide00" style="width: 311px;"
+													data-slick-index="0" aria-hidden="false">
+													<a onclick="return confirm('確認要把此人移出黑名單嗎？')"
+														th:href="@{'/delete/'+${b.userId}}"><img
+														th:src="@{'/picture/'+${b.userId}}"></a>
+													<h4 th:text="${b.name}"></h4>
+													<h5 th:text="${b.account}"></h5>
+												</div>
+
+
+
+											</div>
+										</div>
+									</div>
+									<!--.owl-->
+								</div>
+
+
+
+
+
+
+								<!--.col-md-6-->
+
+								<!--Experience-->
+
+								<!--.col-md-6-->
+							</div>
+							<!--.row-->
+						</div>
+						<!--.container-->
+					</div>
+					<!--.content-->
+				</section>
+				<!--End Resume Section-->
+
+
+				<!-- 共同頁面==================================== commonMemberBottom 開始===============================-->
+
+
+			</div>
+			<!--.page-inner-->
+		</div>
+		<!--.page-right-->
+	</div>
+	<!--.splitlayout-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<script th:src="@{/data/js/jquery.min.js}"></script>
+
+	<script th:src="@{/data/js/jquery-migrate-1.2.1.min.js}"></script>
+	<script th:src="@{/data/js/jquery.matchHeight-min.js}"></script>
+	<script th:src="@{/data/js/jquery.alterclass.js}"></script>
+
+	<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+	<script th:src="@{/data/js/particles.min.js}"></script>
+	<script th:src="@{/data/js/app.js}"></script>
+	<script th:src="@{/data/js/modernizr.custom.js}"></script>
+	<script th:src="@{/data/js/typed.min.js}"></script>
+	<script th:src="@{/data/js/responsiveslides.min.js}"></script>
+	<script th:src="@{/data/js/jquery.fittext.js}"></script>
+	<script th:src="@{/data/js/isotope.pkgd.min.js}"></script>
+	<script th:src="@{/data/js/jquery.magnific-popup.min.js}"></script>
+	<script th:src="@{/data/js/custom.js}"></script>
+
+
+
+
+
+
+
+
+
+	<!-- WRAPPER START -->
+
+
+
+</body>
+</html>

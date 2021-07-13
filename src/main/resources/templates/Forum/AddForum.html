@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head >
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+
+<script th:src="@{/data/js/jquery.min.js}"></script>
+
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+
+<link rel="stylesheet" href="/data/css/default.css">
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+<style>
+.error {
+	color: red;
+}
+</style>
+<title>新增討論文章</title>
+</head>
+<body>
+<div th:replace="/user/common :: commonTop"></div>
+	<div id="login-page"  >
+		<div class="container">
+			<form class="dark-matter" method="POST" th:object="${fb}"
+				enctype="multipart/form-data" th:action="@{/SaveForum}">
+				<div class="login-wrap">
+	<br> <br> <label  for="forumTyp" style="float:left">文章類型</label> 
+					<select class="problem"  th:field="*{forumType}" style='width:700px;'>
+						<option th:value="選擇文章類型" th:text="選擇文章類型"></option>
+						<option th:value="水電" th:text="水電"></option>
+						<option th:value="美食" th:text="美食"></option>
+						<option th:value="抱怨" th:text="抱怨"></option>
+					</select>
+					<p th:if="${#fields.hasErrors('forumType')}" th:errorclass="error"
+						th:errors="*{forumType}" />
+					
+					<br> <br> <label for="title">標題</label> <input
+						type="text" class="form-control" placeholder="標題" name="title"
+						maxlength='20'  style='width:700px;'/>
+					<p th:if="${#fields.hasErrors('title')}" th:errorclass="error"
+						th:errors="*{title}" />
+						 <br> <br> <label for="text">內容</label>
+					<textarea class="form-control" placeholder="內容" name="text"
+						cols="40" rows="5" scrolling="yes" value='' th:inline="text" style='width:700px;'></textarea>
+					<p th:if="${#fields.hasErrors('text')}" th:errorclass="error"
+						th:errors="*{text}" />
+
+					<br> <br> <label for="image">照片</label> <input
+						type="file" class="form-control" placeholder="照片" name="image"  style='width:700px;'/>
+					<label> <span> </span> <input type="submit" class="button"
+						value="確認送出" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a th:href="@{/AllForums}"><input
+						type="button" class="button"  value="取消" /></a>
+					</label>
+
+				</div>
+			</form>
+		</div>
+	</div>
+	<div th:replace="/user/common :: commonBottom"></div>
+	<div th:replace="/user/common :: commonIndexJS"></div>
+	
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head >
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+<script th:src="@{/data/js/jquery.min.js}"></script>
+<script th:src="@{/data/js/responsiveslides.min.js}"></script>
+<meta charset="UTF-8">
+<style>
+.problem {
+
+display: block;
+    background: none;
+    color: #999;
+    border: 1px solid #BDBBBB;
+    width: 100%;
+    margin-bottom: 5px;
+    outline: none;
+    font-size: 13px;
+    font-weight: 300;
+    padding: 13px 15px;
+}
+
+.submit{
+background: #84754e;
+    border: 1px solid #f4f4f4;
+    padding: .8em 0;
+    width: 100%;
+    margin-top: .5em;
+    font-size: 15px;
+    color: #fff;
+    letter-spacing: 0.5px;
+    outline: none;
+    transition: .5s all;
+    -webkit-transition: .5s all;
+
+}
+.error {
+	color: red;
+}
+</style>
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+<title>修改文章</title>
+</head>
+<body>
+	<div class="header"></div>
+<div th:replace="/user/common :: commonTop"></div>
+	<div class="main-body col-md-offset-1" >
+		<div class="wrap">
+			<div class="col-md-6 single-post" align="center">
+				<div class="coment-form">
+					<h4>編輯評論</h4>
+			<form  method="POST" th:object="${commentArticleOne}"
+				enctype="multipart/form-data" th:action="@{'/UpdateArticle/'+${commentArticleOne.articleId}}">
+				
+					 <input type="hidden"   name="textGoodTotal" th:field="*{textGoodTotal}" />
+					 <input type="hidden"  	name="textBadTotal" th:field="*{textBadTotal}" />
+					 <input type="hidden"   name="checkCount" th:field="*{checkCount}" />
+					 <input type="hidden"   name="textType" th:field="*{textType}" />
+					 <input type="hidden"   name="imagePath" th:field="*{imagePath}" />
+					 <input type="hidden"   name="userName" th:field="*{userName}" />
+					<label for="title" style="float:left">發文者ID</label> <input
+						type="text"   name="user.userId"
+					    th:field="*{user.userId}" readonly style='width:100px;'/>
+					<label for="title" style="float:left">文章編號</label> <input
+						type="text"   name="articleId"
+					    th:field="*{articleId}" readonly style='width:100px;'/>
+					<br> <br> <label for="title" style="float:left">標題</label> <input
+						type="text"  th:field="*{title}" name="title"
+						maxlength='30'  style='width:700px;'/>
+					<p th:if="${#fields.hasErrors('title')}" th:errorclass="error"
+						th:errors="*{title}" />
+					<br> <br> <label for="name" style="float:left">居住時間</label> <br><input
+						type="date"  th:field="*{liveDateStart}"
+						name="liveDateStart"  style='width:300px;'/> 到 <input type="date" 
+						th:field="*{liveDateEnd}" name="liveDateEnd" style='width:300px;'/>
+						 <br> <br> <label for="text" style="float:left">內容</label>
+					<textarea class="problem" th:field="*{text}" name="text"
+						cols="40" rows="5" scrolling="yes" value='' th:inline="text" style='width:700px;'></textarea>
+					<p th:if="${#fields.hasErrors('text')}" th:errorclass="error"
+						th:errors="*{text}" />
+
+					<br> <br> <label for="taipeiArea" style="float:left">居住區域</label> 
+					<select class="problem"  th:field="*{taipeiArea}" style='width:700px;'>
+						<option th:value="選擇區域" th:text="選擇區域"></option>
+						<option th:value="中正區" th:text="中正區"></option>
+						<option th:value="大同區" th:text="大同區"></option>
+						<option th:value="中山區" th:text="中山區"></option>
+						<option th:value="松山區" th:text="松山區"></option>
+						<option th:value="大安區" th:text="大安區"></option>
+						<option th:value="萬華區" th:text="萬華區"></option>
+						<option th:value="信義區" th:text="信義區"></option>
+						<option th:value="士林區" th:text="士林區"></option>
+						<option th:value="北投區" th:text="北投區"></option>
+						<option th:value="內湖區" th:text="內湖區"></option>
+						<option th:value="南港區" th:text="南港區"></option>
+						<option th:value="文山區" th:text="文山區"></option>
+					</select>
+					<p th:if="${#fields.hasErrors('taipeiArea')}" th:errorclass="error"
+						th:errors="*{taipeiArea}" />
+					<br> <br> <label for="address" style="float:left">地址</label>
+					<textarea class="problem" th:field="*{address}" name="address"
+						cols="40" rows="5" scrolling="yes" value='' th:inline="text" style='width:700px;'></textarea>
+					<p th:if="${#fields.hasErrors('address')}" th:errorclass="error"
+						th:errors="*{address}" />
+					<br> <br> <label for="image" style="float:left" >照片</label> 
+					<img height='100px' width='100px' th:src="@{'/articlepicture/'+${commentArticleOne.articleId}}"><input
+						type="file" class="problem" th:field="*{image}" name="image" style='width:700px;' />
+					<label> <span> </span> <input type="submit" class="submit"
+						value="確認送出" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
+						type="button" class="submit" onclick="history.back()" value="取消" />
+					</label>
+
+				
+			</form>
+		</div>	
+				<div class="clearfix"></div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		</div>
+	<div th:replace="/user/common :: commonBottom"></div>
+	<a href="#to-top" id="toTop" style="display: block;"> <span id="toTopHover" style="opacity: 1;"> </span></a>
+		<script th:src="@{/data/js/bootstrap.min.js}"></script>
+</body>
+</html>

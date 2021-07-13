@@ -1,0 +1,343 @@
+
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>站內信箱</title>
+<link rel="stylesheet" th:href="@{/data/css/bootstrapIndex.css}">
+
+<script th:src="@{/data/js/jquery.min.js}"></script>
+
+<link rel="stylesheet" th:href="@{/data/css/styleIndex.css}">
+
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+
+<link rel="stylesheet" th:href="@{/data/css/default.css}">
+
+
+<style type="text/css">
+.customer-login {
+	background: #fff none repeat scroll 0 0;
+	padding: 40px;
+}
+</style>
+
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+<script type="text/javascript">
+
+$(function() {
+
+	$(".user").click(function() {
+
+		let id = $(this).prev().val();
+
+		console.log(id);
+
+		$.ajax({
+			url : "showMailAjax",
+			type : "POST",
+			data : {
+				"id" : id
+			},
+			dataType : "JSON",
+			success : function(result) {
+				
+				let bean = result.a;
+				let str=""
+				str+="<tr>"
+				+"<td></td>"
+				+"<td>"
+					+"<div>"
+						+"<div  style='background-color: #D1E9E9;'>"
+							+"<div class='login-area  pt-80 pb-80 '"
+								+"style='box-shadow: 0 0 40px #a0a0a0;'>"
+								+"<h4 id='mailTitle'>文章標題</h4>"
+								+"<p id='mailContent'"
+									+"style='color: black; width: 100%; text-align: center'>我是內容</p>"
+								+"<a href='/member/showInnerMessage'><button id='forward1'"
+										+"type='button' class='btn btn-primary'>收合</button></a>"
+							+"</div></div></div></td><td></td><td></td></tr>";
+							
+							$("#tbody1").html(str);
+							$("#mailTitle").html(bean.mailTitle);
+							$("#mailContent").html(bean.mailContent);
+
+			},
+			error : function() {
+				console.log("失敗");
+			}
+		});
+	});
+	
+	
+	
+	
+	$(".user2").click(function() {
+
+		let id = $(this).prev().val();
+
+		console.log(id);
+
+		$.ajax({
+			url : "showMailAjax",
+			type : "POST",
+			data : {
+				"id" : id
+			},
+			dataType : "JSON",
+			success : function(result) {
+				
+				let bean = result.a;
+				console.log(bean.mailTitle);
+				
+				let str=""
+				str+="<tr>"
+				+"<td></td>"
+				+"<td>"
+					+"<div>"
+						+"<div  style='background-color: #D1E9E9;'>"
+							+"<div class='login-area  pt-80 pb-80 '"
+								+"style='box-shadow: 0 0 40px #a0a0a0;'>"
+								+"<h4 id='mailTitle'>文章標題</h4>"
+								+"<p id='mailContent'"
+									+"style='color: black; width: 100%; text-align: center'>我是內容</p>"
+								+"<a href='/member/showInnerMessage'><button id='forward2'"
+										+"type='button' class='btn btn-primary'>收合</button></a>"
+							+"</div></div></div></td><td></td><td></td></tr>";
+							
+							$("#tbody2").html(str);
+							$("#mailTitle").html(bean.mailTitle);
+							$("#mailContent").html(bean.mailContent);
+
+			},
+			error : function() {
+				console.log("失敗");
+			}
+		});
+	});
+	
+	
+	
+	$(".forward1").click(function() {
+
+		let id = $(this).prev().prev().val();
+
+		console.log(id);
+
+		$.ajax({
+			url : "showNoReadMessageAjax",
+			type : "POST",
+			data : {
+				"id" : id
+			},
+			dataType : "JSON",
+			success : function(result) {
+				console.log("AAAAAAAAAAAAAA");
+
+				let bean = result.a;
+				console.log(bean.mailTitle);
+				
+				let str=""
+				str+=
+					+"<tr th:each='n : ${noread}'>"
+				+"<td th:text='${n.user.account}'></td>"
+				+"<td><input type='hidden' th:value='${n.id}'>"
+					+"<button th:text='${n.mailTitle}'"
+						+"style='background-color: none'"
+						+"class='btn btn-secondary user' data-toggle='modal'></button>"
+				+"</td>"
+				+"<td th:text='${n.sendDate}'></td>"
+				+"<td>"
+				+"<input type='hidden' th:value='${n.id}'>"
+				+"<a"
+					+"th:href='@{'/member/forwardInnerMessage/'+${n.id}}'><button "
+						+"	type='button' class='btn btn-primary'>轉寄</button></a></td>"
+			+"</tr>";
+							
+							$("#tbody1").html(str);
+//								$("#mailTitle").html(bean.mailTitle);
+//								$("#mailContent").html(bean.mailContent);
+
+			},
+			error : function() {
+				console.log("失敗");
+			}
+		});
+	});
+	
+	
+
+});
+
+
+</script>
+<style type="text/css">
+.customer-login {
+	background: #fff none repeat scroll 0 0;
+	padding: 40px;
+}
+
+.sendMessage {
+	background: #84754e;
+	border: 1px solid #f4f4f4;
+	padding: .8em 0;
+	width: 7%;
+	margin-top: .5em;
+	font-size: 15px;
+	color: #fff;
+	letter-spacing: 0.5px;
+	outline: none;
+	transition: .5s all;
+	-webkit-transition: .5s all;
+}
+</style>
+</head>
+<body>
+
+	<div th:replace="/user/common :: commonTop"></div>
+
+
+	<!-- WRAPPER START -->
+
+	<div class="main-body">
+		<div class="wrap">
+
+
+			<!--short-codes-starts-->
+
+			<div class="grid_3 grid_5">
+				<h3>Tabs</h3>
+
+				<a th:href="@{/member/sendInnerMessage}"><input
+					class="sendMessage num" type="submit" value="寄站內信"></a>
+				<div class="bs-example bs-example-tabs" role="tabpanel"
+					data-example-id="togglable-tabs">
+					<ul id="myTab" class="nav nav-tabs" role="tablist">
+						<li role="presentation" class="active"><a href="#home"
+							id="home-tab" role="tab" data-toggle="tab" aria-controls="home"
+							aria-expanded="true">收件匣(未讀)</a></li>
+						<li role="presentation" class=""><a href="#profile"
+							role="tab" id="profile-tab" data-toggle="tab"
+							aria-controls="profile" aria-expanded="false">收件匣(已讀)</a></li>
+
+					</ul>
+					<div id="myTabContent" class="tab-content">
+						<div role="tabpanel" class="tab-pane fade  active in" id="home"
+							aria-labelledby="home-tab">
+							<div class="bs-docs-example">
+
+								<table class="table table-striped" style="text-align: center">
+									<thead>
+										<tr>
+											<th style="text-align: center">寄件者</th>
+											<th style="text-align: center">站內信標題</th>
+											<th style="text-align: center">寄件時間</th>
+											<th style="text-align: center"></th>
+
+										</tr>
+									</thead>
+									<tbody id="tbody1">
+										<tr th:each="n : ${noread}">
+											<td th:text="${n.user.account}"></td>
+											<td><input type="hidden" th:value="${n.id}">
+												<button th:text="${n.mailTitle}"
+													style="background-color: none"
+													class="btn btn-secondary user" data-toggle="modal"></button>
+											</td>
+											<td th:text="${n.sendDate}"></td>
+											<td><a
+												th:href="@{'/member/forwardInnerMessage/'+${n.id}}"><button
+														type="button" class="btn btn-primary">轉寄</button></a></td>
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div role="tabpanel" class="tab-pane fade" id="profile"
+							aria-labelledby="profile-tab">
+							<div class="bs-docs-example">
+
+								<table class="table table-striped" style="text-align: center">
+									<thead>
+										<tr>
+											<th style="text-align: center">寄件者</th>
+											<th style="text-align: center">站內信標題</th>
+											<th style="text-align: center">寄件時間</th>
+											<th style="text-align: center"></th>
+
+										</tr>
+									</thead>
+									<tbody  id="tbody2">
+										<tr th:each="r : ${readed}">
+										
+										<td th:text="${r.user.account}"></td>
+											<td><input type="hidden" th:value="${r.id}">
+												<button th:text="${r.mailTitle}"
+													style="background-color: none"
+													class="btn btn-secondary user2" data-toggle="modal"></button>
+											</td>
+											<td th:text="${r.sendDate}"></td>
+											<td><a
+												th:href="@{'/member/forwardInnerMessage/'+${r.id}}"><button
+														type="button" class="btn btn-primary">轉寄</button></a></td>
+										
+
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 就程式碼 -->
+
+
+
+
+
+
+	<div th:replace="/user/common :: commonBottom"></div>
+	<div th:replace="/user/common :: commonIndexJS"></div>
+</body>
+</html>

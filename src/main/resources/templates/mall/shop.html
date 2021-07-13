@@ -1,0 +1,439 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title th:if="${productType == null && subType == null && keyword == null}">商品總覽</title>
+		<title th:if="${productType != null}">[[${productType}]] - 米奇不妙屋商城</title>
+		<title th:if="${subType != null}">[[${subType}]] - 米奇不妙屋商城</title>
+		<title th:if="${keyword != null}">[[${keyword}]] - 米奇不妙屋商城</title>
+		<th:block th:replace="/mall/mallCommon :: commonhead"></th:block>
+		<style type="text/css">
+			.post-title {
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+			.product-img img {
+				display: block;
+				width: 230px;
+				height: 230px;
+				object-fit: cover;
+			}
+		</style>
+		<!-- yuipjax-min -->
+		<script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+		<script type="text/javascript">
+		
+			$(function() {
+				
+				// 發送ajax請求(購物車品項數量查詢)
+				function getCartQuantity() {
+					$.ajax({
+						url: '/shoppingCartQuantity',
+						type: 'get',
+						success: function(data) {
+							$('#cart_quantity').html(data);
+						}
+					});
+				};
+				
+				
+				// 發送ajax請求(購物車內容Quickview)
+				function getCartQuickview() {
+					if ($('#cartQuantity').text() != 0) {
+						$.ajax({
+							url: '/shoppingCart/quickview',
+							type: 'get',
+							success: function(data) {
+								$('#cart_info').html(data);
+							}
+						});
+					}
+				};
+				
+				
+				// toastr提示參數設置
+				toastr.options = {
+						  "closeButton": false,
+						  "debug": false,
+						  "newestOnTop": false,
+						  "progressBar": false,
+						  "positionClass": "toast-bottom-right",
+						  "preventDuplicates": false,
+						  "onclick": null,
+						  "showDuration": "300",
+						  "hideDuration": "500",
+						  "timeOut": "1000",
+						  "extendedTimeOut": "1000",
+						  "showEasing": "swing",
+						  "hideEasing": "linear",
+						  "showMethod": "fadeIn",
+						  "hideMethod": "fadeOut"
+				}
+				
+				
+				// 購物車內容Quickview事件繫結
+				$(document).on('mouseenter', '.cart-icon', function() {
+					getCartQuickview();
+				});
+				
+				
+				// 發送ajax請求(刪除Quickview購物車內容)
+				$(document).on('click', '.cartQuickviewDelete', function() {
+					$.ajax({
+						url: this.href,
+						type: 'delete',
+						success: function() {
+							toastr.success('已將商品自購物車刪除');
+							getCartQuantity();
+							getCartQuickview();
+						}
+					});
+					return false;
+				});
+				
+				
+				// 使商品功能按鈕於按下後失焦
+				$(document).on('click', '.product-action a', function() {
+					$(this).blur();
+				});
+				
+				
+				// 發送ajax請求(商品Quickview)
+				$(document).on('click', '.product-action .quickView', function() {
+					$.ajax({
+						url: this.href,
+						type: 'get',
+						success: function(data) {
+							$('#quickViewBody').html(data);
+						},
+					});
+					return false;
+				});
+				
+				
+				// 發送ajax請求(Shop:加入購物車)
+				$(document).on('click', '.product-action .addToCart', function() {
+					if (Number($(this).data('productstock')) <= 0) {
+						toastr.warning('此商品已無庫存，請靜候補貨');
+					} else {
+						$.ajax({
+							url: this.href,
+							type: 'post',
+							success: function(data) {
+								if (data == 'added') {
+									toastr.success('成功加入購物車');
+									getCartQuantity();
+								} else if (data == 'already') {
+									toastr.warning('此商品已在您的購物車內');
+								} else {
+									toastr.warning('此商品已無庫存，請靜候補貨');
+								}
+							}
+						});
+					}
+					return false;
+				});
+				
+				
+				// 發送ajax請求(商品Quickview:加入購物車)
+				$(document).on('submit', '#single_add_to_cart_form', function() {
+					if (Number($(this).data('productstock')) <= 0) {
+						toastr.warning('此商品已無庫存，請靜候補貨');
+					} else {
+						$.ajax({
+							url: this.action,
+							type: 'post',
+							data: $('#single_add_to_cart_form').serialize(),
+							success: function(data) {
+								if (data == 'added') {
+									toastr.success('成功加入購物車');
+									getCartQuantity();
+								} else if (data == 'already') {
+									toastr.warning('此商品已在您的購物車內');
+								} else {
+									toastr.warning('此商品已無庫存，請靜候補貨');
+								}
+							}
+						});
+					}
+					return false;
+				});
+				
+				
+				// 發送ajax請求(Shop:加入願望清單)
+				$(document).on('click', '.product-action .addToWishlist', function() {
+					$.ajax({
+						url: this.href,
+						type: 'post',
+						success: function(data) {
+							if (data == true) {
+								toastr.success('成功將此商品加入願望清單');
+							} else {
+								toastr.warning('此商品已在您的願望清單內');
+							}
+						}
+					});
+					return false;
+				});
+				
+				
+				// 導入yuipjax-min.js
+				// 發送YUIpjax請求(更新當前頁數需顯示之商品資料)
+				// 將欲發送YUIpjax請求的a標籤加上【class="yui3-pjax"】
+				// 將裝載返回內容的容器id設為container
+				YUI().use('pjax', function (Y) {
+					new Y.Pjax({container: '#shop-content'});
+				});
+				
+				
+				// 使用pjax刷新頁面後重新繫結tooltip事件
+				$(document).on('mouseenter', '.single-product', function(event, request, settings) {
+				    $('.product-action a').tooltip({
+				    	container: 'body'
+				    });
+				});
+				
+				
+				// 使用pjax刷新頁面使選單js重新繫結
+				$(document).on('mouseenter', "#catagoryButton", function(event, request, settings) {
+					$("#cat-treeview ul").treeview({
+						animated: "normal",
+						persist: "location",
+						collapsed: true,
+						unique: true,
+					});
+					// 使滾動條js重新繫結
+					$(".menu-scroll").niceScroll({cursorborder:"1px",cursorcolor:"#c87065",boxzoom:true});
+					$(".boxscrol2").niceScroll({cursorborder:"0px",cursorcolor:"#c87065",boxzoom:true});	
+				})
+				
+				
+				
+			});
+		</script>
+	</head>
+	<body>	
+		<!-- WRAPPER START -->
+		<div class="wrapper bg-dark-white">
+
+			<!-- COMMONHEADAREA INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commonheadarea"></th:block>
+			<!-- COMMONHEADAREA INSERT END -->
+			
+			<!-- COMMONMOBILEMENU INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commonmobilemenu"></th:block>
+			<!-- COMMONMOBILEMENU INSERT END -->
+			
+			<!-- PRODUCT-AREA START -->
+			<div class="product-area pt-80 pb-80 product-style-2">
+				<div class="container" id="shop-content">
+					<!-- Shop-Content End -->
+					<div class="shop-content" th:fragment="product_list">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="product-option mb-30 clearfix">
+									<!-- Categories start -->
+									<div class="dropdown floatleft">
+										<button id="catagoryButton" class="option-btn" >
+										類別
+										</button>
+										<div class="dropdown-menu dropdown-width" >
+											<!-- Widget-Categories start -->
+											<aside class="widget widget-categories">
+												<div class="widget-title">
+													<h4>商品類別</h4>
+												</div>
+												<div id="cat-treeview"  class="widget-info product-cat boxscrol2" style="overflow: hidden; outline: none;">
+													<ul>
+														<li><span><a th:href="@{/shop.html}">全部</a></span>
+														<li><span>桌椅</span>
+															<ul>
+																<li><a th:href="@{/shop.html(productType='桌椅')}">全部</a></li>
+																<li><a th:href="@{/shop.html(subType='沙發')}">沙發</a></li>
+																<li><a th:href="@{/shop.html(subType='椅子')}">椅子</a></li>
+																<li><a th:href="@{/shop.html(subType='桌子')}">桌子</a></li>
+															</ul>
+														</li>          
+														<li><span>寢具</span>
+															<ul>
+																<li><a th:href="@{/shop.html(productType='寢具')}">全部</a></li>
+																<li><a th:href="@{/shop.html(subType='床架')}">床架</a></li>
+																<li><a th:href="@{/shop.html(subType='床墊')}">床墊</a></li>
+																<li><a th:href="@{/shop.html(subType='棉被')}">棉被</a></li>
+																<li><a th:href="@{/shop.html(subType='枕頭')}">枕頭</a></li>
+															</ul>
+														</li>          
+														<li><span>廚房用品</span>
+															<ul>
+																<li><a th:href="@{/shop.html(productType='廚房用品')}">全部</a></li>
+																<li><a th:href="@{/shop.html(subType='餐具')}">餐具</a></li>
+																<li><a th:href="@{/shop.html(subType='廚具')}">廚具</a></li>
+															</ul>
+														</li>
+														<li><span><a th:href="@{/shop.html(productType='衛浴用品')}">衛浴用品</a></span>
+														</li>
+														<li><span>收納櫃、收納盒</span>
+															<ul>
+																<li><a th:href="@{/shop.html(productType='收納櫃、收納盒')}">全部</a></li>
+																<li><a th:href="@{/shop.html(subType='衣櫃')}">衣櫃</a></li>
+																<li><a th:href="@{/shop.html(subType='鞋櫃')}">鞋櫃</a></li>
+																<li><a th:href="@{/shop.html(subType='收納盒')}">收納盒</a></li>
+															</ul>
+														</li>
+														<li><span><a th:href="@{/shop.html(productType='小型家電')}">小型家電</a></span>
+														</li>
+														<li><span><a th:href="@{/shop.html(productType='洗衣、曬衣')}">洗衣、曬衣</a></span>
+														</li>
+														<li><span><a th:href="@{/shop.html(productType='擺飾')}">擺飾</a></span>
+														</li>
+														<li><span><a th:href="@{/shop.html(productType='其他')}">其他</a></span>
+														</li>
+													</ul>
+												</div>
+											</aside>
+											<!-- Widget-categories end -->
+										</div>
+									</div>	
+									<!-- Categories end -->
+									<!-- Price start -->
+									<div class="dropdown floatleft">
+										<button id="priceButton" class="option-btn" >
+										價格
+										</button>
+										<div class="dropdown-menu dropdown-width" >
+											<!-- Shop-Filter start -->
+											<aside class="widget shop-filter">
+												<div class="widget-title">
+													<h4>價格範圍</h4>
+												</div>
+												<div class="widget-info">
+													<div class="price_filter">
+														<div class="price_slider_amount">
+															<form th:action="@{/shop.html}" method="get">
+																<input type="text" placeholder="$ 最小值" name="minPrice" style="width: 100px;height: 30px;border: solid 1px #BEBEBE;border-radius: 3px;"/> 
+																<div style="display: inline;margin-right: 4px;margin-left: 4px;">ᅳ</div>
+																<input type="text" placeholder="$ 最大值" name="maxPrice" style="width: 100px;height: 30px;border: solid 1px #BEBEBE;border-radius: 3px;"/> 
+																<input th:if="${productType != null}" type="hidden" name="productType" th:value="${productType}">
+																<input th:if="${subType != null}" type="hidden" name="subType" th:value="${subType}">
+																<input th:if="${keyword != null && keyword != ''}" type="hidden" name="keyword" th:value="${keyword}">
+																<button type="submit" style="line-height: 26px;width: 226px;font-weight: bold;border: solid 1px #BEBEBE;border-radius: 3px;height: 30px;">套用</button>
+															</form>
+														</div>
+													</div>
+												</div>
+											</aside>
+											<!-- Shop-Filter end -->
+										</div>
+									</div>	
+									<!-- Price end -->
+									<div style="float: left;">
+										<form action="/shop.html" method="get">
+											<input type="text" name="keyword" placeholder="請輸入要搜尋的內容" required="required" style="position: relative;width: 80%;height: 30px">
+											<button type="submit" style="position: relative;height: 30px"><i class="bi bi-search"></i></button>
+										</form>
+									</div>
+									<div th:if="${productList.totalElements != 0}" class="showing text-right">
+										<p th:if="${productList.totalElements > ((productList.number + 1) * productList.size)}" class="mb-0 hidden-xs">第 [[${productList.number * productList.size + 1}]] - [[${(productList.number + 1) * productList.size}]] 個商品 / 共 [[${productList.totalElements}]] 個商品</p>
+										<p th:if="${productList.totalElements <= ((productList.number + 1) * productList.size)}" class="mb-0 hidden-xs">第 [[${productList.number * productList.size + 1}]] - [[${productList.totalElements}]] 個商品 / 共 [[${productList.totalElements}]] 個商品</p>
+									</div>
+								</div>						
+							</div>	
+							<!-- PRODUCTLIST AREA START -->
+							<div class="col-md-12">
+								<div class="row">
+									<!-- Single-product start -->
+									<div class="mb-20" th:if="${productList.getTotalElements() == 0}" style="text-align:center;display: flex;flex-direction: column;justify-content: center;">
+										<div>
+											<img class="mb-20" th:src="@{/mall/img/shop/apology.png}" style="opacity: 0.3;max-height: 150px;">
+										</div>
+										<h4 style="opacity: 0.6;">目前並無相關商品，敬請期待上架</h4>
+									</div>
+									<div th:if="${productList.getTotalElements() != 0}" th:each="product : ${productList}" class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+										<div class="single-product">
+											<div class="product-img">
+												<a th:href="@{/singleProduct/{productId}(productId=${product.productId})}"><img th:src="${product.productPicture.get(0).productPath}" alt="No Image" /></a>
+											</div>
+											<div class="product-info clearfix text-center">
+												<div class="fix">
+													<h4 class="post-title"><a th:href="@{/singleProduct/{productId}(productId=${product.productId})}" th:text="${product.productName}"></a></h4>
+												</div>
+												<div>NT$ [[${#numbers.formatDecimal(product.productPrice,1,'COMMA',0,'POINT')}]]</div>
+												<div class="product-action clearfix">
+													<a th:href="@{/wishlist(tempProductId=${product.productId})}" class="addToWishlist" data-toggle="tooltip" data-placement="top" title="加入願望清單"><i class="zmdi zmdi-favorite-outline"></i></a>
+													<a th:href="@{/quickView/{productId}(productId=${product.productId})}" class="quickView" data-toggle="modal" data-target="#productModal" title="商品簡介"><i class="zmdi zmdi-zoom-in"></i></a>
+													<a th:href="@{/shoppingCart(tempProductId=${product.productId},shoppingAmount=1)}" class="addToCart" data-toggle="tooltip" data-placement="top" title="加入購物車" th:data-productstock="${product.productStock}"><i class="zmdi zmdi-shopping-cart-plus"></i></a>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- Single-product end -->
+								</div>
+							</div>
+							<!-- PRODUCTLIST AREA END -->
+							<!-- PAGE AREA START -->
+							<div class="col-md-12">
+								<!-- Pagination start -->
+								<div class="shop-pagination  text-center">
+									<div class="pagination">
+										<ul th:if="${productList.getTotalElements() != 0}" th:with="maxButtons=5,sideButton=2,pageIndex=${productList.number},currentPage=${productList.number + 1},totalPages=${productList.totalPages},pageSize=${productList.size}">
+											<!-- Front-page Button start -->
+											<li><a th:if="${productList.isFirst()}" style="visibility:hidden;"><i class="zmdi zmdi-long-arrow-left"></i></a></li>
+											<li th:if="${productType == null && subType == null && keyword == null}"><a th:unless="${productList.isFirst()}" class="yui3-pjax" th:href="@{/shop.html(pageNo=${currentPage - 1},pageSize=${pageSize},minPrice=${minPrice},maxPrice=${maxPrice})}"><i class="zmdi zmdi-long-arrow-left"></i></a></li>
+											<li th:if="${productType != null}"><a th:unless="${productList.isFirst()}" class="yui3-pjax" th:href="@{/shop.html(pageNo=${currentPage - 1},pageSize=${pageSize},productType=${productType},minPrice=${minPrice},maxPrice=${maxPrice})}"><i class="zmdi zmdi-long-arrow-left"></i></a></li>
+											<li th:if="${subType != null}"><a th:unless="${productList.isFirst()}" class="yui3-pjax" th:href="@{/shop.html(pageNo=${currentPage - 1},pageSize=${pageSize},subType=${subType},minPrice=${minPrice},maxPrice=${maxPrice})}"><i class="zmdi zmdi-long-arrow-left"></i></a></li>
+											<li th:if="${keyword != null}"><a th:unless="${productList.isFirst()}" class="yui3-pjax" th:href="@{/shop.html(pageNo=${currentPage - 1},pageSize=${pageSize},keyword=${keyword},minPrice=${minPrice},maxPrice=${maxPrice})}"><i class="zmdi zmdi-long-arrow-left"></i></a></li>
+											<!-- Front-page Button end -->
+											<!-- Pages Button start -->
+											<th:block th:if="${totalPages <= maxButtons}" th:each="i : ${#numbers.sequence(1,totalPages)}">
+												<th:block th:replace="/mall/mallcommon :: commonpage"></th:block>
+											</th:block>
+											<th:block th:if="${productList.totalPages > maxButtons}">
+												<th:block th:if="${(currentPage - sideButton) <= 1}" th:each="i : ${#numbers.sequence(1,maxButtons)}">
+													<th:block th:replace="/mall/mallcommon :: commonpage"></th:block>
+												</th:block>
+												<th:block th:if="${(currentPage - sideButton) > 1}">
+													<th:block th:if="${(currentPage + sideButton) < productList.totalPages}" th:each="i : ${#numbers.sequence((currentPage - 2), (currentPage + 2))}">
+														<th:block th:replace="/mall/mallcommon :: commonpage"></th:block>
+													</th:block>
+													<th:block th:if="${(currentPage + sideButton) >= productList.totalPages}" th:each="i : ${#numbers.sequence((totalPages - maxButtons + 1), totalPages)}">
+														<th:block th:replace="/mall/mallcommon :: commonpage"></th:block>
+													</th:block>
+												</th:block>
+											</th:block>
+											<!-- Pages Button end -->
+											<!-- Next-page Button start -->
+											<li><a th:if="${productList.isLast()}" style="visibility:hidden;"><i class="zmdi zmdi-long-arrow-right"></i></a></li>
+											<li th:if="${productType == null && subType == null && keyword == null}"><a th:unless="${productList.isLast()}" class="yui3-pjax" th:href="@{/shop.html(pageNo=${currentPage + 1},pageSize=${pageSize},minPrice=${minPrice},maxPrice=${maxPrice})}"><i class="zmdi zmdi-long-arrow-right"></i></a></li>
+											<li th:if="${productType != null}"><a th:unless="${productList.isLast()}" class="yui3-pjax" th:href="@{/shop.html(pageNo=${currentPage + 1},pageSize=${pageSize},productType=${productType},minPrice=${minPrice},maxPrice=${maxPrice})}"><i class="zmdi zmdi-long-arrow-right"></i></a></li>
+											<li th:if="${subType != null}"><a th:unless="${productList.isLast()}" class="yui3-pjax" th:href="@{/shop.html(pageNo=${currentPage + 1},pageSize=${pageSize},subType=${subType},minPrice=${minPrice},maxPrice=${maxPrice})}"><i class="zmdi zmdi-long-arrow-right"></i></a></li>
+											<li th:if="${keyword != null}"><a th:unless="${productList.isLast()}" class="yui3-pjax" th:href="@{/shop.html(pageNo=${currentPage + 1},pageSize=${pageSize},keyword=${keyword},minPrice=${minPrice},maxPrice=${maxPrice})}"><i class="zmdi zmdi-long-arrow-right"></i></a></li>
+											<!-- Next-page Button end -->
+										</ul>
+									</div>
+								</div>
+								<!-- Pagination end -->
+							</div>
+							<!-- PAGE AREA END -->
+						</div>
+					</div>
+					<!-- Shop-Content End -->
+				</div>
+			</div>
+			<!-- PRODUCT-AREA END -->
+			
+			<!-- COMMONFOOTER INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commmonfooter"></th:block>
+			<!-- COMMONFOOTER INSERT END -->
+			
+			<!-- QUICKVIEW INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: quickview"></th:block>
+			<!-- QUICKVIEW INSERT END -->
+			
+		<!-- WRAPPER END -->
+		</div>
+		
+		<!-- COMMONJS INSERT START -->
+		<th:block th:replace="/mall/mallcommon :: commonjs"></th:block>
+		<!-- COMMONJS INSERT END -->
+	</body>
+</html>

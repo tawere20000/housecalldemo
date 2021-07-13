@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>疑難雜症首頁</title>
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+<script th:src="@{/data/js/jquery.min.js}"></script>
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" href="/data/css/default.css">
+<style type="text/css">
+</style>
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/tw-city-selector@2.1.1/dist/tw-city-selector.min.js"
+	integrity="sha256-Iz/pF94D+raqeqXJDoOetn9L0yBFI7ogMMrhT6RzmFw="
+	crossorigin="anonymous"></script>
+</head>
+<body>
+	<div th:replace="/user/common :: commonTop"></div>
+	<div>
+		<div class="col-md-8 content-left" style="margin-left: 15%">
+			<div class="articles sports">
+				<header>
+					<h3 class="title-head">訂單列表</h3>
+				</header>
+				<div class="article" th:each="c:${tb}">
+					<div class="article-left">
+						<a th:href="@{'/OrderInner/'+${c.businessOrderId}}"><img
+							style="width: 500px; height: 300px"
+							th:src="@{'/tsimage/'+${c.businessOrderId}}"></a>
+					</div>
+					<div class="article-right">
+						<div class="article-title">
+							<p th:text="|狀態:${c.status}|"></p>
+							<a th:text="|${c.title}|" class="title"
+								th:href="@{'/OrderInner/'+${c.businessOrderId}}"> </a>
+						</div>
+						<div class="article-text">
+							<p
+								style='font-size: 25px; overflow: hidden; width: 600px; height: 50px; white-space: nowrap; text-overflow: ellipsis;'
+								th:text="${c.textArea}"></p>
+							<a href="single.html"><img src="images/more.png" alt="" /></a>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+
+
+			</div>
+
+
+
+		</div>
+
+	</div>
+	<div class="clearfix"></div>
+	</div>
+	<div th:replace="/user/common :: commonBottom"></div>
+	<!-- footer-section-ends-here -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*
+			var defaults = {
+			wrapID: 'toTop', // fading element id
+			wrapHoverID: 'toTopHover', // fading element hover id
+			scrollSpeed: 1200,
+			easingType: 'linear' 
+			};
+			 */
+			$().UItoTop({
+				easingType : 'easeOutQuart'
+			});
+		});
+	</script>
+	<a href="#to-top" id="toTop" style="display: block;"> <span
+		id="toTopHover" style="opacity: 1;"> </span></a>
+	<div th:replace="/user/common :: commonIndexJS"></div>
+</body>
+</html>

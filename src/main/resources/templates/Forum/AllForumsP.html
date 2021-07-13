@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+
+
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>討論區首頁</title>
+
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+
+<script th:src="@{/data/js/jquery.min.js}"></script>
+
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+
+
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+<link
+	href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic'
+	rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Varela+Round'
+	rel='stylesheet' type='text/css'>
+	
+
+
+</head>
+<body>
+
+	<div th:replace="/user/common :: commonTop"></div>
+
+
+	<!-- 	------------------------首頁內容---------------------------------- -->
+
+
+
+
+
+
+
+	<div class="wrap">
+		<div class="move-text">
+			<div class="breaking_news">
+				<h2>本站頭條</h2>
+			</div>
+			<div class="marquee">
+				<div class="marquee1">
+					<a class="breaking" href="single.html">米奇不妙屋正式開幕歡慶!!!米奇不妙屋正式開幕歡慶!!!米奇不妙屋正式開幕歡慶!!!</a>
+				</div>
+				<div class="marquee2">
+					<a class="breaking" href="single.html">米奇不妙屋正式開幕歡慶!!!米奇不妙屋正式開幕歡慶!!!米奇不妙屋正式開幕歡慶!!!</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+	<!-- content-section-starts-here 動圖-->
+	<div class="main-body">
+		<div class="wrap">
+
+				<!-- 				完成 -->
+				<div class="articles">
+					<header>
+						<h3 class="title-head">討論區文章</h3>
+					</header>
+					
+					<!-- 					首頁評論區單一篇文章區塊 -->
+					<div th:each="c:${forums}">
+					
+					
+					<div class="article" >
+						<!-- 					文章照片 -->
+						<div class="article-left">
+							<a th:href="@{'/CheckcountPlus/'+${c.forumId}}">
+							<img th:src="@{'/forumPicture/'+${c.forumId}}">
+							</a>	
+						</div>
+						<!-- 						文章右半 標題 內文等 -->
+						<div class="article-right">
+							<div class="article-title">
+								<p th:text="${c.forumCreateTime}">
+									 <a class="span_link" href="#"><span
+										class="glyphicon glyphicon-comment"></span>0 </a><a
+										class="span_link" href="#"><span
+										class="glyphicon glyphicon-eye-open"></span>104 </a><a
+										class="span_link" href="#"><span
+										class="glyphicon glyphicon-thumbs-up"></span>52</a>
+								</p>
+								<!-- 									文章連結 -->
+								<a class="title"  th:href="@{'/Checkcount/'+${c.forumId}}"  th:text="${c.title}"> </a>
+							</div>
+							<div class="article-text">
+								<p th:text="${c.text}"></p>
+
+								<!-- 									文章連結 -->
+								<a  th:href="@{'/forum/'+${c.forumId}}"><img th:src="@{/data/images/more.png}"></a>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					</div>
+					<!-- 					首頁評論區單一篇文章區塊 -->
+					<!-- 					首頁評論區單一篇文章區塊 -->
+					<!-- 					首頁評論區單一篇文章區塊 -->
+					
+					
+ <!-- 分頁-- -->
+  <div class="col-md-6">
+    <div th:if="${totalPages>1}">
+<!--         <div class="">Total Rows:[[${totalForum}]]</div> -->
+        <nav>
+         <ul class="pagination pagination-lg">
+        <li>
+            <span th:each="i:${#numbers.sequence(1,totalPages)}"> <a
+                th:if="${currentPage !=i}" th:href="@{'/page/'+${i}}">[[${i}]]</a>
+                <span th:unless="${currentPage !=i}">[[${i}]]</span>&nbsp;&nbsp;
+            </span>
+        </li>
+<!--         <li> -->
+<!--             <span th:each="i:${#numbers.sequence(1,totalPages)}"> <a -->
+<!--                 th:if="${currentPage < totalPage}" th:href="@{'/page/'+${i}}">[[${i}]]</a> -->
+<!--                 <span th:unless="${currentPage < totalPage}">下一頁</span> -->
+<!--             </span> -->
+<!--         </li> -->
+<!--         <li> -->
+<!--             <span th:each="i:${#numbers.sequence(1,totalPages)}"> <a -->
+<!--                 th:if="${currentPage < totalPage}" th:href="@{'/page/'+${i}}">[[${i}]]></a> -->
+<!--                 <span th:unless="${currentPage < totalPage}">最後一頁</span> -->
+<!--             </span> -->
+<!--         </li></ul> </nav> -->
+				</ul> </nav></div></div>
+				
+
+				<!-- 左樣兩邊樣式文章區域 -->
+				<div class="sports-top">
+					<!-- 				大區域裡的	右邊區域 -->
+					<div class="clearfix"></div>
+				</div>
+				<!-- 左樣兩邊樣式文章區域 -->
+			</div>
+			<!-- 		首頁左半面區域 -->
+
+
+			<!-- 		首頁右右右右右右右半面區域 -->
+		</div>
+		</div>
+
+	<a href="#to-top" id="toTop" style="display: block;"> <span
+		id="toTopHover" style="opacity: 1;"> </span></a>
+
+
+
+
+
+
+
+
+	<!-- 	------------------------首頁內容---------------------------------- -->
+	<div th:replace="/user/common :: commonBottom"></div>
+	<div th:replace="/user/common :: commonIndexJS"></div>
+	<!-- 	<div th:replace="common :: commonscripts"></div> -->
+</body>
+</html>

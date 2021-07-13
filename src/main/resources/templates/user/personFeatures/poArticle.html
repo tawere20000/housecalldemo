@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>評論區文章</title>
+
+
+<link rel="stylesheet" href="/data/css/bootstrap.css">
+<!-- ===========修改0710============= -->
+<!-- <link rel="stylesheet" href="/data/css/font.css"> -->
+<!-- ===========修改0710============= -->
+<link rel="stylesheet" href="/data/css/splitlayout.css">
+<link rel="stylesheet" href="/data/css/animations.css">
+<link rel="stylesheet" href="/data/css/responsiveslides.css">
+<link rel="stylesheet" href="/data/css/slick.css">
+<link rel="stylesheet" href="/data/css/slick-theme.css">
+<link rel="stylesheet" href="/data/css/magnific-popup.css">
+<link rel="stylesheet" href="/data/css/font-awesome.min.css">
+<link rel="stylesheet" href="/data/css/pe-icon-7-stroke.min.css">
+<link rel="stylesheet" href="/data/css/personInfostyle.css">
+<link rel="stylesheet" href="/data/css/responsive.css">
+
+
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+
+<script>
+$(function(){
+	
+	$("#poArticle").addClass("active_item");
+	
+	
+});
+
+</script>
+
+</head>
+<body>
+
+
+
+	<div th:replace="/user/common :: commonMostTop"></div>
+
+
+
+
+	<div id="splitlayout" class="splitlayout reset-layout open-right">
+
+		<div th:replace="/user/common :: commonMemberIndex"></div>
+
+
+		<!-- /intro -->
+		<div class="page page-right full-height page-right-normal-height">
+			<div id="pt-main" class="pt-perspective page-inner">
+
+
+				<section class="blog padding-bottom-90 pt-page pt-page-current"
+					id="blog">
+					<div class="content">
+						<div class="container">
+							<div class="sec_title">
+							<!-- ===========修改0710============= -->
+							<h2 th:if="${person.size() != 0}">發表過的文章</h2>
+								<h2 th:if="${person.size() == 0}">目前尚未發表過文章</h2>
+								<!-- ===========修改0710============= -->
+							</div>
+
+							<div th:each="b:${person}">
+								<!-- article 1 -->
+								<div class="col-sm-6">
+									<div class="item">
+
+										<!-- 									放文章連結 -->
+										<a href="#">
+											<div class="blog__img">
+												<i class="pe-7s-news-paper"></i> 
+												
+												<!-- ===========修改0710============= -->
+												<img th:src="@{'/articlepicture/'+${b.articleId}}">
+												<!-- ===========修改0710============= -->
+												<!--  											<img th:src="@{'/picture/'+${session.LoginID}}"> -->
+											</div>
+										</a>
+										<div class="content matchH" style="height: 92px;">
+											<p class="info" th:text="${b.articleCreateTime}"></p>
+											<h3 th:text="'標題 : '+${b.title}"></h3>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- article 2 -->
+
+
+						</div>
+						<!--.container-->
+						<div class="container">
+							<div class="sec_title">
+							<!-- ===========修改0710============= -->
+									<h2 th:if="${personReply.size() == 0}">目前尚未留言過文章</h2>
+								<h2 th:if="${personReply.size() != 0}">留過言的文章</h2>
+								<!-- ===========修改0710============= -->
+							</div>
+
+							<div th:each="p:${personReply}">
+								<!-- article 1 -->
+								<div class="col-sm-6">
+									<div class="item">
+
+										<!-- 									放文章連結 -->
+										<a href="#">
+											<div class="blog__img">
+												<i class="pe-7s-news-paper"></i> 
+												
+												<!-- ===========修改0710============= -->
+												<img th:src="@{'/articlepicture/'+${p.commentArticle.articleId}}">
+												<!-- ===========修改0710============= -->
+												<!--  											<img th:src="@{'/picture/'+${session.LoginID}}"> -->
+											</div>
+										</a>
+										<div class="content matchH" style="height: 92px;">
+											<p class="info" th:text="${p.replyCreateTime}"></p>
+											<h3 th:text="${p.commentArticle.title}"></h3>
+											<h4 th:text="'您的留言 : '+${p.text}"></h4>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- article 2 -->
+
+
+						</div>
+						<hr>
+						
+					</div>
+					<!--.content-->
+				</section>
+
+
+			</div>
+			<!--.page-inner-->
+		</div>
+		<!--.page-right-->
+	</div>
+	<!--.splitlayout-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<script th:src="@{/data/js/jquery.min.js}"></script>
+
+	<script th:src="@{/data/js/jquery-migrate-1.2.1.min.js}"></script>
+	<script th:src="@{/data/js/jquery.matchHeight-min.js}"></script>
+	<script th:src="@{/data/js/jquery.alterclass.js}"></script>
+
+	<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+	<script th:src="@{/data/js/particles.min.js}"></script>
+	<script th:src="@{/data/js/app.js}"></script>
+	<script th:src="@{/data/js/modernizr.custom.js}"></script>
+	<script th:src="@{/data/js/typed.min.js}"></script>
+	<script th:src="@{/data/js/responsiveslides.min.js}"></script>
+	<script th:src="@{/data/js/jquery.fittext.js}"></script>
+	<script th:src="@{/data/js/isotope.pkgd.min.js}"></script>
+	<script th:src="@{/data/js/jquery.magnific-popup.min.js}"></script>
+	<script th:src="@{/data/js/custom.js}"></script>
+
+
+
+
+
+
+
+
+
+	<!-- WRAPPER START -->
+
+
+
+</body>
+</html>

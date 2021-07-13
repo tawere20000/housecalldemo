@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>修改個人資料</title>
+
+
+<link rel="stylesheet" href="/data/css/bootstrap.css">
+<!-- <link rel="stylesheet" href="/data/css/font.css"> -->
+<link rel="stylesheet" href="/data/css/splitlayout.css">
+<link rel="stylesheet" href="/data/css/animations.css">
+<link rel="stylesheet" href="/data/css/responsiveslides.css">
+<link rel="stylesheet" href="/data/css/slick.css">
+<link rel="stylesheet" href="/data/css/slick-theme.css">
+<link rel="stylesheet" href="/data/css/magnific-popup.css">
+<link rel="stylesheet" href="/data/css/font-awesome.min.css">
+<link rel="stylesheet" href="/data/css/pe-icon-7-stroke.min.css">
+<link rel="stylesheet" href="/data/css/personInfostyle.css">
+<link rel="stylesheet" href="/data/css/responsive.css">
+<!-- <link href="./data/css/style.css" rel="stylesheet" type="text/css" -->
+<!-- 	media="all" /> -->
+
+
+<style>
+.error {
+	color: red;
+}
+
+</style>
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+<script th:src="@{/data/js/jquery.twzipcode.js}"></script>
+<script th:src="@{/data/js/jquery.twzipcode.min.js}"></script>
+<script th:src="@{/data/js/twzipcode.js}"></script>
+
+<script type="text/javascript">
+
+$(function(){
+	
+	$('#twzipcode').twzipcode({
+//		 'css': ['county', 'district', 'zipcode'],
+	
+	});
+	
+	$("#updateMember").addClass("active_item");	
+	
+	$("#accountValue").keyup(function(){
+// 	$("#accountCheck").click(function(){
+		
+		let accountValue = $("#accountValue").val()
+		
+		if(accountValue==""){
+			$("#result0c").html("帳號不能為空").css("color", "red");
+			return
+		}
+		if(accountValue.length<=5){
+			$("#result0c").html("帳號不能少於五個字").css("color", "red");
+			return
+		}
+		
+		$.ajax({
+			url:"checkAccountAjax",
+			type:"POST",
+			data:{"accountValue":accountValue},
+			dataType: "JSON",
+			success:function(result){
+				
+				let account = result.a;
+				 var message = "";
+				if (account=="empty") {
+					  message = "帳號可用";
+					  console.log("可用");
+					  $("#result0c").html(message).css("color", "green");
+				   }  else {
+					  message = "帳號重複，請重新輸入帳號"; 
+					  console.log("重複");
+					  $("#result0c").html(message)
+				   }
+			
+			},
+			error:function(){
+				console.log("失敗");
+			}
+		});
+	});
+	
+	
+	
+	$("#emailValue").keyup(function(){
+			
+			let emailValue = $("#emailValue").val()
+			
+			if(emailValue==""){
+				$("#resultEmail").html("Email不能為空").css("color", "red");
+				return
+			}
+			if(!IsEmail(emailValue)){
+				$("#resultEmail").html("Email格式不正確").css("color", "red");
+				return
+			}
+			
+			$.ajax({
+				url:"checkEmailAjax",
+				type:"POST",
+				data:{"emailValue":emailValue},
+				dataType: "JSON",
+				success:function(result){
+					
+					let email = result.a;
+					 var message = "";
+					if (email=="empty") {
+						  message = "Email可用";
+						  console.log("可用");
+						  $("#resultEmail").html(message).css("color", "green");
+					   }  else {
+						  message = "重複，請重新輸入Email"; 
+						  console.log("重複");
+						  $("#resultEmail").html(message)
+					   }
+					
+				
+				},
+				error:function(){
+					console.log("失敗");
+				}
+			});
+		});
+		
+	
+	
+	
+	$("#phoneNumberValue").keyup(function(){
+			
+			let phoneNumberValue = $("#phoneNumberValue").val()
+			
+			if(phoneNumberValue==""){
+				$("#resultPhoneNumber").html("手機號碼不能為空").css("color", "red");
+				return
+			}
+			if(!IsMobile(phoneNumberValue)){
+				$("#resultPhoneNumber").html("手機號碼格式不正確").css("color", "red");
+				return
+			}else{
+				$("#resultPhoneNumber").html("格式正確").css("color", "green");
+				return
+			}
+			
+			
+		});
+		
+	$("#idNumberValue").keyup(function(){
+			
+			let idNumberValue = $("#idNumberValue").val()
+			
+			if(idNumberValue==""){
+				$("#resultidNumber").html("身分證字號不能為空").css("color", "red");
+				return
+			}
+			if(!IsIdNumber(idNumberValue)){
+				$("#resultidNumber").html("身分證字號格式不正確").css("color", "red");
+				return
+			}else{
+				$("#resultidNumber").html("格式正確").css("color", "green");
+				return
+			}
+			
+			
+		});
+		
+	$("#passwordCheckValue").keyup(function(){
+			
+			let passwordValue = $("#passwordValue").val()
+			let passwordCheckValue = $("#passwordCheckValue").val()
+			
+			
+			if(passwordValue!=passwordCheckValue){
+				$("#resultpasswordCheck").html("兩次密碼輸入的不一樣").css("color", "red");
+				return
+			}else{
+				$("#resultpasswordCheck").html("輸入相符").css("color", "green");
+				return
+			}
+			
+			
+		});
+	
+	
+	$("#name").keyup(function(){
+		
+		let name = $("#name").val()
+		
+		if(name==""){
+			$("#resultName").html("姓名不能為空").css("color", "red");
+			return
+		}
+		if(name.length<2){
+			$("#resultName").html("姓名最少兩個字").css("color", "red");
+			return
+		}else{
+			$("#resultName").html("格式正確").css("color", "green");
+			return
+		}
+		
+		
+	});
+		
+		
+		
+	
+// 	    沒勾我同意不能送出
+	    $('#readMe').click(function() {
+	    	if ($('#submit').is(':disabled')) {
+	        	$('#submit').removeAttr('disabled');
+	        } else {
+	        	$('#submit').attr('disabled', 'disabled');
+	        }
+	    });
+	
+	
+	
+	
+	
+	
+	});
+	
+	
+	
+	
+	function IsEmail(email) {
+		  var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		  if(!regex.test(email)) {
+		    return false;
+		  }else{
+		    return true;
+		  }
+		}
+	
+	function IsMobile(mobile) {
+		  var regex =  /^(09)[0-9]{8}$/;
+		  if(!regex.test(mobile)) {
+		    return false;
+		  }else{
+		    return true;
+		  }
+		}
+	function IsIdNumber(idNumber) {
+		  var regex =  /^[A-Za-z][12]\d{8}$/;
+		  if(!regex.test(idNumber)) {
+		    return false;
+		  }else{
+		    return true;
+		  }
+		}
+
+</script>
+
+<!-- <link href="/data/css/updateMember.css" rel="stylesheet"> -->
+</head>
+<body>
+
+
+
+	<div th:replace="/user/common :: commonMostTop"></div>
+
+	<!--Start Preloader-->
+	<div class="page-loader startLoad">
+		<div class="loader startLoad"></div>
+	</div>
+	<!--End Preloader-->
+
+
+
+	<div id="splitlayout" class="splitlayout reset-layout open-right">
+
+		<div th:replace="/user/common :: commonMemberIndex"></div>
+
+		<!-- /intro -->
+		<div class="page page-right full-height page-right-normal-height">
+			<div id="pt-main" class="pt-perspective page-inner">
+
+				<!--Start Portfolio Section-->
+				<section
+					class="portfolio_sec padding-bottom-90 pt-page pt-page-current"
+					id="portfolio">
+					<div class="content">
+						<div class="container">
+							<div class="sec_title" style="text-align: center;">
+								<h2 style="text-align: center;">修改個人資料</h2>
+							</div>
+
+							<div class="row" style="text-align: center; height: 745.314px;">
+
+								<div class="col-xs-12 col-sm-12 item coding "
+									style="text-align: center; left: 30%; top: 0px;">
+									<div class="">
+
+
+
+
+										<!-- 											<h5 style="text-align: center;">修改個人資料</h5> -->
+										<div class="contact_form">
+											<form method="POST" th:object="${Vendor}"
+												enctype="multipart/form-data"
+												th:action="@{/member/updateVendorInfo}">
+												<div class="row ">
+
+
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<div class="customer-login text-left">
+															<!-- 															<h4 class="title-1 title-border text-uppercase mb-30">修改個人資料</h4> -->
+															<!-- 								<p class="text-gray">如果您還尚未擁有本站的會員,歡迎您的加入</p> -->
+															<br> <label for="name">公司名稱</label> <input
+																type="text" class="form-control" th:field="*{name}"
+																name="name" id="name" /> <span id='resultName'
+																class="error"></span>
+
+															<p th:if="${#fields.hasErrors('name')}"
+																th:errorclass="error" th:errors="*{name}" />
+
+
+															<label for="industry">行業類別</label><br> <select
+																class="form-control" th:field="*{industry}">
+																<option th:value="水" th:text="水"></option>
+																<option th:value="電" th:text="電"></option>
+																<option th:value="瓦斯" th:text="瓦斯"></option>
+																<option th:value="油漆" th:text="油漆"></option>
+															</select> 
+															<div id="twzipcode">
+																<label for="birthday">縣市</label>
+																<div data-role="county" data-name="addressCounty"
+																	data-value="" data-style="form-control"
+																	></div>
+																 <label for="birthday">鄉鎮市區</label>
+																<div data-role="district" data-name="addressDistrict"
+																	data-value="" data-style="form-control"
+																	></div>
+																 <label for="birthday">郵遞區號</label>
+																<div data-role="zipcode" data-name="addressZipcode"
+																	th:attr="data-value=${Vendor.addressZipcode}" data-style="form-control"
+																	></div>
+																
+															</div>
+															<label for="addressDetail">詳細地址</label> <input
+																type="text" class="form-control" placeholder="詳細地址"
+																name="addressDetail" id="addressDetail" 
+																th:field="*{addressDetail}"/> 
+															<label for="phoneNumber">手機號碼</label> <input type="text"
+																class="form-control" th:field="*{phoneNumber}"
+																name="phoneNumber" maxlength="10" id="phoneNumberValue" />
+															<span id='resultPhoneNumber' class="error"></span>
+
+															<p th:if="${#fields.hasErrors('phoneNumber')}"
+																th:errorclass="error" th:errors="*{phoneNumber}" />
+															<label for="email">Email</label> <input
+																type="text" class="form-control" th:field="*{email}"
+																name="email" id="emailValue" /> <span id='resultEmail'
+																class="error"></span>
+
+															<p th:if="${#fields.hasErrors('email')}"
+																th:errorclass="error" th:errors="*{email}" />
+
+														 <label for="userImage">照片 </label> <br> <img
+																height='250px' width='100px'
+																th:src="@{'/picture/'+${Vendor.userId}}"> <input
+																type="file" class="form-control" placeholder="照片"
+																name="userImage" /> <br>
+
+															<button type="submit" data-text="更新"
+																style="border-color: transparent;"
+																class="button-one submit-button mt-15">更新</button>
+															<a th:href="@{/}"><input
+																style="border-color: transparent;" type="button"
+																class="button-one submit-button mt-15 num" value="取消"></a>
+														</div>
+													</div>
+												</div>
+											</form>
+										</div>
+
+
+
+
+									</div>
+								</div>
+
+								<!--project 3 (Youtube Video)-->
+
+								<div class="col-xs-12 col-sm-6 item grid-sizer design"
+									style="position: absolute; left: 0%; top: 0px;">
+									<div class="project_content"></div>
+								</div>
+
+							</div>
+						</div>
+						<!--.container-->
+					</div>
+					<!--.content-->
+				</section>
+				<!--End Portfolio Section-->
+
+
+				<!-- 共同頁面==================================== commonMemberBottom 開始===============================-->
+
+
+			</div>
+			<!--.page-inner-->
+		</div>
+		<!--.page-right-->
+	</div>
+	<!--.splitlayout-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 	<script th:src="@{/data/js/jquery.min.js}"></script> -->
+
+	<script th:src="@{/data/js/jquery-migrate-1.2.1.min.js}"></script>
+	<script th:src="@{/data/js/jquery.matchHeight-min.js}"></script>
+	<script th:src="@{/data/js/jquery.alterclass.js}"></script>
+
+	<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+	<script th:src="@{/data/js/particles.min.js}"></script>
+	<script th:src="@{/data/js/app.js}"></script>
+	<script th:src="@{/data/js/modernizr.custom.js}"></script>
+	<script th:src="@{/data/js/typed.min.js}"></script>
+	<script th:src="@{/data/js/responsiveslides.min.js}"></script>
+	<script th:src="@{/data/js/jquery.fittext.js}"></script>
+	<script th:src="@{/data/js/isotope.pkgd.min.js}"></script>
+	<script th:src="@{/data/js/jquery.magnific-popup.min.js}"></script>
+	<script th:src="@{/data/js/custom.js}"></script>
+
+
+
+
+
+
+
+
+
+	<!-- WRAPPER START -->
+
+
+
+</body>
+</html>

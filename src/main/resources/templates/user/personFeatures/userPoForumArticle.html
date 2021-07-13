@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>討論區文章</title>
+
+
+<link rel="stylesheet" href="/data/css/bootstrap.css">
+<!-- ===========修改0710============= -->
+<!-- <link rel="stylesheet" href="/data/css/font.css"> -->
+<!-- ===========修改0710============= -->
+<link rel="stylesheet" href="/data/css/splitlayout.css">
+<link rel="stylesheet" href="/data/css/animations.css">
+<link rel="stylesheet" href="/data/css/responsiveslides.css">
+<link rel="stylesheet" href="/data/css/slick.css">
+<link rel="stylesheet" href="/data/css/slick-theme.css">
+<link rel="stylesheet" href="/data/css/magnific-popup.css">
+<link rel="stylesheet" href="/data/css/font-awesome.min.css">
+<link rel="stylesheet" href="/data/css/pe-icon-7-stroke.min.css">
+<link rel="stylesheet" href="/data/css/personInfostyle.css">
+<link rel="stylesheet" href="/data/css/responsive.css">
+<!-- <link href="./data/css/style.css" rel="stylesheet" type="text/css" -->
+<!-- 	media="all" /> -->
+
+
+
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+
+<script>
+	$(function() {
+
+		$("#userPoForumArticle").addClass("active_item");
+
+	});
+</script>
+
+<!-- <link href="/data/css/updateMember.css" rel="stylesheet"> -->
+</head>
+<body>
+
+
+
+	<div th:replace="/user/common :: commonMostTop"></div>
+
+	<!--Start Preloader-->
+	<div class="page-loader startLoad">
+		<div class="loader startLoad"></div>
+	</div>
+	<!--End Preloader-->
+
+
+
+	<div id="splitlayout" class="splitlayout reset-layout open-right">
+
+		<div th:replace="/user/common :: commonMemberIndex"></div>
+
+		<!-- /intro -->
+		<div class="page page-right full-height page-right-normal-height">
+			<div id="pt-main" class="pt-perspective page-inner">
+
+
+				<section class="blog padding-bottom-90 pt-page pt-page-current"
+					id="blog">
+					<div class="content">
+						<div class="container">
+							<div class="sec_title">
+								<!-- ===========修改0710============= -->
+								<h2 th:if="${person.size() != 0}">發表過的文章</h2>
+								<h2 th:if="${person.size() == 0}">目前尚未發表過文章</h2>
+								<!-- ===========修改0710============= -->
+							</div>
+
+							<div th:each="b:${person}">
+								<!-- article 1 -->
+								<div class="col-sm-6">
+									<div class="item">
+
+										<!-- 									放文章連結 -->
+										<a href="#">
+											<div class="blog__img">
+												<i class="pe-7s-news-paper"></i> 
+												
+												<img th:src="@{'/forumPicture/'+${b.forumId}}">
+												<!--  											<img th:src="@{'/picture/'+${session.LoginID}}"> -->
+											</div>
+										</a>
+										<div class="content matchH" style="height: 92px;">
+											<p class="info" th:text="${b.forumCreateTime}"></p>
+											<h3 th:text="${b.title}"></h3>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- article 2 -->
+
+
+						</div>
+						<!--.container-->
+						<div class="container">
+							<div class="sec_title">
+								<!-- ===========修改0710============= -->
+								<h2 th:if="${personRePo.size() != 0}">回覆過的文章</h2>
+								<h2 th:if="${personRePo.size() == 0}">目前尚未回覆文章過</h2>
+								<!-- ===========修改0710============= -->
+
+							</div>
+
+							<div th:each="RP:${personRePo}">
+								<!-- article 1 -->
+								<div class="col-sm-6">
+									<div class="item">
+
+										<!-- 									放文章連結 -->
+										<a href="#">
+											<div class="blog__img">
+												<i class="pe-7s-news-paper"></i> 
+												<img th:src="@{'/forumPicture/'+${RP.forumId}}">
+												<!--  											<img th:src="@{'/picture/'+${session.LoginID}}"> -->
+											</div>
+										</a>
+										<div class="content matchH" style="height: 92px;">
+											<p class="info" th:text="${RP.forumCreateTime}"></p>
+											<h5 th:text="'您回應的文章 : '+${RP.text}"></h5>
+											<h4 th:text="'您的標題 : '+${RP.title}"></h4>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- article 2 -->
+
+
+						</div>
+						<div class="container">
+							<div class="sec_title">
+							<!-- ===========修改0710============= -->
+								<h2 th:if="${personReplay.size() != 0}">留言過的文章</h2>
+								<h2 th:if="${personReplay.size() == 0}">目前尚未在文章留言過</h2>
+							<!-- ===========修改0710============= -->
+							</div>
+
+							<div th:each="r:${personReplay}">
+								<!-- article 1 -->
+								<div class="col-sm-6">
+									<div class="item">
+
+										<!-- 									放文章連結 -->
+										<a href="#">
+											<div class="blog__img">
+												<i class="pe-7s-news-paper"></i>
+												<img th:src="@{'/forumPicture/'+${r.forumBean.forumId}}">
+												<!--  											<img th:src="@{'/picture/'+${session.LoginID}}"> -->
+											</div>
+										</a>
+										<div class="content matchH" style="height: 92px;">
+											<p class="info" th:text="${r.replyDate}"></p>
+											<h5 th:text="'您回應的文章 : '+${r.forumBean.title}"></h5>
+											<h4 th:text="'您的留言內容 : '+${r.text}"></h4>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- article 2 -->
+
+
+						</div>
+
+					</div>
+					<!--.content-->
+				</section>
+
+
+			</div>
+			<!--.page-inner-->
+		</div>
+		<!--.page-right-->
+	</div>
+	<!--.splitlayout-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<script th:src="@{/data/js/jquery.min.js}"></script>
+
+	<script th:src="@{/data/js/jquery-migrate-1.2.1.min.js}"></script>
+	<script th:src="@{/data/js/jquery.matchHeight-min.js}"></script>
+	<script th:src="@{/data/js/jquery.alterclass.js}"></script>
+
+	<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+	<script th:src="@{/data/js/particles.min.js}"></script>
+	<script th:src="@{/data/js/app.js}"></script>
+	<script th:src="@{/data/js/modernizr.custom.js}"></script>
+	<script th:src="@{/data/js/typed.min.js}"></script>
+	<script th:src="@{/data/js/responsiveslides.min.js}"></script>
+	<script th:src="@{/data/js/jquery.fittext.js}"></script>
+	<script th:src="@{/data/js/isotope.pkgd.min.js}"></script>
+	<script th:src="@{/data/js/jquery.magnific-popup.min.js}"></script>
+	<script th:src="@{/data/js/custom.js}"></script>
+
+
+
+
+
+
+
+
+
+	<!-- WRAPPER START -->
+
+
+
+</body>
+</html>

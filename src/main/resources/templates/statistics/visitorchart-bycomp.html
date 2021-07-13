@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>總瀏覽人次-組成</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/ico" sizes="16x16" th:href="@{/images/favicon.ico}">
+    <!-- Custom Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script type="text/javascript">
+    $(function(){
+    	getChartData();
+    	getlast7daysvisitcomptab();
+    	getDonutChartData();
+    	
+    	let profiletabavailable = true;
+    	
+    	
+    	$("[data-value='profile1']").on('click',function(){
+    		if(profiletabavailable){
+    		getlast7daysvisitcompertab();
+    		profiletabavailable = false;
+    		}
+		});
+    	
+    	"use strict";
+    	
+    	function getDonutChartData(){
+    		$.ajax({
+    			url:"todaycomp",
+    			type:"GET",
+    			dataType: "JSON",
+    			success:function(listmap){
+    				console.log(listmap);
+    				Morris.Donut({
+            			element: 'morris-donut-chart',
+            			data: listmap,
+            			resize: true,
+            			colors: ['#4d7cff', '#7571F9', '#9097c4']
+        			});
+				}
+			})
+		};
+    	
+    	function getChartData(){
+    		$.ajax({
+    			url:"chartbycomponent/總計",
+    			type:"GET",
+    			dataType: "JSON",
+    			success:function(listmap){
+    				Morris.Area({
+    		            element: 'morris-area-chart',
+    		            data: listmap,
+    		            xkey: 'period',
+    		            ykeys: ['會員','廠商','訪客'],
+    		            labels: ['會員','廠商','訪客'],
+    		            pointSize: 3,
+    		            fillOpacity: 0,
+    		            pointStrokeColors: ['#7571F9', '#4d7cff', '#9097c4'],
+    		            behaveLikeLine: true,
+    		            gridLineColor: 'transparent',
+    		            lineWidth: 3,
+    		            hideHover: 'auto',
+    		            lineColors: ['#7571F9', '#4d7cff', '#9097c4'],
+    		            resize: true
+
+    		        });
+    				
+    			}
+    		})
+    	};
+    	
+    	function getlast7daysvisitcompertab(){
+			$.ajax({
+				url:"last7daysvisitcompertab",
+				type:"GET",
+				success:function(last7daysvisitcompertab){
+			  		$("#last7daysvisitcompertab").html(last7daysvisitcompertab);
+				}
+			});
+		};
+		
+		function getlast7daysvisitcomptab(){
+			$.ajax({
+				url:"last7daysvisitcomptab/totalvisit_times",
+				type:"GET",
+				success:function(comptabtalvisit_times){
+			  		$("#last7daysvisitcomptab").html(comptabtalvisit_times);
+				}
+			});
+		};
+        
+    })
+    </script>
+
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div th:replace="common :: commonpreloader"></div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+    
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div th:replace="common :: commonnavHeader"></div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div th:replace="common :: commonheader"></div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+         <div th:replace="common :: commonsidebar"></div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Home</a></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 style="float:left;" class="card-title">當日總造訪量組成</h4><span style="margin-left:10px">(紫:會員 , 藍:廠商 , 灰:訪客)</span>
+                                <div id="morris-donut-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 style="float:left;" class="card-title">本週總造訪量組成趨勢圖</h4><span style="margin-left:10px">(紫:會員 , 藍:廠商 , 灰:訪客)</span>
+                                <div id="morris-area-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                	<div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">總造訪量次數表</h4>
+                                <div class="custom-tab-1">
+                                    <ul class="nav nav-tabs mb-3">
+                                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home1" data-value="home1">人次(近7天)</a>
+                                        </li>
+                                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile1" data-value="profile1">比例(近7天)</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade show active" id="home1" role="tabpanel">
+                                            <div class="table-responsive" id="last7daysvisitcomptab">
+                                    			<table class="table table-striped table-bordered zero-configuration" th:fragment="comptabtalvisit_times">
+                                        			<thead>
+                                            			<tr>
+                                                			<th>日期</th>
+                                                			<th>會員</th>
+                                                			<th>廠商</th>
+                                                			<th>訪客</th>
+                                                			<th>總計</th>
+                                            			</tr>
+                                        			</thead>
+                                        			<tbody>
+                                            			<tr th:each="totalvisit : ${comptabtalvisit_times}">
+                                                			<td>[[${totalvisit[0]}]]</td>
+                                                			<td>[[${totalvisit[2]}]]</td>
+                                                			<td>[[${totalvisit[1]}]]</td>
+                                                			<td>[[${totalvisit[3]}]]</td>
+                                                			<td>[[${totalvisit[2]+totalvisit[1]+totalvisit[3]}]]</td>
+                                            			</tr>
+                                        			</tbody>
+                                    			</table>
+                                			</div>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile1">
+                                            <div class="table-responsive" id="last7daysvisitcompertab">
+                                    			<table class="table table-striped table-bordered zero-configuration" th:fragment="last7daysvisitcompertab">
+                                        			<thead>
+                                            			<tr>
+                                                			<th>日期</th>
+                                                			<th>會員</th>
+                                                			<th>廠商</th>
+                                                			<th>訪客</th>
+                                                			<th>總計</th>
+                                            			</tr>
+                                        			</thead>
+                                        			<tbody>
+                                            			<tr th:each="totalvisitper : ${last7daysvisitcompertab}">
+                                                			<td>[[${totalvisitper.date}]]</td>
+                                                			<td>[[${#numbers.formatPercent(totalvisitper.personal,1,2)}]]</td>
+                                                			<td>[[${#numbers.formatPercent(totalvisitper.vendor,1,2)}]]</td>
+                                                			<td>[[${#numbers.formatPercent(totalvisitper.visitor,1,2)}]]</td>
+                                                			<td>[[${#numbers.formatPercent(totalvisitper.totalvisit,1,2)}]]</td>
+                                            			</tr>
+                                        			</tbody>
+                                    			</table>
+                                			</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            <!-- #/ container -->
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+        
+        
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div th:replace="common :: commonfooter"></div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <script src="plugins/common/common.min.js"></script>
+    <script src="js/custom.min.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/gleek.js"></script>
+    <script src="js/styleSwitcher.js"></script>
+
+
+</body>
+
+</html>

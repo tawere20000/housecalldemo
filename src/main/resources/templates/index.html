@@ -1,0 +1,312 @@
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+
+
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>首頁</title>
+
+<link rel="stylesheet" th:href="@{/data/css/bootstrapIndex.css}">
+
+<script th:src="@{/data/js/jquery.min.js}"></script>
+
+<link rel="stylesheet" th:href="@{/data/css/styleIndex.css}">
+
+
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+<link
+	href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic'
+	rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Varela+Round'
+	rel='stylesheet' type='text/css'>
+<style>
+	.productImg {
+		display: block;
+		width: 541px;
+		height: 325px;
+		object-fit: cover;
+	}
+</style>
+</head>
+<body>
+
+	<div th:replace="/user/common :: commonTop"></div>
+
+
+	<!-- 	------------------------首頁內容---------------------------------- -->
+
+
+
+
+
+
+
+	<div class="wrap">
+		<div class="move-text">
+			<div class="breaking_news">
+				<h2>本站頭條</h2>
+			</div>
+			<div class="marquee">
+				<div class="marquee1">
+					<a class="breaking" href="single.html">米奇不妙屋歡慶開幕!!!&nbsp;&nbsp;&nbsp;&nbsp;歡迎各地租客評論討論!!!</a>
+				</div>
+				<div class="marquee2">
+					<a class="breaking" href="single.html">米奇不妙屋歡慶開幕!!!&nbsp;&nbsp;&nbsp;&nbsp;歡迎各地租客評論討論!!!</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+	<!-- content-section-starts-here 動圖-->
+	<div class="main-body">
+		<div class="wrap">
+			<!-- 		首頁左半面區域 -->
+			<div class="col-md-8 content-left">
+				<div class="slider">
+					<div class="callbacks_wrap">
+						<ul class="rslides" id="slider">
+							<li><img th:src="@{/data/images/article1.jpg}">
+
+								</li>
+							<li><img th:src="@{/data/images/article2.jpg}">
+</li>
+							<li><img th:src="@{/data/images/article3.jpg}">
+
+								</li>
+							<li><img th:src="@{/data/images/article4.jpg}">
+
+								</li>
+
+						</ul>
+					</div>
+				</div>
+
+				<!-- 				完成 -->
+				<div class="articles">
+					<header>
+						<h3 class="title-head">評論區最新貼文</h3>
+					</header>
+<!-- 										首頁評論區單一篇文章區塊 -->
+					<div class="article"  th:each="n:${mostnew}">
+<!-- 											文章照片 -->
+						<div class="article-left">
+							<a href="single.html"><img
+								th:src="@{'/articlepicture/'+${n.articleId}}" style="width:400px;height:200px"></a>
+						</div>
+<!-- 												文章右半 標題 內文等 -->
+						<div class="article-right">
+							<div class="article-title">
+								<p>
+								<a class='span_link' ><span class='glyphicon ' th:text="|發文時間:${n.articleUpdateTime}|"></span></a>
+								<a class='span_link' ><span class='glyphicon glyphicon-eye-open' th:text="|觀看次數:${n.checkCount}|"></span> </a>
+								<a class='span_link' ><span class='glyphicon ' th:text="|👍🏻:${n.textGoodTotal}|"></span></a>
+								<a class='span_link' ><span class='glyphicon ' th:text="|👎🏻:${n.textBadTotal}|"></span></a>
+								</p>
+<!-- 																	文章連結 -->
+								<a class="title" th:href="'/CheckcountPlus/'+${n.articleId}" th:text="${n.title}"></a>
+							</div>
+							<div class="article-text">
+								<p style='overflow:hidden;width:600px;height:50px;white-space: nowrap;text-overflow: ellipsis;' th:text="${n.text}"></p>
+
+<!-- 																	文章連結 -->
+								<a th:href="'/CheckcountPlus/'+${n.articleId}"><button style='font-size:20px;color:blue' th:text="請點我開啟...."></button></a>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+<!-- 										首頁評論區單一篇文章區塊 -->
+<!-- 										首頁評論區單一篇文章區塊 -->
+<!-- 										首頁評論區單一篇文章區塊 -->
+
+				</div>
+				<!-- 				完成 -->
+				<!-- 				四格方塊樣式文章區域 -->
+				<div class="life-style" th:unless="${newestProduct.isEmpty()}" th:object="${newestProduct}">
+					<header>
+						<h3 class="title-head">商城最新商品</h3>
+					</header>
+					<!-- 					左右大區域 -->
+					<div class="life-style-grids">
+						<!-- 					左邊區域 -->
+						<div class="life-style-left-grid">
+							<a th:href="@{/singleProduct/{productId}(productId=${newestProduct.get(0).productId})}">
+								<img class="productImg" th:src="${newestProduct.get(0).productPicture.get(0).productPath}">
+							</a> 
+							<a class="title" th:href="@{/singleProduct/{productId}(productId=${newestProduct.get(0).productId})}">
+								[[${newestProduct.get(0).productName}]]
+							</a>
+						</div>
+						<div class="life-style-right-grid">
+							<a th:href="@{/singleProduct/{productId}(productId=${newestProduct.get(1).productId})}">
+								<img class="productImg" th:src="${newestProduct.get(1).productPicture.get(0).productPath}">
+							</a> 
+							<a class="title" th:href="@{/singleProduct/{productId}(productId=${newestProduct.get(1).productId})}">
+								[[${newestProduct.get(1).productName}]]
+							</a>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="life-style-grids">
+						<div class="life-style-left-grid">
+							<a th:href="@{/singleProduct/{productId}(productId=${newestProduct.get(2).productId})}">
+								<img class="productImg" th:src="${newestProduct.get(2).productPicture.get(0).productPath}">
+							</a> 
+							<a class="title" th:href="@{/singleProduct/{productId}(productId=${newestProduct.get(2).productId})}">
+								[[${newestProduct.get(2).productName}]]
+							</a>
+						</div>
+						<div class="life-style-right-grid">
+							<a th:href="@{/singleProduct/{productId}(productId=${newestProduct.get(3).productId})}">
+								<img class="productImg" th:src="${newestProduct.get(3).productPicture.get(0).productPath}">
+							</a> 
+							<a class="title" th:href="@{/singleProduct/{productId}(productId=${newestProduct.get(3).productId})}">
+								[[${newestProduct.get(3).productName}]]
+							</a>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+
+				<!-- 				四格方塊樣式文章區域 -->
+
+				<!-- 左樣兩邊樣式文章區域 -->
+			</div>
+			<!-- 		首頁左半面區域 -->
+
+
+			<!-- 		首頁右右右右右右右半面區域 -->
+			<div class="col-md-4 side-bar">
+				<div class="first_half">
+					<!-- 				訂閱看要不要 -->
+					
+					<!-- 				訂閱看要不要 -->
+
+					<!-- 					首頁右半面 文章收縮部分 -->
+
+					<div class="list_vertical">
+							<section class="accordation_menu">
+								<div>
+									<input id="label-1" name="lida" type="radio" checked /> <label
+										for="label-1" id="item1"><i class="ferme"> </i>觀看次數最多<i class="icon-plus-sign i-right1"></i><i
+										class="icon-minus-sign i-right2"></i></label>
+									<div class="content" id="a1">
+										<div class="scrollbar" id="style-2">
+											<div class="force-overflow">
+												<div class="popular-post-grids"th:each="c:${most}">
+													<div class="popular-post-grid">
+														<div class="post-img">
+														<a th:href="@{'/forum/'+${c.forumId}}">
+							<img th:src="@{'/forumPicture/'+${c.forumId}}">
+							</a>	
+														</div>
+														<div class="post-text">
+															<a class="title"  th:href="@{'/forum/'+${c.forumId}}"  th:text="${c.title}"> </a>
+															
+																<p th:text="${c.forumCreateTime}"> 
+															</p>
+														</div>
+														<div class="clearfix"></div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div>
+									<input id="label-2" name="lida" type="radio" /> <label
+										for="label-2" id="item2"><i class="icon-leaf" id="i2"></i>最新文章<i class="icon-plus-sign i-right1"></i><i
+										class="icon-minus-sign i-right2"></i></label>
+									<div class="content" id="a2">
+										<div class="scrollbar" id="style-2">
+											<div class="force-overflow">
+												<div class="popular-post-grids"th:each="c:${recent}">
+													<div class="popular-post-grid">
+														<div class="post-img">
+														<a th:href="@{'/forum/'+${c.forumId}}">
+							<img th:src="@{'/forumPicture/'+${c.forumId}}">
+							</a>	
+														</div>
+														<div class="post-text">
+															<a class="title"  th:href="@{'/forum/'+${c.forumId}}"  th:text="${c.title}"> </a>
+															
+																<p th:text="${c.forumCreateTime}"> 
+															</p>
+														</div>
+														<div class="clearfix"></div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</section>
+						</div>
+					<!-- 					首頁右半面 文章收縮部分 結束-->
+
+
+					<!-- 					首頁右半面 圖文中段部分 -->
+					<!-- 					首頁右半面 圖文中段部分 -->
+				</div>
+
+
+				<!-- 				關鍵字搜尋 看要不要 -->
+				 <div class="secound_half">
+					 				 
+					 <div class="popular-news">
+						<header>
+							<h3 class="title-popular">最多讚數</h3>
+						</header>
+						<div class="popular-grids" >
+							<div class="popular-grid" th:each="g:${mostgood}" style="width:430px">
+								<a th:href="'/CheckcountPlus/'+${g.articleId}"><img th:src="@{'/articlepicture/'+${g.articleId}}" style="width:430px;height:250px;" alt="" /></a>
+								<a class="title" th:href="'/CheckcountPlus/'+${g.articleId}" th:text="${g.title}" style="width:430px" ></a>
+								<p style="width:430px"><a class='span_link' ><span class='glyphicon ' th:text="|發文時間:${g.articleUpdateTime}|"></span></a><a class='span_link' ><span class='glyphicon glyphicon-eye-open' th:text="|觀看次數:${g.checkCount}|"></span> </a><a class='span_link' ><span class='glyphicon ' th:text="|👍🏻:${g.textGoodTotal}|"></span></a><a class='span_link' ><span class='glyphicon ' th:text="|👎🏻:${g.textBadTotal}|"></span></a></p>
+							</div>
+						</div>
+					</div>
+					 <div class="popular-news">
+						<header>
+							<h3 class="title-popular">最多人看過</h3>
+						</header>
+						<div class="popular-grids">
+							<div class="popular-grid" th:each="l:${mostcheck}" style="width:430px">
+								<a th:href="'/CheckcountPlus/'+${l.articleId}"><img th:src="@{'/articlepicture/'+${l.articleId}}" style="width:430px;height:250px;" alt="" /></a>
+								<a class="title" th:href="'/CheckcountPlus/'+${l.articleId}" th:text="${l.title}" style="width:430px" ></a>
+								<p style="width:430px"><a class='span_link' ><span class='glyphicon ' th:text="|發文時間:${l.articleUpdateTime}|" ></span></a><a class='span_link' ><span class='glyphicon glyphicon-eye-open' th:text="|觀看次數:${l.checkCount}|"></span> </a><a class='span_link' ><span class='glyphicon ' th:text="|👍🏻:${l.textGoodTotal}|"></span></a><a class='span_link' ><span class='glyphicon ' th:text="|👎🏻:${l.textBadTotal}|"></span></a></p>
+							</div>
+						</div>
+					</div>
+					</div>
+
+
+
+				<div class="clearfix"></div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+
+	<a href="#to-top" id="toTop" style="display: block;"> <span
+		id="toTopHover" style="opacity: 1;"> </span></a>
+
+
+
+
+
+
+
+
+	<!-- 	------------------------首頁內容---------------------------------- -->
+	<div th:replace="/user/common :: commonBottom"></div>
+	<div th:replace="/user/common :: commonIndexJS"></div>
+	<!-- 	<div th:replace="common :: commonscripts"></div> -->
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head >
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+
+<script th:src="@{/data/js/jquery.min.js}"></script>
+
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+
+
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+<style>
+.error {
+	color: red;
+}
+</style>
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+<title>編輯文章</title>
+</head>
+<body>
+	<div th:replace="/user/common :: commonTop"></div>
+	<div id="login-page">
+		<div class="container">
+			<form class="dark-matter" method="POST" th:object="${forums}"
+				enctype="multipart/form-data" th:action="@{'/updateForum/'+${forums.forumId}}">
+				<div class="login-wrap">
+					 <input type="hidden" class="form-control"  name="${forums.forumId}" th:field="${forums.forumId}" />
+<!-- 					 <input type="hidden" class="form-control"  name="textBad" th:field="*{textBad}" /> -->
+<!-- 					 <input type="hidden" class="form-control"  name="checkCount" th:field="*{checkCount}" /> -->
+<!-- 					 <input type="hidden" class="form-control"  name="textType" th:field="*{textType}" /> -->
+<!-- 					 <input type="hidden" class="form-control"  name="imagePath" th:field="*{imagePath}" /> -->
+<!-- 					 <input type="hidden" class="form-control"  name="userName" th:field="*{userName}" /> -->
+<!-- 					<label for="title">發文者ID</label> <input -->
+<!-- 						type="text" class="form-control"  name="user.userId" -->
+<!-- 					    th:field="*{user.userId}" readonly style='width:100px;'/> -->
+<!-- 					<label for="title">文章編號</label> <input -->
+<!-- 						type="text" class="form-control"  name="forumId" -->
+<!-- 					    th:field="*{forumId}" readonly style='width:100px;'/> -->
+<!-- 					<br> <br> <label for="title">標題</label> <input -->
+<!-- 						type="text" class="form-control" th:field="*{title}" name="title" -->
+<!-- 						maxlength='20'  style='width:700px;'/> -->
+<!-- 					<p th:if="${#fields.hasErrors('title')}" th:errorclass="error" -->
+<!-- 						th:errors="*{title}" /> -->
+						 
+ 					<br> <br> <label>標題</label>
+					<input type="text" name="title" th:field="*{title}"> 
+					<br> <br> 
+					<p th:if="${#fields.hasErrors('title')}" th:errorclass="error"
+						th:errors="*{title}" />
+					<label for="text">內容</label>
+			
+					<textarea class="form-control" th:field="*{text}" name="text"
+						cols="40" rows="5" scrolling="yes" value='' th:inline="text"></textarea>
+					<p th:if="${#fields.hasErrors('text')}" th:errorclass="error"
+						th:errors="*{text}" />
+					<br> <br> 
+					<label for="image">照片</label> 
+					<img height='100px' width='100px' th:src="@{'/forumPicture/'+${forums.forumId}}"><input
+						type="file" class="form-control" th:field="*{image}" name="image" style='width:700px;' />
+					<br> <br> 
+				
+					<label> <span> </span> <input type="submit" class="button"
+						value="確認送出" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
+						type="button" class="button" onclick="history.back()" value="取消" />
+					</label>
+
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	<div th:replace="/user/common :: commonBottom"></div>
+	<div th:replace="/user/common :: commonIndexJS"></div>
+</body>
+</html>

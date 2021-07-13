@@ -1,0 +1,154 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>取消訂單/退貨</title>
+		<th:block th:replace="/mall/mallCommon :: commonhead"></th:block>
+		<style type="text/css">
+			.crBlock {
+				float: none;
+				margin: auto;
+			}
+		</style>
+		<script type="text/javascript">
+			$(function() {
+				
+				// 發送ajax請求(購物車品項數量查詢)
+				function getCartQuantity() {
+					$.ajax({
+						url: '/shoppingCartQuantity',
+						type: 'get',
+						success: function(data) {
+							$('#cart_quantity').html(data);
+						}
+					});
+				};
+			
+			
+				// 發送ajax請求(購物車內容Quickview)
+				function getCartQuickview() {
+					if ($('#cartQuantity').text() != 0) {
+						$.ajax({
+							url: '/shoppingCart/quickview',
+							type: 'get',
+							success: function(data) {
+								$('#cart_info').html(data);
+							}
+						});
+					}
+				};
+				
+				
+				// 購物車內容Quickview事件繫結
+				$(document).on('mouseenter', '.cart-icon', function() {
+					getCartQuickview();
+				});
+				
+				
+				// 發送ajax請求(刪除Quickview購物車內容)
+				$(document).on('click', '.cartQuickviewDelete', function() {
+					$.ajax({
+						url: this.href,
+						type: 'delete',
+						success: function() {
+							toastr.success('已將商品自購物車刪除');
+							getCartQuantity();
+							getCartQuickview();
+						}
+					});
+					return false;
+				});
+				
+				
+				// 發送ajax請求(提交取消訂單/退貨請求)
+				$('#crForm').on('submit', function() {
+					$.ajax({
+						url: this.action,
+						type: 'post',
+						data: $('#crForm').serialize(),
+						success: function() {
+							$('#crPage').hide();
+							$('#crSuccess').show();
+						}
+					});
+					return false;
+				});
+				
+				
+				// 按鈕繫結回商城首頁事件
+				$('.toShopButton').on('click', function() {
+					location.href = 'http://localhost:8080/shop.html';
+				})
+				
+				
+				// 按鈕繫結回我的訂單事件
+				$('.toOrderButton').on('click', function() {
+					location.href = 'http://localhost:8080/orderlist.html';
+				})
+				
+			})
+		</script>
+	</head>
+	
+	<body>	
+		<!-- WRAPPER START -->
+		<div class="wrapper bg-dark-white">
+
+			<!-- COMMONHEADAREA INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commonheadarea"></th:block>
+			<!-- COMMONHEADAREA INSERT END -->
+			
+			<!-- COMMONMOBILEMENU INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commonmobilemenu"></th:block>
+			<!-- COMMONMOBILEMENU INSERT END -->
+			
+			<!-- CANCELRETURN-AREA START -->
+			<div class="cancelreturn-area  pt-80 pb-80">
+				<div class="container">
+					<form id="crForm" method="post" th:action="@{/cancelOrderAndReturn}">	
+						<div class="row">
+							<div class="col-md-6 col-sm-6 col-xs-12 crBlock">
+								<div id="crPage" class="customer-login text-left">
+									<h4 class="title-1 title-border text-uppercase mb-30">取消訂單/退貨</h4>
+									<p class="text-gray" style="font-size: 14px;">請選擇 取消訂單/退貨 之原因</p>
+									<select class="mb-30 custom-select" required="required" name="crReason">
+										<option value="" disabled selected>請選擇原因</option>
+										<option value="下訂內容錯誤">下訂內容錯誤</option>
+										<option value="改變心意">改變心意</option>
+										<option value="實物與照片落差過大">實物與照片落差過大</option>
+										<option value="商品不符合實際需求">商品不符合實際需求</option>
+										<option value="規格/尺寸不符">規格/尺寸不符</option>
+										<option value="商品瑕疵/損壞">商品瑕疵/損壞</option>
+										<option value="其他">其他</option>
+									</select>
+									<p class="text-gray" style="font-size: 14px;">其他建議</p>
+									<textarea id="area" class="custom-textarea" placeholder="歡迎您提供任何建議~" name="suggestion" style="display: block; color: #999;"></textarea>
+									<input type="hidden" name="orderNo" th:value="${orderNo}">
+									<input type="hidden" name="statusOrder" th:value="${statusOrder}">
+									<button type="submit" id="crButton" data-text="確認送出" class="button-one submit-button mt-15" style="margin-left: 362px;">確認送出</button>
+								</div>	
+								<div id="crSuccess" class="customer-login text-left" style="display: none;text-align: center;">
+									<img alt="" th:src="@{/mall/img/cancelreturn/checkmark.png}" style="max-width: 75%">
+									<p class="text-gray" style="font-size: 16px;">已收到您的請求，歡迎您繼續使用我們的服務</p>
+									<button type="button" data-text="回商城首頁" class="button-one submit-button mt-15 toShopButton" style="margin-right: 10px;">回商城首頁</button>
+									<button type="button" data-text="回我的訂單" class="button-one submit-button mt-15 toOrderButton">回我的訂單</button>
+									
+								</div>					
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- CANCELRETURN-AREA END -->
+			
+			<!-- COMMONFOOTER INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commmonfooter"></th:block>
+			<!-- COMMONFOOTER INSERT END -->
+			
+		</div>
+		<!-- WRAPPER END -->
+
+		<!-- COMMONJS INSERT START -->
+		<th:block th:replace="/mall/mallcommon :: commonjs"></th:block>
+		<!-- COMMONJS INSERT END -->
+	</body>
+</html>

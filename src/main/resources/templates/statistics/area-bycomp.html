@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>區域瀏覽人次統計</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/ico" sizes="16x16" th:href="@{/images/favicon.ico}">
+    <!-- Custom Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+	<script type="text/javascript">
+	$(function () {
+		let removechartdiv;
+		getChartData('討論區');
+		getlast7daysvisitcomptab('article_visit_times')
+		
+		$(".nav-item a").on('click',function(){
+    		let target = $(this).data("value");
+    		console.log(target);
+    		getlast7daysvisitcomptab(target);
+    		let target2 = $(this).text();
+    		console.log(target2);
+    		getChartData(target2);
+		});
+		
+	    "use strict";
+	    function getChartData(target){
+    		$.ajax({
+    			url:"/chartbycomponent/"+target,
+    			type:"GET",
+    			dataType: "JSON",
+    			success:function(listmap){
+    				console.log(listmap);
+    				if(removechartdiv === 'remove'){
+    				$('#extra-area-chart').empty();
+    				}
+    				removechartdiv = 'remove';
+    				Morris.Area({
+    			        element: 'extra-area-chart',
+    			        data: listmap,
+    			        lineColors: ['#7571F9', '#9097c4', '#4d7cff'],
+    			        xkey: 'period',
+    			        ykeys: ['會員','訪客','廠商'],
+    			        labels: ['會員','訪客','廠商'],
+    			        pointSize: 0,
+    			        lineWidth: 0,
+    			        resize: true,
+    			        fillOpacity: 0.8,
+    			        behaveLikeLine: true,
+    			        gridLineColor: 'transparent',
+    			        hideHover: 'auto'
+
+    			    });
+    			}
+    		});
+	    }
+	    
+	    function getlast7daysvisitcomptab(target){
+			$.ajax({
+				url:"last7daysvisitcomptab/"+target,
+				type:"GET",
+				success:function(comptabtalvisit_times){
+			  		$("#last7daysvisitcomptaba").html(comptabtalvisit_times);
+				}
+			});
+		};
+	    
+	
+	});
+
+	</script>
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div th:replace="common :: commonpreloader"></div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+    
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div th:replace="common :: commonnavHeader"></div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div th:replace="common :: commonheader"></div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div th:replace="common :: commonsidebar"></div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Home</a></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">各區域瀏覽人次組成統計</h4>
+                                <!-- Nav tabs -->
+                                <div class="default-tab">
+                                    <ul class="nav nav-tabs mb-3" role="tablist">
+                                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#" data-value="article_visit_times">討論區</a>
+                                        </li>
+                                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#" data-value="forum_visit_times">評論區</a>
+                                        </li>
+                                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#" data-value="mall_visit_times">商城</a>
+                                        </li>
+                                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#" data-value="troubles_visit_times">疑難雜症</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel">
+                                        	<div class="p-t-15">
+                                        		<br>
+                                				<h5 style="float:left;" class="card-title">趨勢圖(%)</h5><span style="margin-left:10px">(紫:會員 , 藍:廠商 , 灰:訪客)</span>
+                                				<div id="extra-area-chart"></div>
+                                				<div class="table-responsive" id="last7daysvisitcomptaba">
+                                				
+                                    			<table class="table table-striped table-bordered zero-configuration" th:fragment="comptabtalvisit_times">
+                                        			<thead>
+                                            			<tr>
+                                                			<th>日期</th>
+                                                			<th>會員(人次)</th>
+                                                			<th>廠商(人次)</th>
+                                                			<th>訪客(人次)</th>
+                                                			<th>總計(人次)</th>
+                                            			</tr>
+                                        			</thead>
+                                        			<tbody>
+                                            			<tr th:each="totalvisit : ${comptabtalvisit_times}">
+                                                			<td>[[${totalvisit[0]}]]</td>
+                                                			<td>[[${totalvisit[2]}]]</td>
+                                                			<td>[[${totalvisit[1]}]]</td>
+                                                			<td>[[${totalvisit[3]}]]</td>
+                                                			<td>[[${totalvisit[2]+totalvisit[1]+totalvisit[3]}]]</td>
+                                            			</tr>
+                                        			</tbody>
+                                    			</table>
+                                				</div>
+                    						</div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #/ container -->
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+        
+        
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div th:replace="common :: commonfooter"></div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <script src="plugins/common/common.min.js"></script>
+    <script src="js/custom.min.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/gleek.js"></script>
+    <script src="js/styleSwitcher.js"></script>
+
+</body>
+
+</html>

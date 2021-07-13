@@ -1,0 +1,170 @@
+
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>登入</title>
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+
+<script th:src="@{/data/js/jquery.min.js}"></script>
+
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+
+<link rel="stylesheet" href="/data/css/default.css">
+
+
+
+<style type="text/css">
+.customer-login {
+	background: #fff none repeat scroll 0 0;
+	padding: 40px;
+}
+</style>
+
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+<script type="text/javascript">
+	$(function() {
+		$("#accountValue").keyup(function() {
+
+			let accountValue = $("#accountValue").val()
+			console.log(accountValue);
+			if (accountValue == "") {
+				$("#result0c").html("帳號不能為空")
+
+			}
+			if (accountValue != "") {
+				$("#result0c").html("")
+			}
+
+		});
+	});
+</script>
+<style>
+.error {
+	color: red;
+}
+</style>
+</head>
+<body>
+
+	<div th:replace="/user/common :: commonTop"></div>
+
+
+	<!-- WRAPPER START -->
+	<div class="wrapper bg-dark-white">
+		<div class="login-area  pt-80 pb-80  ">
+			<div class="container " style="margin-left: 30%;">
+				<form method="POST" th:object="${userBean}" th:action="@{/login}">
+					<div class="row  ">
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<div class="customer-login text-left">
+								<h4 class="title-1 title-border text-uppercase mb-30">會員登入</h4>
+								<h5 style="color: red;" th:if="${loginMsg != null}"
+									th:text="${loginMsg}"></h5>
+								<p th:if="${#fields.hasErrors('invalidCredentials')}"
+									th:errorclass="error" th:errors="*{invalidCredentials}" />
+								<p class="text-gray">請輸入您的帳號及密碼</p>
+
+
+								<input type="text" placeholder="請輸入帳號..." name="account"
+									id="accountValue">
+								<p id='result0c' class="error"></p>
+								<p th:if="${#fields.hasErrors('account')}" th:errorclass="error"
+									th:errors="*{account}" />
+
+								<input type="password" placeholder="請輸入密碼..." name="password">
+								<p th:if="${#fields.hasErrors('password')}"
+									th:errorclass="error" th:errors="*{password}" />
+								<input type="hidden" name="referer" th:value="${referer}">
+
+								<p class="num">
+									<a th:href="@{/forgetPassword}" class="text-gray">忘記密碼了?</a>
+								</p>
+								<p class="mb-0">
+									<input type="checkbox" id="newsletter" name="rememberMe"
+										checked> <label for="newsletter"><span>記住我!</span></label>
+								</p><br>
+								
+								
+								<button type="submit" data-text="login"
+									class="button-one submit-button mt-15">login</button>
+
+								<a th:href="@{/}"><input style="border-color: transparent;"
+									type="button" class="button-one submit-button mt-15 num"
+									value="取消"></a>
+									
+									
+									
+									
+							</div>
+						</div>
+						
+
+						<!-- <div class="col-md-6 col-sm-6 col-xs-12">
+								<div class="customer-login text-left">
+									<h4 class="title-1 title-border text-uppercase mb-30">new customers</h4>
+									<p class="text-gray">If you have an account with us, Please login!</p>
+									<input type="text" placeholder="Your name here..." name="name">
+									<input type="text" placeholder="Email address here..." name="email">
+									<input type="password" placeholder="Password">
+									<input type="password" placeholder="Confirm password">
+									<p class="mb-0">
+										<input type="checkbox" id="newsletter" name="newsletter" checked>
+										<label for="newsletter"><span>Sign up for our newsletter!</span></label>
+									</p>
+									<button type="submit" data-text="regiter" class="button-one submit-button mt-15">regiter</button>
+								</div>					
+							</div> -->
+					</div>
+				</form>
+			</div>
+		</div>
+
+
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 就程式碼 -->
+
+
+
+
+
+
+	<div th:replace="/user/common :: commonBottom"></div>
+	<div th:replace="/user/common :: commonIndexJS"></div>
+</body>
+</html>

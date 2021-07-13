@@ -1,0 +1,549 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>購物車</title>
+		<th:block th:replace="/mall/mallCommon :: commonhead"></th:block>
+		<style>
+			.tab {
+				font-size: 17px;
+				letter-spacing: 10px;
+			}
+			.context {
+				font-size: 14px;
+			}
+			.invisible {
+				display: none;
+			}
+			.productImage {
+				display: block;
+				width: 110px;
+				height: 110px;
+				object-fit: cover;
+			}
+		</style>
+		<script type="text/javascript">
+			$(function(){
+				
+				// 發送ajax請求(購物車品項數量查詢)
+				function getCartQuantity() {
+					$.ajax({
+						url: '/shoppingCartQuantity',
+						type: 'get',
+						success: function(data){
+							$('#cart_quantity').html(data);
+						}
+					});
+				};
+			
+				
+				// 發送ajax請求(購物車內容Quickview)
+				function getCartQuickview() {
+					if ($('#cartQuantity').text() != 0) {
+						$.ajax({
+							url: '/shoppingCart/quickview',
+							type: 'get',
+							success: function(data) {
+								$('#cart_info').html(data);
+							}
+						});
+					}
+				};
+				
+				
+				// 發送ajax請求(購物車內容查詢)
+				function getCartContext() {
+					$.ajax({
+						url: '/shoppingCart/cart',
+						type: 'get',
+						success: function(data){
+							$('#shopping-cart').html(data);
+							$(".cart-plus-minus").prepend('<div class="dec qtybutton">-</div>');
+							$(".cart-plus-minus").append('<div class="inc qtybutton">+</div>');
+							checkQtyButton();
+							netPrice = $("[name='netPrice']").val();
+						}
+					});
+				};
+				
+				// 發送ajax請求(願望清單內容查詢)
+				function getWishlistContext() {
+					$.ajax({
+						url: '/shoppingCart/wishlist',
+						type: 'get',
+						success: function(data){
+							$('#wishlist').html(data);
+						}
+					});
+				};
+				
+				
+				// 轉換數字為含千分位的文字
+				function toCurrency(num) {
+					num = num.toString();
+					newNum = num.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+					return newNum;
+				}
+				
+				
+				// 頁面渲染時確認是否允許商品數量修改按鈕可使用
+				function checkQtyButton() {
+					$('.cart-plus-minus-box').each(function() {
+						if ($(this).val() >= $(this).data('productstock')){
+							$(this).siblings('.inc').css('pointerEvents','none');
+						} 
+						if ($(this).val() <= 1) {
+							$(this).siblings('.dec').css('pointerEvents','none');
+						}
+					});
+				}
+				
+				
+				// 首次進入頁面，確認是否可使用修改商品數量之按鈕
+				checkQtyButton();
+				
+				
+				// toastr提示參數設置
+				toastr.options = {
+						  "closeButton": false,
+						  "debug": false,
+						  "newestOnTop": false,
+						  "progressBar": false,
+						  "positionClass": "toast-bottom-right",
+						  "preventDuplicates": false,
+						  "onclick": null,
+						  "showDuration": "2500",
+						  "hideDuration": "3000",
+						  "timeOut": "1000",
+						  "extendedTimeOut": "1000",
+						  "showEasing": "swing",
+						  "hideEasing": "linear",
+						  "showMethod": "fadeIn",
+						  "hideMethod": "fadeOut"
+				}
+				
+				
+				// 購物車內容Quickview事件繫結
+				$(document).on('mouseenter', '.cart-icon', function() {
+					getCartQuickview();
+				});
+				
+				
+				// 切換至購物車分頁
+				let netPrice = $("[name='netPrice']").val();
+				$(document).on('click', '.shoppingCartTag', function() {
+					getCartContext();
+					return false;
+				});
+				
+				
+				// 切換至願望清單分頁
+				$(document).on('click', '.wishlistTag', function() {
+					getWishlistContext();
+					return false;
+				});
+				
+				
+				// 發送ajax請求(更新購物車品項數量)
+				let preValue;
+				$(document).on('focus', '.cart-plus-minus-box', function() {
+					preValue = this.value;
+				});
+				$(document).on('change editAmount', '.cart-plus-minus-box', function() {
+					let amount = $(this).val();
+					let productStock = Number($(this).data('productstock'));
+					// 正則表達式驗證僅能輸入整數
+					let testNumber = /^-?\d+$/;
+					if (!testNumber.test(amount)) {
+						this.value = 1;
+					　　toastr.warning('請勿輸入數字以外之字元');
+					} else {
+						let cartId = $(this).data('cartid');
+						let productId = $(this).data('productid');
+						let productPrice = $(this).data('productprice');
+						let productTotalPriceTd = $(this).parent().parent().next();
+						let oriProductTotalPrice = Number(productTotalPriceTd.text());
+						if (amount > productStock) {
+							this.value = preValue;
+							toastr.warning("此商品目前庫存量為: " + productStock + "，修改數量已超過最大庫存數，請重新確認");
+						} else if (amount <= 0) {
+							this.value = preValue;
+							toastr.warning("購買數量不可為0或小於0，請重新確認");
+						} else {
+							let href = '/shoppingCart/' + cartId + '/' + productId + '/' + amount;
+							let productTotalPrice = productPrice * amount;
+							productTotalPrice = toCurrency(productTotalPrice);
+							$.ajax({
+								url: href,
+								type: 'put',
+								success: function(){
+									productTotalPriceTd.text('$ ' + productTotalPrice);
+									getCartContext();								
+									toastr.success('商品購買數量更改成功');
+								}
+							});
+						}
+					}
+					amount = Number($(this).val());
+					if (amount >= productStock) {
+						$(this).siblings('.inc').css('pointerEvents','none');
+						$(this).siblings('.dec').css('pointerEvents','auto');
+					} else if (amount <= 1) {
+						$(this).siblings('.dec').css('pointerEvents','none');
+						$(this).siblings('.inc').css('pointerEvents','auto');
+					} else if (amount > 1 && amount < productStock) {
+						$(this).siblings('.qtybutton').css('pointerEvents','auto');
+					}
+				});
+				
+				
+				// 發送ajax請求(刪除Quickview購物車內容)
+				$(document).on('click', '.cartQuickviewDelete', function() {
+					$.ajax({
+						url: this.href,
+						type: 'delete',
+						success: function(){
+							toastr.success('已將商品自購物車刪除');
+							getCartQuantity();
+							getCartQuickview();
+							getCartContext();
+						}
+					});
+					return false;
+				});
+				
+				
+				// 發送ajax請求(刪除購物車內容)
+				$(document).on('click', '.cartDelete', function() {
+					$.ajax({
+						url: this.href,
+						type: 'delete',
+						success: function(){
+							toastr.success('已將商品自購物車刪除');
+							getCartQuantity();
+							getCartContext();
+						}
+					});
+					return false;
+				});
+				
+				
+				// 輸入折扣金額後按下使用積分折扣動態更新訂單金額
+				$(document).on('click', '#discountButton', function() {
+					let inputDiscount = $('#discountText').val();
+					let testNumber = /^-?\d+$/;
+					if (!testNumber.test(inputDiscount)) {
+						$('#discountText').val('');
+						toastr.warning('請勿輸入數字以外之字元');
+					} else {
+						inputDiscount = Number(inputDiscount) * 100;
+						let points = Number($('#discountText').data('points'));
+						if (inputDiscount > points) {
+							$('#discountText').val('');
+							toastr.warning('輸入之折扣金額已大於您可折抵之上限，請重新確認');
+							$('#discountTR').hide();
+							$('.totalPriceDisplay').html('$ ' + toCurrency(netPrice));
+							$("[name='netPrice']").val(netPrice);
+						} else if (inputDiscount < 0) {
+							$('#discountText').val('');
+							toastr.warning('折扣金額不可小於 0，請重新確認');
+							$('#discountTR').hide();
+							$('.totalPriceDisplay').html('$ ' + toCurrency(netPrice));
+							$("[name='netPrice']").val(netPrice);
+						} else if (inputDiscount == 0 || inputDiscount == null) {
+							$('#discountText').val('');
+							toastr.warning('折扣金額不可為0或空，請重新確認');
+							$('#discountTR').hide();
+							$('.totalPriceDisplay').html('$ ' + toCurrency(netPrice));
+							$("[name='netPrice']").val(netPrice);
+					    } else {
+							let discountAmount = Number($('#discountText').val());
+							$('#discountTR').show();
+							$('.discountDisplay').html('- $ ' + discountAmount);
+							$("[name='discount']").val(discountAmount);
+							let newNetPrice = Number(netPrice) - discountAmount;
+							$('.totalPriceDisplay').html('$ ' + toCurrency(newNetPrice));
+							$("[name='netPrice']").val(newNetPrice);
+						}
+					}
+					$(this).blur();
+				});
+				
+				
+				// 發送ajax請求(Wishlist:加入購物車)
+				$(document).on('click', '.addToCart', function() {
+					$.ajax({
+						url: this.href,
+						type: 'post',
+						success: function(data) {
+							if (data == 'added') {
+								toastr.success('成功加入購物車');
+								getCartQuantity();
+							} else if (data == 'already') {
+								toastr.warning('此商品已在您的購物車內');
+							} else {
+								toastr.warning('此商品已無庫存，請靜候補貨');
+							}
+						}
+					});
+					return false;
+				});
+				
+				
+				// 發送ajax請求(刪除願望清單內容)
+				$(document).on('click', '.wishlistDelete', function() {
+					$.ajax({
+						url: this.href,
+						type: 'delete',
+						success: function(){
+							toastr.success('已將商品自願望清單刪除');
+							getWishlistContext();
+						}
+					});
+					return false;
+				});
+				
+				
+				// 結帳前確認商品下單數量無超過庫存量
+				$(document).on('click', '#checkButton', function(event) {
+					$("[name='shoppingAmount']").each(function() {
+						if ($(this).val() > $(this).data('productstock')) {
+							$(this).parent().next().css('visibility', 'visible');
+							event.preventDefault();
+						}
+					})
+				})
+				
+			})
+		</script>
+	</head>
+	<body>	
+		<!-- WRAPPER START -->
+		<div class="wrapper bg-dark-white">
+
+			<!-- COMMONHEADAREA INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commonheadarea"></th:block>
+			<!-- COMMONHEADAREA INSERT END -->
+			
+			<!-- COMMONMOBILEMENU INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commonmobilemenu"></th:block>
+			<!-- COMMONMOBILEMENU INSERT END -->
+			
+			<!-- SHOPPING-CART-AREA START -->
+			<div class="shopping-cart-area  pt-80 pb-80">
+				<div class="container">	
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+							<div class="shopping-cart">
+								<!-- Nav tabs -->
+								<ul class="cart-page-menu row clearfix mb-30">
+									<th:block th:if="${pageCategory.equals('cart')}">
+										<li class="active shoppingCartTag"><a href="#shopping-cart" th:class="tab" data-toggle="tab">購物車</a></li>
+										<li class="wishlistTag"><a href="#wishlist" th:class="tab" data-toggle="tab">願望清單</a></li>
+									</th:block>
+									<th:block th:if="${pageCategory.equals('wishlist')}">
+										<li class="shoppingCartTag"><a href="#shopping-cart" th:class="tab" data-toggle="tab">購物車</a></li>
+										<li class="active wishlistTag"><a href="#wishlist" th:class="tab" data-toggle="tab">願望清單</a></li>
+									</th:block>
+								</ul>
+
+								<!-- Tab panes -->
+								<div class="tab-content">
+									<!-- shopping-cart start -->
+									<div th:class="${pageCategory.equals('cart')?'tab-pane active':'tab-pane'}" id="shopping-cart">
+										<form method="post" th:action="@{/checkout.html}" th:fragment="cart">
+											<div class="shop-cart-table">
+												<div class="table-content table-responsive">
+													<table>
+														<thead>
+															<tr>
+																<th class="product-thumbnail context">商品</th>
+																<th class="product-price context">價格</th>
+																<th class="product-quantity context">數量</th>
+																<th class="product-subtotal context">總金額</th>
+																<th class="product-remove"></th>
+															</tr>
+														</thead>
+														<tbody>
+															<th:block th:if="${cartQuantity == null}">
+																<tr>
+																	<td colspan="5" style="height: 100px;"><a th:href="@{/shop.html}" style="font-size: 16px;">購物車內目前無任何商品，按此前往商城頁面進行選購</a></td>
+																</tr>
+															</th:block>
+															<th:block th:unless="${cartQuantity == null}">
+																<tr th:each="cartItem : ${cartList}">
+																	<td class="product-thumbnail  text-left">
+																		<!-- Single-product start -->
+																		<div class="single-product">
+																			<div class="product-img">
+																				<a th:href="@{/singleProduct/{productId}(productId=${cartItem.productItem.productId})}"><img class="productImage" th:src="${cartItem.productItem.productPicture.get(0).productPath}" alt="" /></a>
+																			</div>
+																			<div class="product-info" style="padding-top: 45px;">
+																				<h4 class="post-title">
+																					<a class="text-light-black" th:href="@{/singleProduct/{productId}(productId=${cartItem.productItem.productId})}" th:text="${cartItem.productItem.productName}" style="font-size: 15px;font-weight: bold;">Product Name</a>
+																				</h4>
+																			</div>
+																		</div>
+																		<!-- Single-product end -->												
+																	</td>
+																	<td class="product-price">
+																		$ [[${#numbers.formatDecimal(cartItem.productItem.productPrice,1,'COMMA',0,'POINT')}]]
+																	</td>
+																	<td class="product-quantity">
+																		<div class="cart-plus-minus" style="margin-top: 35px">
+																			<input type="text" th:value="${cartItem.shoppingAmount}" name="shoppingAmount" class="cart-plus-minus-box" th:data-cartid="${cartItem.cartId}" th:data-productid="${cartItem.productItem.productId}" th:data-productprice="${cartItem.productItem.productPrice}" th:data-productstock="${cartItem.productItem.productStock}">
+																		</div>
+																		<div style="margin-top: 5px;visibility: hidden;">
+																			<p style="color: red;font-size: 13px;opacity: 0.8;">此商品已超過最大購買數量</p>
+																		</div>
+																	</td>
+																	<td class="product-subtotal">
+																		$ [[${#numbers.formatDecimal((cartItem.productItem.productPrice * cartItem.shoppingAmount),1,'COMMA',0,'POINT')}]]
+																	</td>
+																	<td class="product-remove">
+																		<a class="cartDelete" th:href="@{/shoppingCart/{cartId}(cartId=${cartItem.cartId})}"><i class="zmdi zmdi-close"></i></a>
+																	</td>
+																</tr>
+															</th:block>
+														</tbody>
+													</table>
+												</div>
+											</div>
+											<div class="row" th:unless="${cartQuantity == null}">
+												<div class="col-md-6 col-sm-6 col-xs-12">
+													<div class="customer-login mt-30">
+														<h4 class="title-1 title-border text-uppercase">積分折抵</h4>
+														<p class="text-gray context" style="margin-bottom: 10px">積分折抵規則：每 100 點積分可折抵訂單金額 1 元</p>
+														<p class="text-gray context" style="margin-bottom: 10px">您目前有 <span style="color: #C87065;">[[${userInfo.totalPoints}]]</span> 點積分可供折抵</p>
+										 				<p class="text-gray context" style="color: #C87065;">NOTE：若於積分折抵後修改商品購買數量，請再次執行積分折抵動作</p>
+														<input type="text" placeholder="請輸入您想折抵的金額" id="discountText" th:data-points="${userInfo.totalPoints}">
+														<button type="button" id="discountButton" data-text="使用積分折抵" class="button-one submit-button mt-5  context">使用積分折抵</button>
+													</div>
+												</div>
+												<div class="col-md-6 col-sm-6 col-xs-12">
+													<div class="customer-login payment-details mt-30">
+														<h4 class="title-1 title-border text-uppercase">訂單詳情</h4>
+														<table>
+															<tbody>
+																<tr>
+																	<td class="text-left context">商品金額小計</td>
+																	<td class="text-right context">
+																		$ [[${#numbers.formatDecimal(totalPrice,1,'COMMA',0,'POINT')}]]
+																	</td>
+																	<td class="invisible">
+																		<input type="hidden" name="totalPrice" th:value="${totalPrice}">
+																	</td>
+																</tr>
+																<tr>
+																	<td class="text-left context">運費</td>
+																	<td class="text-right context">
+																		$ 30
+																	</td>
+																	<td class="invisible">
+																		<input type="hidden" name="deliveryFee" th:value="30">
+																	</td>
+																</tr>
+																<tr id="discountTR" style="display: none;">
+																	<td class="text-left context">會員積分折抵金額</td>
+																	<td class="text-right context discountDisplay">
+																		$ 0
+																	</td>
+																	<td class="invisible">
+																		<input type="hidden" name="discount">
+																	</td>
+																</tr>
+																<tr>
+																	<td class="text-left context">訂單總金額</td>
+																	<td class="text-right context totalPriceDisplay">
+																		$ [[${#numbers.formatDecimal((totalPrice + 30),1,'COMMA',0,'POINT')}]]
+																	</td>
+																	<td class="invisible">
+																		<input type="hidden" name="netPrice" th:value="${totalPrice + 30}">
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+														<div style="text-align:right">
+															<button id="checkButton" type="submit" data-text="結帳" class="button-one submit-button mt-15 context">結帳</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</form>		
+									</div>
+									<!-- shopping-cart end -->
+									<!-- wishlist start -->
+									<div th:class="${pageCategory.equals('wishlist')?'tab-pane active':'tab-pane'}" id="wishlist">
+										<form action="#" th:fragment="wishlist">
+											<div class="shop-cart-table">
+												<div class="table-content table-responsive">
+													<table>
+														<thead>
+															<tr>
+																<th class="product-thumbnail context">商品</th>
+																<th class="product-price context">價格</th>
+																<th class="product-stock context">庫存狀態</th>
+																<th class="product-add-cart context">加入購物車</th>
+																<th class="product-remove context"></th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr th:if="${wishlist.isEmpty()}">
+																<td colspan="5" style="height: 100px;"><a th:href="@{/shop.html}" style="font-size: 16px;">願望清單內目前無任何商品，按此前往商城頁面進行添加</a></td>
+															</tr>
+															<tr th:unless="${wishlist.isEmpty()}" th:each="listItem : ${wishlist}">
+																<td class="product-thumbnail  text-left">
+																	<!-- Single-product start -->
+																	<div class="single-product">
+																		<div class="product-img">
+																			<a th:href="@{/singleProduct/{productId}(productId=${listItem.product.productId})}"><img class="productImage" th:src="${listItem.product.productPicture.get(0).productPath}" alt="" /></a>
+																		</div>
+																		<div class="product-info" style="padding-top: 45px;">
+																			<h4 class="post-title">
+																				<a class="text-light-black" th:href="@{/singleProduct/{productId}(productId=${listItem.product.productId})}" th:text="${listItem.product.productName}" style="font-size: 15px;font-weight: bold;">Product name</a>
+																			</h4>
+																		</div>
+																	</div>
+																	<!-- Single-product end -->				
+																</td>
+																<td class="product-price">$ [[${#numbers.formatDecimal(listItem.product.productPrice,1,'COMMA',0,'POINT')}]]</td>
+																<th:block th:if="${listItem.product.productStock > 0}">
+																	<td class="product-stock context">目前尚有庫存</td>
+																	<td class="product-add-cart">
+																		<a class="text-light-black addToCart" th:href="@{/shoppingCart(tempProductId=${listItem.product.productId},shoppingAmount=1)}"><i class="zmdi zmdi-shopping-cart-plus"></i></a>
+																	</td>
+																</th:block>
+																<th:block th:if="${listItem.product.productStock <= 0}">
+																	<td class="product-stock context">無庫存，待補貨</td>
+																	<td></td>
+																</th:block>
+																<td class="product-remove">
+																	<a class="wishlistDelete" th:href="@{/wishlist/{userId}/{productId}(userId=${listItem.user.userId}, productId=${listItem.product.productId})}"><i class="zmdi zmdi-close"></i></a>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</form>									
+									</div>
+									<!-- wishlist end -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- SHOPPING-CART-AREA END -->
+			
+			<!-- COMMONFOOTER INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commmonfooter"></th:block>
+			<!-- COMMONFOOTER INSERT END -->
+			
+		</div>
+		<!-- WRAPPER END -->
+
+		<!-- COMMONJS INSERT START -->
+		<th:block th:replace="/mall/mallcommon :: commonjs"></th:block>
+		<!-- COMMONJS INSERT END -->
+	</body>
+</html>

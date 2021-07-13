@@ -1,0 +1,67 @@
+spring:
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  datasource:
+    username: Changmilu
+    password: '123456'
+    url: jdbc:sqlserver://localhost:1433;databaseName=HouseCallTest
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+      dialect: org.hibernate.dialect.SQLServer2012Dialect
+      format-sql: true
+      current-session-context-class: org.springframework.orm.hibernate5.SpringSessionContext
+  resources:
+    static-locations:
+    - classpath:/static/
+    - classpath:/resources/
+    - classpath:/public/
+    - classpath:/META-INF/resources/
+    - file:///D:\Programming\
+    #為了配置本地存放圖片路徑file:///D:\Programming\
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: housecalltw@gmail.com
+    password: housecalltw2021
+    default-encoding: UTF-8
+    properties:
+      mail: 
+        transport:
+          protocol: smtp
+        smtp:
+          prot: 25
+          auth: true
+          starttls:
+            enable: true
+            required: true
+#  redis:
+#    host: maskcache.redis.cache.windows.net
+#    password: jmrivXpb1i7EeFE+8AXajszAIhTIERMMhCWeybItdIA=
+#    port: 6380
+#    ssl: true
+#    client-name: Lettuce
+#    lettuce:
+#      pool:
+#        max-active: 10
+#        min-idle: 5
+#  data:
+#    redis:
+#      repositories:
+#        enabled: false
+  servlet:
+      multipart:
+        enabled: true
+        file-size-threshold: 0
+        max-file-size: 100MB
+        max-request-size: 100MB
+      
+
+    

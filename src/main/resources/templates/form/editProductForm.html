@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>編輯商品庫存</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/ico" sizes="16x16" th:href="@{/images/favicon.ico}">
+    <!-- Custom Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+	<script type="text/javascript">
+	$(function(){
+		let editvalue;
+		let edittype;
+		let subtype;
+		//動態繫結編輯圖示
+		$(".basic-list-group").on("click","a",function(){
+			$(".basic-list-group a").not(this).hide();
+			var re = new RegExp("\\<br>", "g");
+			editvalue = $(this).data("value");
+			edittype = $(this).attr("id");
+			type = $("#productType").data("value");
+			subtype = $("#subType").data("value");
+			let str="<li class='list-group-item'>";
+			if(edittype==="productPath"){
+				$('#productPathli a').hide();
+				$('#productPathli img').after("<button style='z-index:999;position:relative;left:-205px;top:-120px;border:none;background-color: transparent; cursor:pointer' href='#'><i class='bi bi-x-circle dico'></i></button>");
+				$('#productPathli').append("<input type='file' class='form-control-file' id='filename' name='productPhoto' multiple>"
+					+"<div id='deltag' style='text-align:center'><button style='margin-right: 4px' id='piccancel' type='button' class='btn mb-1 btn-outline-dark'>取消</button><button style='margin-left: 4px' id='picsave' type='button' class='btn mb-1 btn-outline-dark'>儲存</button></div></li>");
+			}else{
+			if (edittype==="productType"){
+				//同時顯示商品類別及次類別更改選單
+				str += "<label>商品類別:</label><select class='form-control' id='val-skill' name='productType'>"+
+                "<option value='桌椅'>桌椅</option>"+
+                "<option value='寢具'>寢具</option>"+
+                "<option value='小型家電'>小型家電</option>"+
+                "<option value='廚房用品'>廚房用品</option>"+
+                "<option value='衛浴用品'>衛浴用品</option>"+
+                "<option value='收納櫃、收納盒'>收納櫃、收納盒</option>"+
+                "<option value='洗衣、曬衣'>洗衣、曬衣</option>"+
+                "<option value='擺飾'>擺飾</option>"+
+                "<option value='其他'>其他</option>"+
+                "</select>";
+                //判斷編輯前類別是否有需要次類別選單
+                if(subtype!=null){
+                str+="<div id='sel2div'><label>商品次類別:</label><select class='form-control' id='val-skill' name='subType'>";
+                let arr1= ["沙發","椅子","桌子"];
+    			let arr2= ["床架","床墊","棉被","枕頭"];
+    			let arr3= ["廚具","餐具"];
+    			let arr4= ["衣櫃","鞋櫃","收納"];
+    			if(editvalue==="桌椅"){
+    				for(var item in arr1){
+    					str+="<option value='"+arr1[item]+"'>"+arr1[item]+"</option>";
+    				}
+    			}else if (editvalue==="寢具"){
+    				for(var item in arr2){
+    					str+="<option value='"+arr2[item]+"'>"+arr2[item]+"</option>";
+    				}
+    			}else if (editvalue==="廚房用品"){
+    				for(var item in arr3){
+    					str+="<option  value='"+arr3[item]+"'>"+arr3[item]+"</option>";
+    				}
+    			}else if (editvalue==="收納櫃、收納盒"){
+    				for(var item in arr4){
+    					str+="<option value='"+arr4[item]+"'>"+arr4[item]+"</option>";
+    				}
+    			}
+                str+="</select></div>";
+                }else{
+                	str+="<div id='sel2div'></div>"
+                }
+                $("#subTypeli").remove();
+			}else if(edittype==="subType"){
+				str+="<label>商品次類別:</label><select class='form-control' id='val-skill' name='subType'>";
+                let arr1= ["沙發","椅子","桌子"];
+    			let arr2= ["床架","床墊","棉被","枕頭"];
+    			let arr3= ["廚具","餐具"];
+    			let arr4= ["衣櫃","鞋櫃","收納"];
+    			if(type==="桌椅"){
+    				for(var item in arr1){
+    					str+="<option value='"+arr1[item]+"'>"+arr1[item]+"</option>";
+    				}
+    			}else if (type==="寢具"){
+    				for(var item in arr2){
+    					str+="<option value='"+arr2[item]+"'>"+arr2[item]+"</option>";
+    				}
+    			}else if (type==="廚房用品"){
+    				for(var item in arr3){
+    					str+="<option  value='"+arr3[item]+"'>"+arr3[item]+"</option>";
+    				}
+    			}else if (type==="收納櫃、收納盒"){
+    				for(var item in arr4){
+    					str+="<option value='"+arr4[item]+"'>"+arr4[item]+"</option>";
+    				}
+    			}
+                str+="</select>";
+			}else if (edittype==="productState"){
+				str += "<label>商品狀態:</label><select class='form-control' id='val-skill' name='productState' value='"+editvalue+"'>"+
+                "<option value='上架'>上架</option>"+
+                "<option value='未上架'>未上架</option>"+
+                "</select>";
+			}else if(edittype==="productDescription"){
+				let valuemovebrpd = editvalue.replace(re,'\r\n');
+				str += "<label>商品詳情:</label>"+
+				"<textarea class='form-control h-150px' rows='6' name='productDescription' value='"+valuemovebrpd+"'>"+valuemovebrpd+"</textarea>";
+			}else if(edittype==="briefDescription"){
+				let valuemovebrbd = editvalue.replace(re,'\r\n');
+				str += "<label>商品簡介:</label><span style='color: red'> * * 字數限制150個字 * *</span>"+
+                		"<textarea class='form-control h-150px' rows='2' id='bd' name='briefDescription' maxlength='50' value='"+valuemovebrbd+"'>"+valuemovebrbd+"</textarea>"
+			}else if(edittype==="spec"){
+				let valuemovebrs = editvalue.replace(re,'\r\n');
+				str += "<label>商品規格:</label><span style='color: red'> * * 字數限制150個字 * *</span>"+
+                		"<textarea class='form-control h-150px' rows='4' id='spec' name='spec' maxlength='100' value='"+valuemovebrs+"'>"+valuemovebrs+"</textarea>"
+			}else{
+				if(edittype==="productName"){
+					str += "<label>商品名稱:</label>";
+				}else if(edittype==="productPrice"){
+					str += "<label>商品價格:</label>";
+				}else if(edittype==="productStock"){
+					str += "<label>商品庫存:</label>";
+				}
+                str += "<input type='text' class='form-control input-default' name='"+edittype+"'value='"+editvalue+"'>";
+			}
+			str+="<div style='text-align:center'><button style='margin-right: 4px' id='cancel' type='button' class='btn mb-1 btn-outline-dark'>取消</button><button style='margin-left: 4px' id='save' type='button' class='btn mb-1 btn-outline-dark'>儲存</button></div></li>";
+			let replaceto = "#"+edittype+"li";
+			$(replaceto).html(str);
+			let defaultype = "[name=productType] option[value='"+editvalue+"']";
+			$(defaultype).attr("selected","selected");
+			let defaulsubtype = "[name=subType] option[value='"+subtype+"']";
+			$(defaulsubtype).attr("selected","selected");
+			}
+		});
+		
+		//繫結商品次類別選項
+		$(".basic-list-group").on("change","[name=productType]",function(){
+			let arr1= ["沙發","椅子","桌子"];
+			let arr2= ["床架","床墊","棉被","枕頭"];
+			let arr3= ["廚具","餐具"];
+			let arr4= ["衣櫃","鞋櫃","收納"];
+			let str="<label>商品次類別:</label><select class='form-control' id='val-skill' name='subType'>";
+			let typevalue = $(this).val();
+			console.log(typevalue);
+			if(typevalue==="桌椅"){
+				for(var item in arr1){
+					$("#sel2div").show();
+					str+="<option>"+arr1[item]+"</option>";
+				}
+			}else if (typevalue==="寢具"){
+				for(var item in arr2){
+					$("#sel2div").show();
+					str+="<option>"+arr2[item]+"</option>";
+				}
+			}else if (typevalue==="廚房用品"){
+				for(var item in arr3){
+					$("#sel2div").show();
+					str+="<option>"+arr3[item]+"</option>";
+				}
+			}else if (typevalue==="收納櫃、收納盒"){
+				for(var item in arr4){
+					$("#sel2div").show();
+					str+="<option>"+arr4[item]+"</option>";
+				}
+			}else{
+				$("#sel2div").hide();
+			}
+			str+="<option hidden='hidden' selected>請選擇商品分類</option></select>";
+			$("#sel2div").html(str);
+		});
+		
+		//刪除現有圖片
+		$(".imgdelete").on('click','button',function(){
+			if(confirm("您確定要刪除此圖片?")){
+			let deleteimg = $(this).prev().data('value');
+			$.ajax({
+				url:"/deletepic/"+deleteimg,
+				type:"GET",
+				success:function(data){
+					if(data==='true'){
+						$('[data-value='+deleteimg+']').parent().remove();
+						alert('已成功刪除');
+					}
+				}
+			});
+			}
+		});
+		
+		//新增圖片預覽
+		$("#productPathli").on('change','#filename',function(){
+			readURL(this);
+		});
+		
+		function readURL(input){
+			let piclength = 4-$(".imgdelete").length;
+			let selectpic = input.files.length;
+			let total = piclength-selectpic;
+			console.log(' piclength'+ piclength);
+			console.log(' selectpic'+ selectpic);
+			console.log(' total'+ total);
+			if(piclength>0 && total>=0){
+				if(input.files && input.files[0]){
+					for(var i = 0 ; i < input.files.length ; i++){
+					let reader = new FileReader();
+					reader.onload = function(e){
+						let pre = "<div class='imgdelete' style='float:float;display:inline-block;width:220px;'>";
+						let img = "<img width='200' height='250' style='margin-right:6px' src='"+e.target.result+"'></div>";
+						$("#filename").before(pre+img);
+					}
+					reader.readAsDataURL(input.files[i]);
+					}
+				}
+			}else{
+				$("#filename").after("<p style='color:red'>單一商品最多只能上傳四張照片</p>");
+				return false;
+			}
+			
+		};
+		
+		//動態繫結編輯圖片click儲存事件
+		$('#productPathli').on('click','#picsave',function(){
+			let productId = $(".card-title").attr("id");
+			let formdata = new FormData();
+			let picfiles = $("#filename")[0].files;
+			formdata.append("productId",productId);
+			for(var i = 0; i < picfiles.length; i++){
+				formdata.append('fileupload',picfiles[i]);
+		    }
+			$.ajax({
+				url:"/updateProductPic",
+				type:"POST",
+				data:formdata,
+				contentType:false,//ajax上传图片需要添加
+	            processData:false,//ajax上传图片需要添加
+				dataType:"json",
+				success:function(productpic){
+					$("#productPathli").empty();
+					let str = "<label style='float:top'>商品圖片:</label><br>"
+					for(let pic of productpic){
+						str += "<div class='imgdelete' style='float:float;display:inline-block;width:220px;'><img src="+pic.productPath+" width='200px' height='250px' data-value="+pic.picphotoId+"/></div>";
+					}
+					str += "<span style='float: right'><a href='#' data-toggle='tooltip' data-placement='top' id='productPath' data-value='productPath'><i class='fa fa-pencil color-muted m-r-5'></i></a></span>"
+					$("#productPathli").append(str);
+				}
+			})
+			$("a").show();
+		});
+		
+		//動態繫結編輯圖片click取消事件
+		$('#productPathli').on('click','#piccancel',function(){
+			$("#filename").remove();
+			$("#productPathli button").remove();
+			$("#deltag").remove();
+			$("a").show();
+		});
+		
+		//動態繫結click 儲存事件
+		$(".basic-list-group").on("click","#save",function(){
+			let productId = $(".card-title").attr("id");
+			let formdata = new FormData();
+			//if(edittype==="productPath"){
+			//}else{
+				if(edittype==="productType"){
+					let atrselector = "[name="+edittype+"]";
+					formdata.append("value",$(atrselector).val());
+					formdata.append("name1","subType");
+					formdata.append("value1",$("[name=subType]").val());
+				
+				}else{
+					let atrselector = "[name="+edittype+"]";
+					formdata.append("value",$(atrselector).val());
+				}
+			//}
+			formdata.append("name",edittype);
+			formdata.append("productId",productId);
+			
+			$.ajax({
+				url:"/updateProduct",
+				type:"POST",
+				data:formdata,
+				contentType:false,//ajax上传图片需要添加
+	            processData:false,//ajax上传图片需要添加
+				dataType:"json",
+				success:function(product){
+					let changetextstr ="";
+					if(edittype==="productPath"){
+						//changetextstr += "<img src='"+eval("product.productPath")+"'><span style='float: right'><a href='#' data-toggle='tooltip' data-placement='top' id='productPath' data-value='"+eval("product.productPath")+"'><i class='fa fa-pencil color-muted m-r-5'></i> </a></span>";
+						//$("#productPathli").html(changetextstr);
+					}else if(edittype==="productType"){
+						changetextstr+="<label>商品類別:</label><br>"+eval("product."+edittype)+"<span style='float: right'><a href='#' data-toggle='tooltip' data-placement='top' id='"+edittype+"' data-value='"+eval("product."+edittype)+"'><i class='fa fa-pencil color-muted m-r-5'></i> </a></span>";
+						let replaceto = "#"+edittype+"li";
+						$(replaceto).html(changetextstr);
+						if(product.subType!=null){
+						$("<li class='list-group-item' id='subTypeli'><label>商品次類別:</label><br>"+eval("product.subType")+"<span style='float: right'><a href='#' data-toggle='tooltip' data-placement='top' id='subType' data-value="+eval("product.subType")+"><i class='fa fa-pencil color-muted m-r-5'></i> </a></span></li>").insertAfter("#productTypeli");
+						}
+					}else{
+						changetextstr += "<label>"
+						if(edittype==="productName"){
+							changetextstr += "商品名稱:";
+						}else if(edittype==="productPrice"){
+							changetextstr += "商品價格:";
+						}else if(edittype==="productStock"){
+							changetextstr += "商品庫存:";
+						}else if(edittype==="productState"){
+							changetextstr += "商品狀態:";
+						}else if(edittype==="subType"){
+							changetextstr += "商品次類別:";
+						}else if(edittype==="productDescription"){
+							changetextstr += "商品詳情:";
+						}else if(edittype==="briefDescription"){
+							changetextstr += "商品簡介:";
+						}else if(edittype==="spec"){
+							changetextstr += "商品規格:";
+						}
+						changetextstr += "</label><br><span>"+eval("product."+edittype)+"</span><span style='float: right'><a href='#' data-toggle='tooltip' data-placement='top' id='"+edittype+"' data-value='"+eval("product."+edittype)+"'><i class='fa fa-pencil color-muted m-r-5'></i> </a></span>"
+						let replaceto = "#"+edittype+"li";
+						$(replaceto).html(changetextstr);
+					}
+					$("#productUpdateli").text("上次更新時間: "+eval("product.productUpdateTime"));
+					$("a").show();
+				}
+			});
+			
+		});
+		
+		//動態繫結click 取消事件
+		$(".basic-list-group").on("click","#cancel",function(){
+			let orgtextstr ="";
+			if(edittype==="productType"){
+				orgtextstr+="<label>商品類別:</label><br>"+editvalue+"<span style='float: right'><a href='#' data-toggle='tooltip' data-placement='top' id='"+edittype+"' data-value='"+editvalue+"'><i class='fa fa-pencil color-muted m-r-5'></i> </a></span>";
+				let replaceto = "#"+edittype+"li";
+				$(replaceto).html(orgtextstr);
+				$("<li class='list-group-item' id='subTypeli'><label>商品次類別:</label><br>"+subtype+"<span style='float: right'><a href='#' data-toggle='tooltip' data-placement='top' id='subType' data-value="+subtype+"><i class='fa fa-pencil color-muted m-r-5'></i> </a></span></li>").insertAfter("#productTypeli");
+			}else{
+				orgtextstr +="<label>"
+				if(edittype==="productName"){
+					orgtextstr += "商品名稱: ";
+				}else if(edittype==="productPrice"){
+					orgtextstr += "商品價格: ";
+				}else if(edittype==="productStock"){
+					orgtextstr += "商品庫存: ";
+				}else if(edittype==="productState"){
+					orgtextstr += "商品狀態: ";
+				}else if(edittype==="subType"){
+					orgtextstr += "商品次類別: ";
+				}else if(edittype==="productDescription"){
+					orgtextstr += "商品詳情: ";
+				}else if(edittype==="briefDescription"){
+					orgtextstr += "商品簡介:";
+				}else if(edittype==="spec"){
+					orgtextstr += "商品規格:";
+				}
+				orgtextstr += "</label><br><span style='float: float'>"+editvalue+"</span><span style='float: right'><a href='#' data-toggle='tooltip' data-placement='top' id='"+edittype+"' data-value='"+editvalue+"'><i class='fa fa-pencil color-muted m-r-5'></i> </a></span>";
+				let replaceto = "#"+edittype+"li";
+				$(replaceto).html(orgtextstr);
+			}
+			/* $("#productUpdateli").text("上次更新時間: "+eval("product.productUpdateTime")); */
+			$("a").show();
+		});
+		
+		//繫結跳轉到庫存商品總覽
+		$("#btnn").click(function(){
+			$(window).attr('location','/inventorytable');
+		});
+	})
+	
+	</script>
+	<style>
+	.dico{
+		color:#696969;
+		background:white;
+		padding: 0 0 0 0;
+		border-radius: 50%;
+	}
+	</style>
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+   <div th:replace="common :: commonpreloader"></div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+    
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+       <div th:replace="common :: commonnavHeader"></div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div th:replace="common :: commonheader"></div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div th:replace="common :: commonsidebar"></div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body" >
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                   
+                </div>
+            </div>
+            <!-- row -->
+            <div class="container-fluid">
+            <!-- row -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title" th:id="${command.productId}">商品資訊(商品編號:[[${command.productId}]])</h3>
+                                <div style="text-align:right">
+                                <button id="btnn" type="button" class="btn mb-1 btn-primary btn-sm">返回庫存商品總覽</button>
+                                </div>
+                                <div class="basic-list-group">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item" id="productNameli"><label>商品名稱:</label><br>[[${command.productName}]]<span style="float: right"><a href='#' data-toggle='tooltip' data-placement='top' id="productName" th:data-value="${command.productName}"><i class='fa fa-pencil color-muted m-r-5'></i> </a></span></li>
+                                        <li class="list-group-item" id="productTypeli"><label>商品類別:</label><br>[[${command.productType}]]<span style="float: right"><a href='#' data-toggle='tooltip' data-placement='top' id="productType" th:data-value="${command.productType}"><i class='fa fa-pencil color-muted m-r-5'></i> </a></span></li>
+                                        <li th:if="${command.subType!=null}" class="list-group-item" id="subTypeli"><label>商品次類別:</label><br>[[${command.subType}]]<span style="float: right"><a href='#' data-toggle='tooltip' data-placement='top' id="subType" th:data-value="${command.subType}"><i class='fa fa-pencil color-muted m-r-5'></i> </a></span></li>
+                                        <li class="list-group-item" id="productPriceli"><label>商品價格:</label><br>[[${command.productPrice}]]<span style="float: right"><a href='#' data-toggle='tooltip' data-placement='top' id="productPrice" th:data-value="${command.productPrice}"><i class='fa fa-pencil color-muted m-r-5'></i> </a></span></li>
+                                        <li class="list-group-item" id="productStockli"><label>商品庫存:</label><br>[[${command.productStock}]]<span style="float: right"><a href='#' data-toggle='tooltip' data-placement='top' id="productStock" th:data-value="${command.productStock}"><i class='fa fa-pencil color-muted m-r-5'></i> </a></span></li>
+                                        <li class="list-group-item" id="specli"><label>商品規格:</label><br><span th:utext="${command.spec}" style="float:float"></span><span style="float: right"><a href='#' data-toggle='tooltip' data-placement='top' id="spec" th:data-value="${command.spec}"><i class='fa fa-pencil color-muted m-r-5'></i> </a></span></li>
+                                        <li class="list-group-item" id="briefDescriptionli"><label>商品簡介:</label><br><span th:utext="${command.briefDescription}" style="float:float"></span><span style="float: right"><a href='#' data-toggle='tooltip' data-placement='top' id="briefDescription" th:data-value="${command.briefDescription}"><i class='fa fa-pencil color-muted m-r-5'></i> </a></span></li>
+                                        <li class="list-group-item" id="productDescriptionli"><label>商品詳情:</label><br><span th:utext="${command.productDescription}" style="float:float"></span><span style="float: right"><a href='#' data-toggle='tooltip' data-placement='top' id="productDescription" th:data-value="${command.productDescription}"><i class='fa fa-pencil color-muted m-r-5'></i> </a></span></li>
+                                        <li class="list-group-item" id="productStateli"><label>商品狀態:</label><br>[[${command.productState}]]<span style="float: right"><a href='#' data-toggle='tooltip' data-placement='top' id="productState" th:data-value="${command.productState}"><i class='fa fa-pencil color-muted m-r-5'></i> </a></span></li>
+                                        <li class="list-group-item" ><label>新增時間:</label><br>[[${command.productCreateTime}]]</li>
+                                        <li class="list-group-item" id="productUpdateli"><label>上次更新時間:</label><br>[[${command.productUpdateTime}]]</li>
+                                        <li class="list-group-item" id="productPathli"><label style="float:top">商品圖片:</label><br><div class="imgdelete" th:each="pic : ${command.productPicture}" style="float:float;display:inline-block;width:220px;"><img th:src="${pic.productPath}" width="200px" height="250px" th:data-value="${pic.picphotoId}"/></div>
+                                        <span style="float: right"><a href='#' data-toggle='tooltip' data-placement='top' id="productPath" th:data-value="productPath"><i class='fa fa-pencil color-muted m-r-5'></i></a></span>
+                                        </li>
+                                    </ul>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>  
+               
+                            
+                                            
+            <!-- #/ container -->
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+        
+        
+        <!--**********************************
+            Footer start
+        ***********************************-->
+         <div th:replace="common :: commonfooter"></div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+   <div th:replace="common :: commonscripts"></div>
+
+</body>
+
+</html>

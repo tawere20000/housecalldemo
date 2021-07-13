@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<!-- ===========修改0710============= -->
+<title>註冊廠商帳號</title>
+<!-- ===========修改0710============= -->
+<link rel="stylesheet" th:href="@{/data/css/bootstrapIndex.css}">
+
+<script th:src="@{/data/js/jquery.min.js}"></script>
+
+<link rel="stylesheet" th:href="@{/data/css/styleIndex.css}">
+
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+
+
+<link rel="stylesheet" th:href="@{/data/css/default.css}">
+
+<!-- 									新增的07042057 -->
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
+<!-- 									新增的07042057 -->
+
+<style>
+.customer-login {
+	background: #fff none repeat scroll 0 0;
+	padding: 40px;
+}
+
+.error {
+	color: red;
+}
+</style>
+<style>
+.copyrights {
+	text-indent: -9999px;
+	height: 0;
+	line-height: 0;
+	font-size: 0;
+	overflow: hidden;
+}
+
+.form-control {
+	display: block;
+	width: 100%;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgb(0 0 0/ 8%);
+	box-shadow: inset 0 1px 1px rgb(0 0 0/ 8%);
+	-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow
+		ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out
+		.15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+</style>
+
+
+
+
+
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+<script th:src="@{/data/js/jquery.twzipcode.js}"></script>
+<script th:src="@{/data/js/jquery.twzipcode.min.js}"></script>
+<script th:src="@{/data/js/twzipcode.js}"></script>
+<script type="text/javascript">
+
+$(function(){
+	
+	$('#twzipcode').twzipcode({
+//		 'css': ['county', 'district', 'zipcode'],
+	
+	});
+// 	新增
+	$('#submit').attr('disabled', 'disabled');
+// 	新增	
+	$("#accountValue").keyup(function(){
+		
+		let accountValue = $("#accountValue").val()
+		
+		if(accountValue==""){
+			$("#result0c").html("帳號不能為空").css("color", "red");
+			return
+		}
+		if(accountValue.length<=5){
+			$("#result0c").html("帳號不能少於五個字").css("color", "red");
+			return
+		}
+		
+		$.ajax({
+			url:"checkAccountAjax",
+			type:"POST",
+			data:{"accountValue":accountValue},
+			dataType: "JSON",
+			success:function(result){
+				  $("#result0cp").html("");
+				let account = result.a;
+				 var message = "";
+				if (account=="empty") {
+					  message = "帳號可用";
+					  console.log("可用");
+					  $("#result0c").html(message).css("color", "green");
+				   }  else {
+					  message = "帳號重複，請重新輸入帳號"; 
+					  console.log("重複");
+					  $("#result0c").html(message)
+				   }
+			
+			},
+			error:function(){
+				console.log("失敗");
+			}
+		});
+	});
+	
+	
+	
+	$("#emailValue").keyup(function(){
+			
+			let emailValue = $("#emailValue").val()
+			
+			if(emailValue==""){
+				$("#resultEmail").html("Email不能為空").css("color", "red");
+				return
+			}
+			if(!IsEmail(emailValue)){
+				$("#resultEmail").html("Email格式不正確").css("color", "red");
+				return
+			}
+			
+			$.ajax({
+				url:"checkEmailAjax",
+				type:"POST",
+				data:{"emailValue":emailValue},
+				dataType: "JSON",
+				success:function(result){
+					  $("#resultemailp").html("");
+					let email = result.a;
+					 var message = "";
+					if (email=="empty") {
+						  message = "Email可用";
+						  console.log("可用");
+						  $("#resultEmail").html(message).css("color", "green");
+					   }  else {
+						  message = "重複，請重新輸入Email"; 
+						  console.log("重複");
+						  $("#resultEmail").html(message)
+					   }
+					
+				
+				},
+				error:function(){
+					console.log("失敗");
+				}
+			});
+		});
+		
+	
+	
+	
+	$("#phoneNumberValue").keyup(function(){
+			
+			let phoneNumberValue = $("#phoneNumberValue").val();
+			 $("#resultPhoneNumberp").html("");
+			
+			if(phoneNumberValue==""){
+				$("#resultPhoneNumber").html("手機號碼不能為空").css("color", "red");
+				return
+			}
+			if(!IsMobile(phoneNumberValue)){
+				$("#resultPhoneNumber").html("手機號碼格式不正確").css("color", "red");
+				return
+			}else{
+				$("#resultPhoneNumber").html("格式正確").css("color", "green");
+				return
+			}
+			
+			
+		});
+		
+	$("#idNumberValue").keyup(function(){
+			
+			let idNumberValue = $("#idNumberValue").val()
+						$("#resultidNumberp").html("");
+
+			if(idNumberValue==""){
+				$("#resultidNumber").html("身分證字號不能為空").css("color", "red");
+				return
+			}
+			if(!IsIdNumber(idNumberValue)){
+				$("#resultidNumber").html("身分證字號格式不正確").css("color", "red");
+				return
+			}else{
+				$("#resultidNumber").html("格式正確").css("color", "green");
+				return
+			}
+			
+			
+		});
+		
+	$("#passwordCheckValue").keyup(function(){
+			
+			let passwordValue = $("#passwordValue").val()
+			let passwordCheckValue = $("#passwordCheckValue").val()
+			$("#resultpasswordCheckp").html("");
+				$("#resultpasswordp").html("");
+			
+			if(passwordValue!=passwordCheckValue){
+				$("#resultpasswordCheck").html("兩次密碼輸入的不一樣").css("color", "red");
+				return
+			}else{
+				$("#resultpasswordCheck").html("輸入相符").css("color", "green");
+				return
+			}
+			
+			
+		});
+		
+	$("#name").keyup(function(){
+		
+		let name = $("#name").val()
+					$("#resultNamep").html("");
+
+		if(name==""){
+			$("#resultName").html("公司名稱不能為空").css("color", "red");
+			return
+		}
+		if(name.length<2){
+			$("#resultName").html("公司名稱最少兩個字").css("color", "red");
+			return
+		}else{
+			$("#resultName").html("格式正確").css("color", "green");
+			return
+		}
+		
+		
+	});
+// 	=======================新增===================
+	$("#addressDetail").keyup(function(){
+		
+		let name = $("#addressDetail").val()
+			$("#resultaddressDetailp").html("");
+		if(name==""){
+			$("#resultaddressDetail").html("詳細地址不能為空").css("color", "red");
+			return
+		}
+		else{
+			$("#resultaddressDetail").html("格式正確").css("color", "green");
+			return
+		}
+		
+		
+	});
+		
+// 	=======================新增===================
+	
+// 	    沒勾我同意不能送出
+	    $('#readMe').click(function() {
+	    	if ($('#submit').is(':disabled')) {
+	        	$('#submit').removeAttr('disabled');
+	        } else {
+	        	$('#submit').attr('disabled', 'disabled');
+	        }
+	    });
+	
+	
+	
+
+		$('#submit').attr('disabled', 'disabled');
+
+
+	$("#readMe").change(function(){
+
+		
+		if($(this).is(":checked")){
+			$("#resultreadMe").html("您已同意本站條例").css("color", "green");
+			$('#submit').removeAttr('disabled');
+		}else{
+			$("#resultreadMe").html("請先閱讀本站條例").css("color", "red");
+			$('#submit').attr('disabled', 'disabled');
+			return
+		}
+		
+	}).change;
+		
+	
+	
+	
+	
+	
+	});
+	
+	
+	
+	
+	function IsEmail(email) {
+		  var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		  if(!regex.test(email)) {
+		    return false;
+		  }else{
+		    return true;
+		  }
+		}
+	
+	function IsMobile(mobile) {
+		  var regex =  /^(09)[0-9]{8}$/;
+		  if(!regex.test(mobile)) {
+		    return false;
+		  }else{
+		    return true;
+		  }
+		}
+	function IsIdNumber(idNumber) {
+		  var regex =  /^[A-Za-z][12]\d{8}$/;
+		  if(!regex.test(idNumber)) {
+		    return false;
+		  }else{
+		    return true;
+		  }
+		}
+
+
+
+
+</script>
+<!-- ===========修改0710============= -->
+<!-- <link href="/data/css/updateMember.css" rel="stylesheet"> -->
+<!-- <title>新增廠商</title> -->
+<!-- ===========修改0710============= -->
+</head>
+<body>
+
+	<div th:replace="/user/common :: commonTop"></div>
+
+
+
+	<div class="wrapper bg-dark-white">
+
+
+		<div class="login-area  pt-80 pb-80 " style="margin-left: 30%;">
+			<div class="container ">
+				<form method="POST" th:object="${vendor}"
+					enctype="multipart/form-data" th:action="@{/registerVendor}">
+					<div class="row ">
+
+
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<div class="customer-login text-left">
+								<h4 class="title-1 title-border text-uppercase mb-30">註冊廠商帳號</h4>
+								<p class="text-gray">如果您還尚未擁有本站的會員,歡迎您的加入</p>
+								<label for="account">帳號</label> <input type="text"
+									class="form-control" placeholder="帳號" name="account"
+									id="accountValue" /> <span id='result0c' class="error"></span>
+
+								<p id='result0cp' th:if="${#fields.hasErrors('account')}" th:errorclass="error"
+									th:errors="*{account}" />
+
+								<br> <label for="password">密碼</label> <input
+									type="password" class="form-control" placeholder="密碼"
+									name="password" id="passwordValue" />
+
+								<p id='resultpasswordp' th:if="${#fields.hasErrors('password')}"
+									th:errorclass="error" th:errors="*{password}" />
+								<br> <label for="passwordCheck">確認密碼</label> <input
+									type="password" class="form-control" placeholder="確認密碼"
+									name="passwordCheck" id="passwordCheckValue" /> <span
+									id='resultpasswordCheck' class="error"></span>
+
+								<p id='resultpasswordCheckp' th:if="${#fields.hasErrors('passwordCheck')}"
+									th:errorclass="error" th:errors="*{passwordCheck}" />
+
+								<br> <label for="name">公司名稱</label> <input type="text"
+									class="form-control" placeholder="姓名" name="name" id="name" />
+								<span id='resultName' class="error"></span>
+
+								<p id='resultNamep' th:if="${#fields.hasErrors('name')}" th:errorclass="error"
+									th:errors="*{name}" />
+
+
+
+								<br> <label for="industry">行業類別</label><br> <select
+									class="form-control" th:field="*{industry}">
+									<option th:value="水" th:text="水"></option>
+									<option th:value="電" th:text="電"></option>
+									<option th:value="瓦斯" th:text="瓦斯"></option>
+									<option th:value="油漆" th:text="油漆"></option>
+								</select><br>
+
+
+
+								<div id="twzipcode">
+									<label for="birthday">縣市</label>
+									<div data-role="county" data-name="addressCounty" data-value=""
+										data-style="form-control"></div>
+									<br> <label for="birthday">鄉鎮市區</label>
+									<div data-role="district" data-name="addressDistrict"
+										data-value="" data-style="form-control"></div>
+									<br> <label for="birthday">郵遞區號</label>
+									<div data-role="zipcode" data-name="addressZipcode"
+										data-value="" data-style="form-control"></div>
+									<br>
+								</div>
+								<label for="addressDetail">詳細地址</label> <input type="text"
+									class="form-control" placeholder="詳細地址" name="addressDetail"
+									id="addressDetail" />  <br><span id='resultaddressDetail' class="error"></span>
+
+								<p id="resultaddressDetailp"
+									th:if="${#fields.hasErrors('addressDetail')}" th:errorclass="error"
+									th:errors="*{addressDetail}" /> <label
+									for="phoneNumber">手機號碼</label> <br><input type="text"
+									class="form-control" placeholder="手機號碼" name="phoneNumber"
+									maxlength="10" id="phoneNumberValue" /> <span
+									id='resultPhoneNumber' class="error"></span>
+
+								<p id='resultPhoneNumberp' th:if="${#fields.hasErrors('phoneNumber')}"
+									th:errorclass="error" th:errors="*{phoneNumber}" />
+								<br> <label for="email">Email</label> <input type="text"
+									class="form-control" placeholder="Email" name="email"
+									id="emailValue" /> <span id='resultEmail' class="error"></span>
+
+								<p id="resultemailp" th:if="${#fields.hasErrors('email')}" th:errorclass="error"
+									th:errors="*{email}" />
+								<br> <label for="userImage">照片</label> <input type="file"
+									class="form-control" placeholder="照片" name="userImage" /> <br>
+								<label for="eml">註冊條例</label> &nbsp;
+								<div>
+
+									<textarea readonly="readonly"
+										style="width: 500px; height: 300px;">
+				
+						廠商使用條例
+第一條 前言
+
+感謝您註冊「米奇不妙屋」（以下稱「本公司」）會員，當您註冊成功後，即表示您已閱讀、暸解並同意本條例之內容，如有任何疑問，請您於完成註冊前聯繫客服人員。
+本公司有權不定時修改本條例內容，完成修改後公告於網站、APP等相關平台中，不另行通知，如您於更改後繼續使用本公司相關服務，即視為您已閱讀、暸解並同意該修改後內容。如您於閱後並不同意本條例中全部或一部時，請您停止使用本公司所有服務。
+欲申請企業會員請聯繫客服人員，並於合約簽署完畢後，本公司將提供服務專屬之帳號密碼。
+企業會員除合約所合議項目外，亦適用本會員使用條例。
+ 
+
+第二條 會員權利義務
+
+會員資格、相關權益僅限會員本人使用，恕無法以任何形式轉讓、販售、繼承，如因會員私下以任何方式致自身權益受損，本公司不負任何法律或賠償責任；如因此造成本公司權益受損，本公司有權依照中華民國相關條例請求損害賠償。
+完成會員註冊程序後，系統會隨機產生一組專屬代號，且無法更改，為保障會員權益，請勿重複申請。
+完成會員註冊程序後，請您維持帳號密碼之機密安全；以該帳號使用本公司相關服務時，請遵守本條例及中華民國相關法規。
+若您所註冊之帳號密碼發生任何問題時，請您立即聯繫客服人員，本公司將於及時提供協助。
+會員得隨時對本公司各項服務提出署名或匿名評價建議。
+會員產生權利受損之情事時，請聯繫客服人員，客服人員將案件轉交給客服主管後，其會立即與會員聯繫，協助會員行使各項保障權利措施，及後續處理機制。
+如因可歸責本公司人員所致之失誤，致使會員權利實質受損情節重大時，本公司依本條例負賠償責任；但如因非可歸責本公司因素導致會員權利受損，不在責任範圍內。
+ 
+
+第三條 會員禁止行為
+
+會員使用本公司提供之平台服務時，不得有下列行為包括但不限於，
+          (1) 違反本條例及中華民國相關法規；
+
+          (2) 侵害本公司權利；
+
+          (3) 不正當目的使用本公司提供之服務；
+
+          (4) 本公司所認定不符合規定之其他行為
+
+如會員因上述行為至本公司權利受損，本公司得依相關規定請求損害賠償。
+
+ 
+
+第四條 隱私權保護
+
+本公司有責任義務保護會員提供之所有內容，其保護措施可參照本公司「隱私權政策」之相關規定。
+ 
+
+第五條 服務規範
+
+使用本公司所提供之各項服務時，請先詳閱該服務之規範，如有任何疑問，請聯繫客服人員；會員使用該服務時，即視為您已閱讀、暸解並同意該服務之相關規範，如因會員疏失導致個人權益受損，本公司不負賠償責任。
+以下情形，本公司得終止服務包括但不限於，
+          (1) 會員拒絕提供服務必要之資料；
+
+          (2) 會員所提供資料與實際情況不符；
+
+          (3) 服務內容違反本公司或國內外相關法規所規定之禁止或限制項目；
+
+          (4) 會員拒絕或未支付相關服務費用；
+
+          (5) 會員拒絕配合該項服務所必須遵守其地區相關法規；
+
+          (6) 會員違反本使用條例；
+
+          (7) 本公司不可抗力之因素；
+
+          (8) 本公司所認定不符合規定之其他情形。
+
+ 
+
+第六條 服務之定價
+
+本公司於各平台所提供之價格試算結果僅供參考，並不能視為最終報價。
+本公司可對各項服務之價格進行調整，並於修定後公告於網站、APP等相關平台，恕不另行通知。
+服務價格以外幣計算時，匯率依本公司所公告為主。
+如會員愈使用加值服務，且加值項目得依現實情況計價時，本公司得提供相關資料，避免會員對加值服務價格產生疑慮。
+會員從本公司聯繫管道獲取之服務報價，得視為最終報價。
+如會員對服務報價有任何疑慮時，請聯繫本公司客服人員，我們將竭誠為您服務。
+ 
+
+第七條 運寶購買
+
+本公司為提供多元化付款方式，設立「運寶」（可扣抵）支付方式。
+運寶為支付商品，本公司職員不得強制會員購買。
+運寶僅能供本公司旗下之平台支付使用。
+會員購買運寶時，本公司不會額外收取費用，但如因購買方式之選擇，導致銀行或第三方付款方式產生手續費用時，由會員自行吸收。
+會員如欲辦理運寶退款可聯繫本公司客服人員，並依客服人員指示進行退款程序；退款金額依會員帳戶所剩運寶剩餘額度，扣除必要成本及其他費用（請參照本條第7項），並將其他相關衍生物繳回後，本公司會將款項匯入會員指定之帳戶。
+退款流程不含申請日需5至7個工作天。
+上述所稱必要成本係指辦理退款時所扣除之手續費用；其他費用係指下列項目，
+           (1)  活動所額外贈送之運寶；
+
+           (2) 已使用該活動所享服務之優惠；
+
+           (3) 因申請人導致其他衍生費用。
+
+           (4) 其他相關衍生物係指因該筆購買運寶所產生下列項目包括但不限於，
+
+           (5) 折價券及折扣優惠等；
+
+           (6) 贈品；
+
+           (7) 發票；
+
+           (8) 本公司所提供之其他衍生物。
+
+ 
+
+第八條 準據法與管轄法院
+
+本條例之解釋與適用本公司保有最終解釋之權利，因本條例所生之爭議，均依中華民國法律予以處理，並以臺灣桃園地方法院為第一審管轄法院。
+				
+				
+</textarea>
+
+									<p class="mb-0">
+										<input type="checkbox" id="readMe" name="newsletter">
+										<label for="newsletter"><span>我已閱讀上述條款並同意</span></label>
+									</p>
+
+									<!-- 									新增的07042057 -->
+									<br>
+
+									<div class="g-recaptcha"
+										data-sitekey="6LeRdQkbAAAAAAUxQYTd4kasFWHALOv7sdNhGhr7"></div>
+									<!-- 									新增的07042057 -->
+<!-- 										新增 -->
+								<button type="submit" data-text="註冊"
+										class="button-one submit-button mt-15" id="submit">註冊</button>
+									<a th:href="@{/}"><input style="border-color: transparent;"
+										type="button" class="button-one submit-button mt-15 num"
+										value="取消"></a>
+<!-- 										新增 -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+	<div th:replace="/user/common :: commonBottom"></div>
+
+</body>
+</html>

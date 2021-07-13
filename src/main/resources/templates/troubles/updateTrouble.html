@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>編輯訂單</title>
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+<script th:src="@{/data/js/jquery.min.js}"></script>
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" href="/data/css/default.css">
+<style type="text/css">
+.problem {
+
+display: block;
+    background: none;
+    color: #999;
+    border: 1px solid #BDBBBB;
+    width: 100%;
+    margin-bottom: 5px;
+    outline: none;
+    font-size: 13px;
+    font-weight: 300;
+    padding: 13px 15px;
+}
+
+.submit{
+background: #84754e;
+    border: 1px solid #f4f4f4;
+    padding: .8em 0;
+    width: 100%;
+    margin-top: .5em;
+    font-size: 15px;
+    color: #fff;
+    letter-spacing: 0.5px;
+    outline: none;
+    transition: .5s all;
+    -webkit-transition: .5s all;
+
+}
+</style>
+</head>
+<body>
+<div class="header">
+		
+		
+	</div>
+	
+<div th:replace="/user/common :: commonTop"></div>
+<div class="main-body col-md-offset-4" >
+		<div class="wrap">
+			<div class="col-md-6 single-post" align="center">
+				<div class="coment-form">
+	<form method="POST" enctype="multipart/form-data" th:object="${troubleshootingOne}"
+		th:action="@{'/UpdateTrouble/'+${troubleshootingOne.businessOrderId}}">
+		<h4>修改訂單</h4>
+		
+	<input type="hidden"  class="form-control" name="user.userId"
+		th:field="*{user.userId}" readonly />
+	
+	<input type="hidden"  class="form-control" name="businessOrderId"
+		th:field="*{businessOrderId}" readonly /> <br> <br> 
+		<label for="title">訂單標題</label> 
+		<input
+			type="text"  th:field="*{title}" name="title" style="width:100%"
+			maxlength='20' />
+
+		
+		<label for="troubleType">問題種類</label><br> <select class="problem"
+			 th:field="*{troubleType}">
+			<option th:value="'衛浴裝修'" th:text="衛浴裝修"></option>
+			<option th:value="'廚房裝修'" th:text="廚房裝修"></option>
+			<option th:value="'抓漏'" th:text="抓漏"></option>
+			<option th:value="'水電安裝'" th:text="水電安裝"></option>
+			<option th:value="'牆面裝修'" th:text="牆面裝修"></option>
+			<option th:value="'門窗裝修'" th:text="門窗裝修"></option>
+			<option th:value="'家電裝修'" th:text="家電裝修"></option>
+			<option th:value="'居家清潔'" th:text="居家裝修"></option>
+		</select>
+		<label for="address">需求地址</label> <input type="text"style="width:100%"
+			 placeholder="需求地址" th:field="*{address}" name="address" id="" />
+		<label for="textArea">問題內容描述</label> <input type="text" style="width:100%"
+			 placeholder="問題內容描述" th:field="*{textArea}" name="textArea" id="" /> 
+		<label for="image">照片</label> <input type="file" class="problem"
+			 placeholder="照片" th:field="*{image}" name="image" id="" />
+		<label for="remark">備註</label> <input type="text"  style="width:100%"
+			placeholder="備註" th:field="*{remark}" name="remark" id="" />
+
+		<label> <span> </span> 
+		<input type="submit" style="width:100%" value="確認送出" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
+			 style="width:100%" type="button" class="button" onclick="history.back()" value="取消" />
+		</label>
+	</form>
+</div>	
+				<div class="clearfix"></div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		</div>
+	<!-- content-section-ends-here -->
+	<!-- footer-section-starts-here -->
+	<div th:replace="/user/common :: commonBottom"></div>
+	<!-- footer-section-ends-here -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+				/*
+				var defaults = {
+				wrapID: 'toTop', // fading element id
+				wrapHoverID: 'toTopHover', // fading element hover id
+				scrollSpeed: 1200,
+				easingType: 'linear' 
+				};
+				*/
+		$().UItoTop({ easingType: 'easeOutQuart' });
+});
+</script>
+	<a href="#to-top" id="toTop" style="display: block;"> <span id="toTopHover" style="opacity: 1;"> </span></a>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>All commentArticles</title>
+<link rel="stylesheet"
+	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+
+<link rel="stylesheet" href="/data/css/jquery-ui.min.css">
+
+<link rel="stylesheet" href="/data/css/default.css">
+<!-- style css 側邊欄用到的  有重覆到-->
+<link rel="stylesheet" href="/data/css/memberloginstyle.css">
+<!-- responsive css -->
+<link rel="stylesheet" href="/data/css/responsive.css">
+
+<!-- 	media="all" /> -->
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+<script th:src="@{/comment/commentjs/CommentArticleBlock.js}"></script>
+
+</head>
+<body>
+
+	<div th:replace="/user/common :: commonTop"></div>
+	<div th:if="${commentArticleOne.textType} == '1'"
+		style="text-align: center; font-size: 40px; height: 50px; color: red; width: 300px">
+		<h1>此人已被你封鎖</h1>
+		<a
+			th:href="@{'/DeleteBlack/'+${commentArticleOne.articleId}+'/'+${commentArticleOne.userId}}">
+			<button th:text="按此解除封鎖 "
+				style="font-size: 30px; border: 2px solid red; height: 50px; color: red; width: 300px">
+			</button>
+		</a>
+	</div>
+	<div
+		th:if="${commentArticleOne.textType} != '1' or  (${commentArticleOne.textType} == '2' and ${commentArticleOne.userId} == ${session.LoginID})"
+		class="main-body " style="width: 1400px;">
+		<div class="wrap">
+			<ol class="breadcrumb">
+
+			</ol>
+			<div class="single-page" >
+
+				<div class="col-md-8 content-left single-post">
+
+					<div class="blog-posts">
+						<div class="media-left response-text-left">
+							<a href="#"> <img class="media-object"
+								th:src="@{'/picture/'+${commentArticleOne.userId}}" alt=""
+								title="" style="width: 50px; height: 50px" />
+							</a>
+							<p style="width: 50px; height: 15px">發文者:</p>
+							<h5 th:text="${commentArticleOne.userName}"
+								style="width: 200px; height: 50px"></h5>
+							<div th:if="${commentArticleOne.userId} != ${session.LoginID}">
+								<a
+									th:href="@{'/InsertBlack/'+${commentArticleOne.articleId}+'/'+${commentArticleOne.userId}}">
+									<button th:text="封鎖 "
+										style="font-size: 10px; border: 2px solid red; height: 25px; color: red; width: 50px">
+									</button>
+								</a>
+							</div>
+						</div>
+						<div class="media-body response-text-right">
+							<ul>
+								<li th:text="|發文日期:${commentArticleOne.articleUpdateTime}|"
+									style="float: right; clear: right"></li>
+								<li
+									th:text="|文章編號:${commentArticleOne.articleId}  發文者:${commentArticleOne.userId} 點擊次數${commentArticleOne.checkCount}| "
+									style="float: right; clear: right"></li>
+								<li
+									th:text="|居住日期:${commentArticleOne.liveDateStart}至${commentArticleOne.liveDateEnd}|"
+									style="float: right; clear: right"></li>
+								<li
+									th:text="|居住區域:${commentArticleOne.taipeiArea}，居住地址:${commentArticleOne.address}|"
+									style="float: right; clear: right"></li>
+								<!-- 						儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉 -->
+								<!-- 						儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉 -->
+								<!-- 						儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉 -->
+								<li style="float: right; clear: right"><div
+										th:if="${commentArticleOne.userId} != ${session.LoginID} and ${commentArticleOne.storeResult} !='1'"
+										class="AticleStore0">
+										<input th:value="${commentArticleOne.articleId}"
+											name="ajaxArticleId" type="hidden">
+										<button th:text="儲存文章" class="AticleStoreText0"
+											style="font-size: 10px; border: 2px solid yellow; color: gold; height: 30px; width: 100px"></button>
+									</div>
+									<div
+										th:if="${commentArticleOne.userId} != ${session.LoginID} and ${commentArticleOne.storeResult } == '1'"
+										class="AticleStore1">
+										<input th:value="${commentArticleOne.articleId}"
+											name="ajaxArticleId" type="hidden">
+										<button th:text="取消儲存" class="AticleStoreText1"
+											style="font-size: 10px; border: 2px solid yellow; color: gold; height: 30px; width: 100px"></button>
+									</div></li>
+								<li style="float: right">
+									<div
+										th:if="${commentArticleOne.userId} != ${session.LoginID} and ${commentArticleOne.reportResult } != '1'"
+										class="AticleReport0" id="AticleReport0">
+										<input th:value="${commentArticleOne.articleId}"
+											name="ajaxArticleId" type="hidden">
+										<button th:text="內容與主題不相關 " class="AticleReportButton0"
+											style="font-size: 10px; border: 2px solid red; height: 30px; color: red; width: 140px"></button>
+										<button th:text="內容帶有不雅字眼 " class="AticleReportButton1"
+											style="font-size: 10px; border: 2px solid red; height: 30px; color: red; width: 140px"></button>
+									</div>
+									<div
+										th:if="${commentArticleOne.userId} != ${session.LoginID} and ${commentArticleOne.reportResult } == '1'">
+										<p style="font-size: 10px; color: red; width: 200px">您已完成檢舉!待管理員查證</p>
+									</div>
+								</li>
+								<!-- 								<li  style="float:left"> -->
+
+
+								<!-- 								</li> -->
+
+
+
+								<!-- 						儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉 -->
+								<!-- 						儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉 -->
+								<!-- 						儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉儲存檢舉 -->
+
+							</ul>
+
+						</div>
+
+						<h3 class="post" th:text="|${commentArticleOne.title}|"></h3>
+						<div class="last-article">
+							<iframe width="600" height="450" style="border: 0" loading="lazy"
+								allowfullscreen
+								th:src="|https://www.google.com/maps/embed/v1/place?key=
+    				&q=${commentArticleOne.address}|">
+							</iframe>
+							<img class="artext"
+								th:src="@{'/articlepicture/'+${commentArticleOne.articleId}}" />
+							<p th:text="${commentArticleOne.text}"
+								style="white-space: pre-wrap; word-break: break-all"></p>
+							<!-- 讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚 -->
+							<div
+								th:if="${commentArticleOne.judgeResult } != '1' and ${commentArticleOne.judgeResult } != '2'"
+								class="AticleJudge0">
+
+								<input th:value="${commentArticleOne.textGoodTotal}" name="good"
+									type="hidden"> <input
+									th:value="${commentArticleOne.textBadTotal}" name="bad"
+									type="hidden"> <input
+									th:value="${commentArticleOne.articleId}" name="ajaxArticleId"
+									type="hidden"> <img class="AticleImg1"
+									th:src="@{/comment/commentimages/空讚.jpg}" /> <span class="AticleGood"
+									th:text="|${commentArticleOne.textGoodTotal}|"></span> <img
+									class="AticleImg2" th:src="@{/comment/commentimages/空倒讚.jpg}" /> <span
+									class="AticleBad" th:text="|${commentArticleOne.textBadTotal}|"></span>
+							</div>
+							<div th:if="${commentArticleOne.judgeResult } == '1' "
+								class="AticleJudge1">
+								<input th:value="${commentArticleOne.textGoodTotal}" name="good"
+									type="hidden"> <input
+									th:value="${commentArticleOne.textBadTotal}" name="bad"
+									type="hidden"> <input
+									th:value="${commentArticleOne.articleId}" name="ajaxArticleId"
+									type="hidden"> <img class="AticleImg1"
+									th:src="@{/comment/commentimages/實心讚.jpg}" /> <span class="AticleGood"
+									th:text="|${commentArticleOne.textGoodTotal}|"></span> <img
+									class="AticleImg2" th:src="@{/comment/commentimages/空倒讚.jpg}" /> <span
+									class="AticleBad" th:text="|${commentArticleOne.textBadTotal}|"></span>
+							</div>
+							<div th:if="${commentArticleOne.judgeResult } == '2' "
+								class="AticleJudge2">
+								<input th:value="${commentArticleOne.textGoodTotal}" name="good"
+									type="hidden"> <input
+									th:value="${commentArticleOne.textBadTotal}" name="bad"
+									type="hidden"> <input
+									th:value="${commentArticleOne.articleId}" name="ajaxArticleId"
+									type="hidden"> <img class="AticleImg1"
+									th:src="@{/comment/commentimages/空讚.jpg}" /> <span class="AticleGood"
+									th:text="|${commentArticleOne.textGoodTotal}|"></span> <img
+									class="AticleImg2" th:src="@{/comment/commentimages/實倒讚.jpg}" /> <span
+									class="AticleBad" th:text="|${commentArticleOne.textBadTotal}|"></span>
+							</div>
+
+							<!-- 讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚 -->
+							<div th:if="${commentArticleOne.userId} == ${session.LoginID}">
+								<a class="deleteitem"
+									th:href="@{'/DeleteArticle/'+${commentArticleOne.articleId}}">刪除</a>
+
+								<a class="updateitem"
+									th:href="@{'/UpdateArticle/'+${commentArticleOne.articleId}}">編輯</a>
+							</div>
+
+							<div class="clearfix"></div>
+							<div class="coment-form">
+								<h4>回覆貼文</h4>
+								<form method="POST" th:object="${commentReply} "
+									enctype="multipart/form-data"
+									th:action="@{'/ArticleInner/'+${commentArticleOne.articleId}}">
+									<label for="text">內容(限50字以內)</label>
+									<textarea placeholder="內容" name="text" cols="20" rows="5"
+										scrolling="yes" value='' maxlength='50' th:inline="text"></textarea>
+									<p th:if="${#fields.hasErrors('text')}" th:errorclass="error"
+										th:errors="*{text}" />
+									<input type="submit" value="Submit Comment">
+								</form>
+							</div>
+							<div class="response">
+								<h4>回覆區</h4>
+
+								<div class="media response-info" th:each="c:${allCommentReplys}">
+									<div th:if="${c.textType} == '1'">
+										<h1>此人已被你封鎖</h1>
+										<a
+											th:href="@{'/DeleteBlack/'+${commentArticleOne.articleId}+'/'+${c.userId}}">
+											<button th:text="按此解除封鎖 "
+												style="font-size: 30px; border: 2px solid red; height: 50px; color: red; width: 300px">
+											</button>
+										</a>
+									</div>
+									<div th:if="${c.textType} != '1'or  (${commentArticleOne.textType} == '2' and ${commentArticleOne.userId} == ${session.LoginID})">
+										<div class="media-left response-text-left">
+											<a href="#"> <img class="media-object"
+												th:src="@{'/picture/'+${c.userId}}" alt="" title=""
+												style="width: 50px; height: 50px" />
+											</a>
+											<h5 th:text="${c.userName}" style="width: 200px; height: 50px"></h5>
+											<div th:if="${c.userId} != ${session.LoginID}"
+												style="float: left">
+												<a
+													th:href="@{'/InsertBlack/'+${commentArticleOne.articleId}+'/'+${c.userId}}">
+													<button th:text="封鎖 "
+														style="font-size: 10px; border: 2px solid red; height: 25px; color: red; width: 50px">
+													</button>
+												</a>
+											</div>
+										</div>
+										<div class="media-body response-text-right">
+											<p th:text="${c.text}"
+												style="white-space: pre-wrap; word-break: break-all"></p>
+											<ul>
+
+												<li></li>
+
+												<li th:text="|發文時間${c.replyUpdateTime}|"></li>
+												<li th:text="|回覆編號:${c.replyId}&nbsp|"></li>
+
+											</ul>
+										</div>
+										<!-- 回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉 -->
+										<div
+											th:if="${c.userId} != ${session.LoginID} and ${c.reportResult } != '1'"
+											class="ReplyReport0">
+											<input th:value="${c.replyId}" name="ajaxReplyId"
+												type="hidden">
+											<button th:text="內容帶有不雅字眼  " class="ReplyReportButton0"
+												style="font-size: 10px; color: red; border: 2px solid red; height: 30px; width: 140px"></button>
+										</div>
+										<div
+											th:if="${c.userId} != ${session.LoginID} and ${c.reportResult } == '1'">
+											<p style="font-size: 10px; color: red; width: 200px">您已完成檢舉!待管理員查證</p>
+										</div>
+
+
+										<!-- 回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉回覆檢舉 -->
+										<!-- 讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚 -->
+										<div
+											th:if="${c.judgeResult } != '1' and ${c.judgeResult } != '2'"
+											class="ReplyJudge0">
+											<input th:value="${c.textGoodTotal}" name="relyGood"
+												type="hidden"> <input th:value="${c.textBadTotal}"
+												name="relyBad" type="hidden"> <input
+												th:value="${c.replyId}" name="ajaxReplyId" type="hidden">
+											<img class="ReplyImg1" th:src="@{/comment/commentimages/空讚.jpg}" /> <span
+												class="ReplyGood" th:text="|${c.textGoodTotal}|"></span> <img
+												class="ReplyImg2" th:src="@{/comment/commentimages/空倒讚.jpg}" /> <span
+												class="ReplyBad" th:text="|${c.textBadTotal}|"></span>
+										</div>
+										<div th:if="${c.judgeResult } == '1' " class="ReplyJudge1">
+											<input th:value="${c.textGoodTotal}" name="relyGood"
+												type="hidden"> <input th:value="${c.textBadTotal}"
+												name="relyBad" type="hidden"> <input
+												th:value="${c.replyId}" name="ajaxReplyId" type="hidden">
+											<img class="ReplyImg1" th:src="@{/comment/commentimages/實心讚.jpg}" /> <span
+												class="ReplyGood" th:text="|${c.textGoodTotal}|"></span> <img
+												class="ReplyImg2" th:src="@{/comment/commentimages/空倒讚.jpg}" /> <span
+												class="ReplyBad" th:text="|${c.textBadTotal}|"></span>
+										</div>
+										<div th:if="${c.judgeResult } == '2' " class="ReplyJudge2">
+											<input th:value="${c.textGoodTotal}" name="relyGood"
+												type="hidden"> <input th:value="${c.textBadTotal}"
+												name="relyBad" type="hidden"> <input
+												th:value="${c.replyId}" name="ajaxReplyId" type="hidden">
+											<img class="ReplyImg1" th:src="@{/comment/commentimages/空讚.jpg}" /> <span
+												class="ReplyGood" th:text="|${c.textGoodTotal}|"></span> <img
+												class="ReplyImg2" th:src="@{/comment/commentimages/實倒讚.jpg}" /> <span
+												class="ReplyBad" th:text="|${c.textBadTotal}|"></span>
+										</div>
+										<!-- 讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚讚 -->
+										<div th:if="${c.userId} == ${session.LoginID}">
+											<a class="deleteitem"
+												th:href="@{'/DeleteReply/'+${commentArticleOne.articleId}}+'/'+${c.replyId}">刪除</a>
+											<a class="updateitem"
+												th:href="@{'/UpdateReply/'+${commentArticleOne.articleId}}+'/'+${c.replyId}">編輯</a>
+
+										</div>
+										<div class="clearfix"></div>
+									</div>
+
+								</div>
+
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+<!-- 0707 07070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707-->
+				<div class="col-md-4 side-bar" >
+					 <div class="secound_half">
+					 				 
+					 <div class="popular-news">
+						<header>
+							<h3 class="title-popular">最多讚數</h3>
+						</header>
+						<div class="popular-grids" >
+							<div class="popular-grid" th:each="g:${mostgood}" style="width:430px">
+								<a th:href="'/CheckcountPlus/'+${g.articleId}"><img th:src="@{'/articlepicture/'+${g.articleId}}" style="width:430px;height:250px;" alt="" /></a>
+								<a class="title" th:href="'/CheckcountPlus/'+${g.articleId}" th:text="${g.title}" style="width:430px" ></a>
+								<p style="width:430px"><a class='span_link' ><span class='glyphicon ' th:text="|發文時間:${g.articleUpdateTime}|"></span></a><a class='span_link' ><span class='glyphicon glyphicon-eye-open' th:text="|觀看次數:${g.checkCount}|"></span> </a><a class='span_link' ><span class='glyphicon ' th:text="|👍🏻:${g.textGoodTotal}|"></span></a><a class='span_link' ><span class='glyphicon ' th:text="|👎🏻:${g.textBadTotal}|"></span></a></p>
+							</div>
+						</div>
+					</div>
+					 <div class="popular-news">
+						<header>
+							<h3 class="title-popular">最多人看過</h3>
+						</header>
+						<div class="popular-grids">
+							<div class="popular-grid" th:each="l:${mostcheck}" style="width:430px">
+								<a th:href="'/CheckcountPlus/'+${l.articleId}"><img th:src="@{'/articlepicture/'+${l.articleId}}" style="width:430px;height:250px;" alt="" /></a>
+								<a class="title" th:href="'/CheckcountPlus/'+${l.articleId}" th:text="${l.title}" style="width:430px" ></a>
+								<p style="width:430px"><a class='span_link' ><span class='glyphicon ' th:text="|發文時間:${l.articleUpdateTime}|" ></span></a><a class='span_link' ><span class='glyphicon glyphicon-eye-open' th:text="|觀看次數:${l.checkCount}|"></span> </a><a class='span_link' ><span class='glyphicon ' th:text="|👍🏻:${l.textGoodTotal}|"></span></a><a class='span_link' ><span class='glyphicon ' th:text="|👎🏻:${l.textBadTotal}|"></span></a></p>
+							</div>
+						</div>
+					</div>
+ 					 <div class="popular-news">
+ 						<header>
+ 							<h3 class="title-popular">最新貼文</h3>
+ 						</header> 
+ 						<div class="popular-grids">
+ 							<div class="popular-grid" th:each="n:${mostnew}" style="width:430px">
+								<a th:href="'/CheckcountPlus/'+${n.articleId}"><img th:src="@{'/articlepicture/'+${n.articleId}}" style="width:430px;height:250px;" alt="" /></a>
+ 								<a class="title" th:href="'/CheckcountPlus/'+${n.articleId}" th:text="${n.title}" style="width:430px" ></a>
+ 								<p style="width:430px"><a class='span_link' ><span class='glyphicon ' th:text="|發文時間:${n.articleUpdateTime}|"></span></a><a class='span_link' ><span class='glyphicon glyphicon-eye-open' th:text="|觀看次數:${n.checkCount}|"></span> </a><a class='span_link' ><span class='glyphicon ' th:text="|👍🏻:${n.textGoodTotal}|"></span></a><a class='span_link' ><span class='glyphicon ' th:text="|👎🏻:${n.textBadTotal}|"></span></a></p>
+ 							</div>
+ 						</div>
+					</div>
+					</div>
+					<div class="clearfix"></div>
+			</div>
+			<!-- 0707 07070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707-->
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+
+
+	<hr />
+	<div style="bottom: 200px; height: 200px"></div>
+	<div th:replace="/user/common :: commonBottom"></div>
+	<script th:src="@{/data/js/bootstrap.min.js}"></script>
+</body>
+</html>

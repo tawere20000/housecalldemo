@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>上架商品</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.ico">
+    <!-- Custom Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+	$(function(){
+		//繫結跳轉到庫存商品總覽
+		$("#btnn").click(function(){
+			$(window).attr('location','/inventorytable');
+		});
+		
+		//上傳圖片預覽
+		$("#formFileMultiple").change(function(){
+			$("#preview_img").html("");
+			readURL(this);
+		});
+		
+		function readURL(input){
+			if(input.files && input.files[0]){
+				for(var i = 0 ; i < input.files.length ; i++){
+				let reader = new FileReader();
+				reader.onload = function(e){
+					var img = $("<img width='200' height='250' style='margin-right:6px'>").attr('src', e.target.result);
+					$("#preview_img").append(img);
+				}
+				reader.readAsDataURL(input.files[i]);
+				}
+			}else{
+				var noPictures = $("<p style='color:red'>目前沒有圖片</p>");
+				$("#preview_img").append(noPictures);
+			}
+		};
+		
+		//繫結商品次類別選項
+		$("#sel1").change(function(){
+			let arr1= ["沙發","椅子","桌子"];
+			let arr2= ["床架","床墊","棉被","枕頭"];
+			let arr3= ["廚具","餐具"];
+			let arr4= ["衣櫃","鞋櫃","收納"];
+			let str="";
+			let typevalue = $("#sel1 option:selected").text();
+			if(typevalue==="桌椅"){
+				for(var item in arr1){
+					$("#sel2div").show();
+					str+="<option>"+arr1[item]+"</option>";
+				}
+			}else if (typevalue==="寢具"){
+				for(var item in arr2){
+					$("#sel2div").show();
+					str+="<option>"+arr2[item]+"</option>";
+				}
+			}else if (typevalue==="廚房用品"){
+				for(var item in arr3){
+					$("#sel2div").show();
+					str+="<option>"+arr3[item]+"</option>";
+				}
+			}else if (typevalue==="收納櫃、收納盒"){
+				for(var item in arr4){
+					$("#sel2div").show();
+					str+="<option>"+arr4[item]+"</option>";
+				}
+			}else{
+				$("#sel2div").hide();
+			}
+			str+="<option hidden='hidden' selected>請選擇商品分類</option>";
+			$("#sel2").html(str);
+		});
+	});
+	</script>
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div th:replace="common :: commonpreloader"></div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+    
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div th:replace="common :: commonnavHeader"></div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div th:replace="common :: commonheader"></div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div th:replace="common :: commonsidebar"></div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    
+                </div>
+            </div>
+            <!-- row -->
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">新增庫存商品</h4><button style="float:right" id="btnn" type="button" class="btn mb-1 btn-primary btn-sm">返回庫存商品總覽</button>
+                                <p class="text-muted m-b-15 f-s-12">請輸入商品資訊</p>
+                                <div class="basic-form">
+                                    <form th:action="@{/productOnStock}" method="post" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                        	<label>商品名稱</label>
+                                            <input type="text" name="productName" class="form-control input-default" maxlength="10" placeholder="請輸入商品名稱...">
+                                        </div>
+                                        <div class="form-group">
+                                        	<label>商品金額</label>
+                                            <input type="text" name="productPrice" class="form-control input-default" placeholder="請輸入商品金額...">
+                                        </div>
+                                        <div class="form-group">
+                                        	<label>商品數量</label>
+                                            <input type="text" name="productStock" class="form-control input-default" placeholder="請輸入商品數量...">
+                                        </div>
+                                		<div class="form-group">
+                                            <label>商品類別</label>
+                                            <select class="form-control" id="sel1" name="productType">
+                                                <option >桌椅</option>
+                                                <option >寢具</option>
+                                                <option >小型家電</option>
+                                                <option >廚房用品</option>
+                                                <option >衛浴用品</option>
+                                                <option >收納櫃、收納盒</option>
+                                                <option >洗衣、曬衣</option>
+                                                <option >擺飾</option>
+                                                <option >其他</option>
+                                                <option hidden="hidden" selected>請選擇商品分類</option>
+                                            </select>
+                                        </div>
+                                        <div id="sel2div" class="form-group">
+                                            <label>商品次類別</label>
+                                            <select class="form-control" id="sel2" name="subType">
+                                                <option id="op1" hidden="hidden" selected>請選擇商品分類</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="radio mb-3">
+                                           		<label>商品狀態</label><br>
+                                                <label>
+                                                    <input type="radio" name="productState" value="上架">上架</label>
+                                            </div>
+                                            <div class="radio mb-3">
+                                                <label>
+                                                    <input type="radio" name="productState" value="未上架">未上架</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+  												<label for="formFileMultiple" class="form-label">上傳圖片</label>
+  												<span style="color: red"> * * 圖片僅限: gif , jpeg , png 及 peng 檔 ， 大小不得超過150KB ， 最多上傳四張圖片 * *</span>
+  												<input class="form-control-file" type="file" id="formFileMultiple" name="fileupload" multiple>
+  												<div id="preview_img"></div>
+										</div>
+										<div class="form-group">
+                                            <label>商品簡介</label><span style="color: red"> * * 字數限制150個字 * *</span>
+                                            <textarea class="form-control h-150px" rows="2" id="bd" name="briefDescription" maxlength="150"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>商品規格</label><span style="color: red"> * * 字數限制150個字 * *</span>
+                                            <textarea class="form-control h-150px" rows="4" id="spec" name="spec" maxlength="150"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>商品描述</label>
+                                            <textarea class="form-control h-150px" rows="6" id="comment" name="productDescription"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <input class="btn mb-1 btn-primary btn-sm" type="submit">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #/ container -->
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+        
+        
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div th:replace="common :: commonfooter"></div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <div th:replace="common :: commonscripts"></div>
+
+</body>
+
+</html>

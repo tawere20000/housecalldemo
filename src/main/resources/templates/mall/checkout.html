@@ -1,0 +1,275 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>結帳</title>
+		<th:block th:replace="/mall/mallCommon :: commonhead"></th:block>
+		<style type="text/css">
+			.paymentButton {
+				font-size: 15px;
+			}
+			.context {
+				font-size: 14px;
+			}
+			.tab {
+				font-size: 17px;
+				letter-spacing: 10px;
+			}
+		</style>
+		<!-- TWzipcode v1.7.15 -->
+		<script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.15-rc1/jquery.twzipcode.min.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				
+				// 綁定上一步按鈕功能
+				$('#prevStep').click(function() {
+					location.href='http://localhost:8080/shoppingCart/cart';
+				})
+				
+				// 依據付款方式之選擇改變傳送方法
+				$("[name='paymentMethod']").click(function() {
+					if ($(this).val() == 'cashOnDelivery') {
+						$('#paymentMethod').val('post');
+					} else if ($(this).val() == 'creditCard') {
+						$('#paymentMethod').val('put');
+					}
+				})
+				
+				// 將付款及收件人資訊欄位設置必填屬性
+				$('input, textarea, select').attr('required', 'required');
+				
+				// 修改付款及收件人資訊欄位字體大小
+				$('.billing-details input, .billing-details textarea, .billing-details select').addClass('context');
+
+			})
+		</script>
+	</head>
+	<body>	
+		<!-- WRAPPER START -->
+		<div class="wrapper bg-dark-white">
+
+			<!-- HEADER-AREA START -->
+			<header id="sticky-menu" class="header header-2">
+				<div class="header-area">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-sm-4 col-sm-offset-4 col-xs-7">
+								<div class="logo text-center">
+									<a href="index.html"><img th:src="@{/mall/img/logo/logo.png}" alt="" /></a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- MAIN-MENU START -->
+				<div class="menu-toggle hamburger hamburger--emphatic hidden-xs">
+					<div class="hamburger-box">
+						<div class="hamburger-inner"></div>
+					</div>
+				</div>
+				<div class="main-menu  hidden-xs">
+					<nav>
+						<ul>
+							<li><a href="index.html">home</a></li>
+							<li><a th:href="@{/shop.html}">shop</a></li>
+							<li><a th:href="@{/shoppingCart/cart}">Shopping Cart</a></li>
+							<li><a th:href="@{/shoppingCart/wishlist}">Wishlist</a></li>
+							<li><a th:href="@{/orderlist.html}">My Order</a></li>
+							<li><a href="#">pages</a>
+								<div class="sub-menu menu-scroll">
+									<ul>
+										<li class="menu-title">Page's</li>
+										<li><a href="shop.html">Shop</a></li>
+										<li><a href="single-product.html">Single Product</a></li>
+										<li><a href="cart.html">Shopping Cart</a></li>
+										<li><a href="wishlist.html">Wishlist</a></li>
+										<li><a href="checkout.html">Checkout</a></li>
+										<li><a href="order.html">Order</a></li>
+										<li><a href="login.html">login / Registration</a></li>
+										<li><a href="my-account.html">My Account</a></li>
+										<li><a href="404.html">404</a></li>
+										<li><a href="blog.html">Blog</a></li>
+										<li><a href="single-blog.html">Single Blog</a></li>
+										<li><a href="about.html">About Us</a></li>
+										<li><a href="contact.html">Contact</a></li>
+									</ul>
+								</div>
+							</li>
+							<li><a href="about.html">about us</a></li>
+							<li><a href="contact.html">contact</a></li>
+						</ul>
+					</nav>
+				</div>
+				<!-- MAIN-MENU END -->
+			</header>
+			<!-- HEADER-AREA END -->
+			
+			<!-- COMMONMOBILEMENU INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commonmobilemenu"></th:block>
+			<!-- COMMONMOBILEMENU INSERT END -->
+			
+			<!-- CHECK-OUT-AREA START -->
+			<div class="check-out-area  pt-80 pb-80">
+				<div class="container">	
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+							<div class="check-out">
+								<!-- Nav tabs -->
+								<ul class="cart-page-menu row clearfix mb-30">
+									<li class="active">
+										<a href="javascript:void(0);" th:class="tab" data-toggle="tab">
+											付款及配送資訊
+										</a>
+									</li>
+								</ul>
+
+								<!-- Tab panes -->
+								<div class="tab-content">
+									<!-- check-out start -->
+									<div class="tab-pane active" id="check-out">
+										<form method="post" action="/placeorder.html">
+											<div class="shop-cart-table check-out-wrap">
+												<div class="row">
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<div class="billing-details pr-20">
+															<h4 class="title-1 title-border text-uppercase mb-30">付款資訊</h4>
+															<input type="text" placeholder="姓名" name="payerName" th:value="${userInfo.name}">
+															<input type="text" placeholder="Email" name="payerEmail" th:value="${userInfo.email}">
+															<input type="text" placeholder="電話" name="payerPhone" th:value="${userInfo.phoneNumber}">
+															<div id="twzipcodebilling"></div>
+															<script type="text/javascript">
+																$("#twzipcodebilling").twzipcode({
+																	css: ["city custom-select mb-15", "town custom-select mb-15"],
+																	countyName: 'payerCounty',
+																	districtName: 'payerDistrict',
+																	zipcodeName: 'payerZipcode',
+																	countySel: '[[${userInfo.addressCounty}]]',
+																	districtSel: '[[${userInfo.addressDistrict}]]',
+																	zipcodeSel: '[[${userInfo.addressZipcode}]]'
+																});
+															</script>
+															<textarea class="custom-textarea" placeholder="詳細地址" name="payerAddressDetail">[[${userInfo.addressDetail}]]</textarea>
+														</div>
+													</div>
+													<div class="col-md-6 col-sm-6 col-xs-12 mt-xs-30">
+														<div class="billing-details pl-20">
+															<h4 class="title-1 title-border text-uppercase mb-30">配送資訊</h4>
+															<input type="text" placeholder="姓名" name="receiverName" th:value="${userInfo.name}">
+															<input type="text" placeholder="Email" name="receiverEmail" th:value="${userInfo.email}">
+															<input type="text" placeholder="電話" name="receiverPhone" th:value="${userInfo.phoneNumber}">
+															<div id="twzipcodeshipping"></div>
+															<script type="text/javascript">
+																$("#twzipcodeshipping").twzipcode({
+																	css: ["city custom-select mb-15", "town custom-select mb-15"],
+																	countyName: 'receiverCounty',
+																	districtName: 'receiverDistrict',
+																	zipcodeName: 'receiverZipcode',
+																	countySel: '[[${userInfo.addressCounty}]]',
+																	districtSel: '[[${userInfo.addressDistrict}]]',
+																	zipcodeSel: '[[${userInfo.addressZipcode}]]'
+																});
+															</script>
+															<textarea class="custom-textarea" placeholder="詳細地址" name="receiverAddressDetail">[[${userInfo.addressDetail}]]</textarea>
+														</div>
+													</div>
+													<div class="col-md-12 col-sm-12 col-xs-12">
+														<div class="our-order payment-details mt-60">
+															<h4 class="title-1 title-border text-uppercase mb-30">訂單內容</h4>
+															<table>
+																<thead>
+																	<tr>
+																		<th class="context"><strong>商品</strong></th>
+																		<th class="text-right context"><strong>金額</strong></th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<th:block th:each="cartItem : ${cartList}">
+																		<tr>
+																			<td class="context">
+																				[[${cartItem.productItem.productName}]] x  [[${cartItem.shoppingAmount}]]
+																				<input type="hidden" name="cartId" th:value="${cartItem.cartId}">
+																			</td>
+																			<td class="text-right context">
+																				$ [[${#numbers.formatDecimal((cartItem.productItem.productPrice * cartItem.shoppingAmount),1,'COMMA',0,'POINT')}]]
+																			</td>
+																		</tr>
+																	</th:block>
+																	<tr>
+																		<td class="context">商品金額小計</td>
+																		<td class="text-right context">
+																			$ [[${#numbers.formatDecimal(orderDetail.totalPrice,1,'COMMA',0,'POINT')}]]
+																			<input type="hidden" name="totalPrice" th:value="${orderDetail.totalPrice}">
+																		</td>
+																	</tr>
+																	<tr>
+																		<td class="context">運費</td>
+																		<td class="text-right context">
+																			$ [[${#numbers.formatDecimal(orderDetail.deliveryFee,1,'COMMA',0,'POINT')}]]
+																			<input type="hidden" name="deliveryFee" th:value="${orderDetail.deliveryFee}">
+																		</td>
+																	</tr>
+																	<tr th:if="${orderDetail.discount != null}">
+																		<td class="context">會員積分折抵金額</td>
+																		<td class="text-right context">
+																			- $ [[${#numbers.formatDecimal(orderDetail.discount,1,'COMMA',0,'POINT')}]]
+																			<input type="hidden" name="discount" th:value="${orderDetail.discount}">
+																		</td>
+																	</tr>
+																	<tr>
+																		<td class="context">訂單總金額</td>
+																		<td class="text-right context">
+																			$ [[${#numbers.formatDecimal(orderDetail.netPrice,1,'COMMA',0,'POINT')}]]
+																			<input type="hidden" name="netPrice" th:value="${orderDetail.netPrice}">
+																		</td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+													</div>
+													<!-- payment-method -->
+													<div class="col-md-12 col-sm-12 col-xs-12">
+														<div class="payment-method mt-60">
+															<h4 class="title-1 title-border text-uppercase mb-30">付款方式</h4>
+															<div class="payment-accordion pl-30">
+																<div>
+																	<input type="radio" id="cashOnDelivery" name="paymentMethod" value="cashOnDelivery" required>
+																	<label class="paymentButton" for="cashOnDelivery">貨到付款</label>
+																</div>
+																<br>
+																<div>
+																	<input type="radio" id="creditCard" name="paymentMethod" value="creditCard">
+																	<label class="paymentButton" for="creditCard">信用卡付款</label>
+																</div>
+															</div>															
+														</div>
+													</div>
+													<div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 30px;">
+														<input id="paymentMethod" type="hidden" name="_method" value="post">
+														<button class="button-one submit-button mt-15" data-text="送出訂單" type="submit" style="float: right;">送出訂單</button>			
+														<button class="button-one submit-button mt-15" id="prevStep" data-text="上一步" type="button" style="float: right; margin-right: 15px;">上一步</button>
+													</div>
+												</div>
+											</div>
+										</form>											
+									</div>
+									<!-- check-out end -->
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- CHECK-OUT-AREA END -->
+			
+			<!-- COMMONFOOTER INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commmonfooter"></th:block>
+			<!-- COMMONFOOTER INSERT END -->
+			
+		</div>
+		<!-- WRAPPER END -->
+
+		<!-- COMMONJS INSERT START -->
+		<th:block th:replace="/mall/mallcommon :: commonjs"></th:block>
+		<!-- COMMONJS INSERT END -->
+	</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>評論區文章</title>
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+
+<link rel="stylesheet" href="/data/css/jquery-ui.min.css">
+
+<link rel="stylesheet" href="/data/css/default.css">
+<!-- style css 側邊欄用到的  有重覆到-->
+<link rel="stylesheet" href="/data/css/memberloginstyle.css">
+<!-- responsive css -->
+<link rel="stylesheet" href="/data/css/responsive.css">
+
+<!-- 	media="all" /> -->
+
+
+<style>
+.error {
+	color: red;
+}
+
+.timeline-small {
+	max-width: 350px;
+	max-height: 630px;
+	overflow: hidden;
+	margin: 30px auto 0;
+	box-shadow: 0 0 40px #a0a0a0;
+	font-family: 'Open Sans', sans-serif;
+}
+
+.timeline-small-body ul {
+	padding: 1em 0 0 2em;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+
+.timeline-small-body ul::before {
+	content: ' ';
+	height: 100%;
+	width: 5px;
+	background-color: #d9d9d9;
+	position: absolute;
+	top: 0;
+	left: 2.4em;
+	z-index: -1;
+}
+
+.timeline-small-body li div {
+	display: inline-block;
+	margin: 1em 0;
+	vertical-align: top;
+}
+
+.timeline-small-body .bullet {
+	width: 1rem;
+	height: 1rem;
+	box-sizing: border-box;
+	border-radius: 50%;
+	background: #fff;
+	z-index: 1;
+	margin-right: 1rem;
+	margin-top: 7%;
+}
+
+.timeline-small-body .bullet.pink {
+	background-color: hotpink;
+	border: 3px solid #F93B69;
+}
+
+.timeline-small-body .bullet.green {
+	background-color: lightseagreen;
+	border: 3px solid #B0E8E2;
+}
+
+.timeline-small-body .bullet.blue {
+	background-color: aquamarine;
+	border: 3px solid cadetblue;
+}
+
+.timeline-small-body .bullet.orange {
+	background-color: salmon;
+	border: 3px solid #EB8B6E;
+}
+
+.timeline-small-body .date1 {
+	width: 23%;
+	font-size: 0.75em;
+	padding-top: 0.40rem;
+	padding-right: 2rem;
+}
+
+.timeline-small-body .desc {
+	width: 50%;
+}
+
+.timeline-small-body h3 {
+	font-size: 0.9em;
+	font-weight: 400;
+	margin: 0;
+}
+
+.timeline-small-body h4 {
+	margin: 0;
+	font-size: 0.7em;
+	font-weight: 400;
+	color: #808080;
+}
+</style>
+<script th:src="@{/data/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/data/js/jquery-1.10.1.min.js}"></script>
+
+<script type="text/javascript">
+
+$(function() {
+	toPage(1)
+	let pagenow =1;
+	
+	
+	function toPage(num){
+		
+		$.ajax({
+			url : "StoreCommentArticlesPage",
+			type : "POST",
+			data : {"pageNo":num},
+			dataType : "JSON",
+			success : function(commentArticlePlusJudge) {
+				let str="";
+				for(var i in commentArticlePlusJudge.content){
+					let c = commentArticlePlusJudge.content[i]
+					str+="<div class='article col-md-offset-1' style='width:1200px;height:350px'>"
+					+"<div class='article-left' style='text-align: center;width:450px;height:350px '>"
+					+"<a href='/CheckcountPlus/"+c.articleId+"'><img src='/articlepicture/"+c.articleId+"' style='width:400px;height:300px' ></a>"
+				+"</div>"
+				+"<div class='article-right'>"
+					+"<div class='article-title'>"
+						+"<p>發文時間"+c.articleUpdateTime+"<a class='span_link' ></a><a class='span_link' ><span class='glyphicon glyphicon-eye-open'></span>觀看次數:"+c.checkCount+" </a><a class='span_link' ><span class='glyphicon '></span>👍🏻:"+c.textGoodTotal+"</a><a class='span_link' ><span class='glyphicon '></span>👎🏻:"+c.textBadTotal+"</a></p>"
+						+"<a class='title' href='/CheckcountPlus/"+c.articleId+"'> "+c.title+"</a>"
+					+"</div>"
+				+"<div class='article-text'>"
+					+"<p style='overflow:hidden;width:600px;height:50px;white-space: nowrap;text-overflow: ellipsis;'>"+c.text+"</p>"
+						+"<a href='/CheckcountPlus/"+c.articleId+"'><button style='font-size:20px;color:blue'>請點我開啟....</button></a>"
+						+"<div class='clearfix'></div>"
+					+"</div>"
+				+"</div>"
+				+"<div class='clearfix'></div>"
+			+"</div>"
+										}
+								$("#Articles").html(str);
+								let strpagination="<span>共"+commentArticlePlusJudge.totalPages+" 頁/ "+commentArticlePlusJudge.totalElements+"個評論</span>"+
+			                    "<ul class='pagination justify-content-end'>"+
+			                	"<li class='page-item' id='previous' value='-1'><a class='page-link' tabindex='-1'>上一頁</a>"+
+			               		"</li>";
+								for(var i =1; i <= commentArticlePlusJudge.totalPages; i++){
+								strpagination+="<li class='page-item' id=page"+i+" value='"+i+"'><a class='page-link'>"+i+"</a></li>"
+								}
+								strpagination+="<li class='page-item' id='next' value='-2'><a class='page-link' tabindex='-1'>下一頁</a></li>"
+									
+								$("#paginationajax").html(strpagination); 
+								
+								let pageNo = "#page"+pagenow;
+								if(pagenow==commentArticlePlusJudge.totalPages && pagenow==1){
+									$("#previous").addClass("disabled").click(false);
+									$("#next").addClass("disabled").click(false);
+								}else if(pagenow==commentArticlePlusJudge.totalPages){
+									$("#next").addClass("disabled").click(false);
+								}else if(pagenow==1){
+									$("#previous").addClass("disabled").click(false);
+								}else{
+									$("#previous").removeClass("disabled").click(true);
+									$("#next").removeClass("disabled").click(true);
+								}
+									$(pageNo).addClass("disabled");
+				}
+		
+		})
+	}
+		
+					
+					$("#paginationajax").on("click",".page-item",function(){
+						let value = this.value;
+						if(value==-1){
+							pagenow-=1;
+						}else if(value==-2){
+							pagenow+=1;
+						}else{
+							pagenow = value;
+						}
+						toPage(pagenow);
+					});
+					
+	
+		
+})
+</script>
+
+
+<!-- <link href="/data/css/updateMember.css" rel="stylesheet"> -->
+</head>
+<body>
+<div th:replace="/user/common :: commonTop"></div>
+<div class="articles">
+<div>
+		<a th:href="@{/PostNewArticle}"><button type="button" style="font-size:50px;border:2px solid black;height:80px;width:350px ">點我發表文章</button></a>
+	</div>
+	
+					<header>
+						<h3 class="title-head">收藏文章</h3>
+					</header>
+					<div id='Articles'>
+
+						</div>	
+						</div>
+						  <div class="bootstrap-pagination col-md-offset-5">
+                                    <nav id="paginationajax">
+                                    </nav>
+				</div>
+				<div th:replace="/user/common :: commonBottom"></div>
+				<script th:src="@{/data/js/bootstrap.min.js}"></script>
+				
+</body>
+</html>

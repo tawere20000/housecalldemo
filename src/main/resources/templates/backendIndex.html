@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>米奇不妙屋後台管理</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/ico" sizes="16x16" th:href="@{/images/favicon.ico}">
+    <!-- Pignose Calender -->
+    <link href="./plugins/pg-calendar/css/pignose.calendar.min.css" rel="stylesheet">
+    <!-- Chartist -->
+    <link rel="stylesheet" href="./plugins/chartist/css/chartist.min.css">
+    <link rel="stylesheet" href="./plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css">
+    <!-- Custom Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		getChartDatavtotal();
+		getChartDatanewreg();
+	
+		function getChartDatanewreg(){
+			$.ajax({
+				url:"backend7daysnewreg",
+				type:"GET",
+				dataType: "JSON",
+				success:function(listmap){
+					// LINE CHART
+				    let line = new Morris.Line({
+				        element: 'morris-line-chart',
+				        resize: true,
+				        data: listmap,
+				        xkey: 'y',
+				        ykeys: ['人次'],
+				        labels: ['人次'],
+				        gridLineColor: 'transparent',
+				        lineColors: ['#4d7cff'],
+				        lineWidth: 1,
+				        hideHover: 'auto',
+				    });
+				}
+			});
+		}
+	
+    function getChartDatavtotal(){
+		$.ajax({
+			url:"backend7daystotalvisit",
+			type:"GET",
+			dataType: "JSON",
+			success:function(listmap){
+				Morris.Area({
+			        element: 'morris-area-chart0',
+			        data: listmap,
+			        xkey: 'period',
+			        ykeys: ['總數'],
+			        labels: ['總數'],
+			        pointSize: 0,
+			        fillOpacity: 0.4,
+			        pointStrokeColors: ['#b4becb', '#4d7cff'],
+			        behaveLikeLine: true,
+			        gridLineColor: 'transparent',
+			        lineWidth: 0,
+			        smooth: false,
+			        hideHover: 'auto',
+			        lineColors: ['#b4becb', '#4d7cff'],
+			        resize: true
+
+			    });
+			}
+		});
+    }
+    
+	})
+	</script>
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div th:replace="common :: commonpreloader"></div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+    
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div th:replace="common :: commonnavHeader"></div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div th:replace="common :: commonheader"></div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div th:replace="common :: commonsidebar"></div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+		<div class="tlinks">Collect from <a href="http://www.cssmoban.com/" >建站模板</a></div>
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+
+            <div class="container-fluid mt-3">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <span class="display-5"><i class="icon-user gradient-4-text"></i></span>
+                                  	<h2 class="mt-3">[[${hotvisitors}]]</h2>
+                                  	<h2 th:if="${hotvisitors==''}" class="mt-3">0</h2>
+                                  	<span class="mt-3">當日最高點擊區: [[${hotarea}]] (人次)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <span class="display-5"><i class="fa fa-shopping-cart"></i></span>
+                                  	<h2 class="mt-3">[[${todayorders}]]</h2>
+                                  	<h2 th:if="${todayorders==''}" class="mt-3">0</h2>
+                                  	<span class="mt-3">本日新增訂單</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <span class="display-5"><i class="fa fa-users"></i></span>
+                                    <h2 th:if="${registcount!=''}" class="mt-3">[[${registcount}]]</h2>
+                                    <h2 th:if="${registcount==''}" class="mt-3">0</h2>
+                                  	<span class="mt-3">本日新增會員</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <span class="display-5"><i class="icon-tag"></i></span>
+                                    <h2 class="mt-3"> </h2>
+                                    <h2 class="mt-3">5210 Users</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                	<div class="col-lg-6">
+                      <div class="card">
+                          <div class="card-body">
+                                <h4 class="card-title">當週總造訪次數</h4>
+                                <div id="morris-area-chart0"></div>
+                            </div>
+                        </div>
+                   	</div>
+                
+                	<div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">當週新增會員數量</h4>
+                                <div id="morris-line-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                        
+            </div>
+            <!-- #/ container -->
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+        
+        
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div th:replace="common :: commonfooter"></div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <div th:replace="common :: commonscripts"></div>
+
+
+</body>
+
+</html>

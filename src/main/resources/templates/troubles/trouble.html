@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="/data/css/bootstrapIndex.css">
+<script th:src="@{/data/js/jquery.min.js}"></script>
+<link rel="stylesheet" href="/data/css/styleIndex.css">
+<script th:src="@{/data/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" href="/data/css/default.css">
+<title>訂單</title>
+<style type="text/css">
+.problem {
+	display: block;
+	background: none;
+	color: #999;
+	border: 1px solid #BDBBBB;
+	width: 80%;
+	margin-bottom: 5px;
+	outline: none;
+	font-size: 13px;
+	font-weight: 300;
+	padding: 13px 15px;
+}
+
+.submit2 {
+	background: #84754e;
+	border: 1px solid #f4f4f4;
+	padding: .8em 0;
+	width: 40%;
+	margin-top: .5em;
+	font-size: 15px;
+	color: #fff;
+	letter-spacing: 0.5px;
+	outline: none;
+	transition: .5s all;
+	-webkit-transition: .5s all;
+}
+.submit1 {
+	background: #84754e;
+	border: 1px solid #f4f4f4;
+	padding: .8em 0;
+	width: 8%;
+	margin-top: .5em;
+	font-size: 15px;
+	color: #fff;
+	letter-spacing: 0.5px;
+	outline: none;
+	transition: .5s all;
+	-webkit-transition: .5s all;
+}
+</style>
+
+
+</head>
+<body>
+
+	<div th:replace="/user/common :: commonTop"></div>
+	<div class="wrap">
+		<div class="move-text"></div>
+	</div>
+
+	<div class="main-body col-md-offset-2">
+		<div class="wrap">
+
+			<div>
+
+				<div class="col-md-9 content-left single-post">
+					<div class="blog-posts">
+
+						<h1 align="center" th:text="|${troubleshooting.title}|"></h1>
+						<div class="last-article">
+
+							<div>
+								<img height='200px' width='200px' class="img-rounded"
+									th:src="@{'/picture/'+${person.userId}}">
+
+								<div
+									style='font-size: 20px; position: absolute; top: 56px; right: 0;'
+									th:text="|狀態:${troubleshooting.status}|"></div>
+								<div
+									style='font-size: 20px; position: absolute; top: 80px; right: 0;'
+									th:text="|問題種類:${troubleshooting.troubleType}|"></div>
+
+								<div
+									style='font-size: 20px; position: absolute; top: 104px; right: 0;'
+									th:text="|發文時間:${troubleshooting.orderCreateDate}|"></div>
+
+								<p align="center" style="font-size: 20px; max-width: 200px;"
+									th:text="${person.name}"></p>
+							</div>
+							<div
+								style='font-size: 20px; margin-top: 15px; margin-left: 15px;'
+								th:text="|地址:${troubleshooting.address}|"></div>
+							<div>
+								<p class="artext" style="color: gray; font-size: 32px">內容</p>
+								<div class="text">
+									<div
+										style="font-size: 24px; white-space: pre-wrap; word-break: break-all"
+										th:text="${troubleshooting.textArea}"></div>
+								</div>
+								<div class="clearfix"></div>
+								<div>
+									<img class="img1" height='250px' width='300px'
+										th:src="@{'/tsimage/'+${troubleshooting.businessOrderId}}">
+										<div style='font-size: 20px; margin-top: 15px; margin-left: 15px;'
+								th:text="|備註:${troubleshooting.remark}|">
+										
+										</div>
+									<div>
+										<a
+											th:href="@{'/DeleteTrouble/'+${troubleshooting.businessOrderId}}">
+											<input class="submit1" style="bottom: 0px;"
+											th:if="${troubleshooting.user.userId} == ${session.LoginID} and ${troubleshooting.status } == '待處理' or ${troubleshooting.status } == '廠商接單處理中' "
+											type="button" value="刪除">
+										</a> <a
+											th:href="@{'/UpdateTrouble/'+${troubleshooting.businessOrderId}}">
+											<input class="submit1" style="bottom: 0px;"
+											th:if="${troubleshooting.user.userId} == ${session.LoginID} and ${troubleshooting.status } == '待處理' or ${troubleshooting.status } == '廠商接單處理中' "
+											type="button" value="編輯">
+										</a>
+									</div>
+								</div>
+							</div>
+							<h1 align="center" style="font-weight: bold; margin-top: 30px">報價</h1>
+
+							<div style="border-bottom: 1px solid #BEBEBE; margin-top: 5px"
+								th:each="c:${allquotation}">
+								<div class="response" align="center" style="margin-top: 15px">
+									<div class="media response-info">
+										<div class="media-left response-text-left">
+											<a href="#"> <img class="media-object"
+												src="images/c1.jpg" alt="" />
+											</a> <img height='200px' width='200px' class="img-rounded"
+												th:src="@{'/picture/'+${c.vendorId.userId}}">
+											<div style="width: 200px; font-size: 20px"
+												th:text="|${c.vendorId.name}|"></div>
+											<div style="font-size:25px;color:#02F78E" th:text="|綜合評價:${c.averagerating}顆星|"></div>
+
+											<div th:if="${troubleshooting.status } == '待處理' "
+												class="type1">
+												<a	
+													th:href="@{'/status/'+${troubleshooting.businessOrderId}+'/'+${c.businessQuteId}}"><button
+														class="submit2" th:if="${troubleshooting.user.userId} == ${session.LoginID} and ${c.selected} == '0'"
+														type="submit">選擇</button></a>
+											</div>
+											<div th:if="${troubleshooting.status } == '廠商接單處理中' "
+												class="type2">
+												<a
+													th:href="@{'/comment/'+${troubleshooting.businessOrderId}+'/'+${c.businessQuteId}}"><button
+														class="submit2" style="width:160px" th:if="${troubleshooting.user.userId} == ${session.LoginID} and ${c.selected} == '1'"
+														type="submit">完成訂單並評價</button></a>
+											</div>
+											<div
+												th:if="${troubleshooting.status } == '已完成' and ${c.selected} == '2'"
+												class="type3"></div>
+
+
+
+										</div>
+										<div class="media-body response-text-right">
+											<div style="font-size: 30px; margin-top: 20px"
+												th:text="|價格:${c.price}|"></div>
+												<div style="font-size: 20px; margin-top: 5px"
+												th:text="|備註:${c.text}|" th:if="${c.text} != ''"></div>
+												<div style="font-size:30px; margin-top: 10px" th:if="${troubleshooting.status } == '已完成' and ${c.selected} == '2'"
+												th:text="|評分:${troubleshooting.rating}顆星|"
+												></div >
+												<div  style="font-size:20px; margin-top: 10px" th:if="${troubleshooting.status } == '已完成' and ${c.selected} == '2' and ${troubleshooting.comment} != ''"
+												th:text="|評價:${troubleshooting.comment}|">
+												
+												
+												</div>
+											<div
+												th:if="${troubleshooting.status } == '已完成' and ${c.selected} == '2'"
+												style="font-size: 30px; margin-top: 10px">訂單已完成</div>
+											<div >
+												<p style='font-size: 8px;'
+													th:text="|報價時間:${c.quotationCreateDate}|"></p>
+												<p style='font-size: 8px;' th:if="${troubleshooting.user.userId} == ${session.LoginID} and ${c.selected} == '1' or ${c.selected} == '2'"
+													th:text="|接單時間:${troubleshooting.orderTakingDate}|"></p>
+												<p style='font-size: 8px;' th:if="${troubleshooting.status } == '已完成' and ${c.selected} == '2'"
+													th:text="|完成時間:${troubleshooting.finishedDate}|"></p>
+											</div>
+
+
+
+										</div>
+										<div class="clearfix"></div>
+									</div>
+
+								</div>
+							</div>
+							<div class="coment-form">
+								
+								<!-- 																<form> -->
+								<!-- 																	<input type="text" value="Name " onfocus="this.value = '';" -->
+								<!-- 																		onblur="if (this.value == '') {this.value = 'Name';}" -->
+								<!-- 																		required=""> -->
+
+								<!-- 																	<textarea onfocus="this.value = '';" -->
+								<!-- 																		onblur="if (this.value == '') {this.value = 'Your Comment...';}" -->
+								<!-- 																		required="">Your Comment...</textarea> -->
+								<!-- 																	<input type="submit" value="Submit Comment"> -->
+								<!-- 																</form> -->
+
+								<div align="center" th:if="${troubleshooting.status } == '待處理' or ${troubleshooting.status } == '廠商接單處理中'" >
+									<fieldset th:if="${session.Vendor != null}">
+										<h4>留下你的報價</h4>
+										<form method="POST" th:object="${addquotation} "
+											enctype="multipart/form-data"
+											th:action="@{'/OrderInner/'+${troubleshooting.businessOrderId}}">
+											<input style="width:80%"
+												type="text" placeholder="報價" name="price">
+												
+											<textarea style="width:80%" class="problem" placeholder="備註" name="text"></textarea>
+											<input style="width:80%" type="submit" value="送出"> <br />
+										</form>
+									</fieldset>
+								</div>
+
+							</div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+	<div th:replace="/user/common :: commonBottom"></div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*
+			var defaults = {
+			wrapID: 'toTop', // fading element id
+			wrapHoverID: 'toTopHover', // fading element hover id
+			scrollSpeed: 1200,
+			easingType: 'linear' 
+			};
+			 */
+			$().UItoTop({
+				easingType : 'easeOutQuart'
+			});
+		});
+	</script>
+	<a href="#to-top" id="toTop" style="display: block;"> <span
+		id="toTopHover" style="opacity: 1;"> </span></a>
+
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>[[${product.productName}]]</title>
+		<th:block th:replace="/mall/mallCommon :: commonhead"></th:block>
+		<style type="text/css">
+			.product-description {
+				height: 180px;
+			}
+			.bigPhotoReigon {
+				height: 505px;
+				position: relative;
+			}
+			.bigPhoto {
+				max-height: 100%;
+				position: absolute;
+				top: 50%;
+				transform: translateY(-50%);
+			}
+			.smallPhotoReigon {
+				height: 150px;
+				position: relative;
+			}
+			.smallPhoto {
+				max-height: 100%;
+				position: absolute;
+				top: 50%;
+				transform: translateY(-50%);
+			}
+			.product-action a {
+				width: 50%;
+			}
+		</style>
+		<script type="text/javascript">
+			$(function() {
+			
+				// 發送ajax請求(購物車品項數量查詢)
+				function getCartQuantity() {
+					$.ajax({
+						url: '/shoppingCartQuantity',
+						type: 'get',
+						success: function(data){
+							$('#cart_quantity').html(data);
+						}
+					});
+				};
+		
+			
+				// 發送ajax請求(購物車內容Quickview)
+				function getCartQuickview() {
+					if ($('#cartQuantity').text() != 0) {
+						$.ajax({
+							url: '/shoppingCart/quickview',
+							type: 'get',
+							success: function(data) {
+								$('#cart_info').html(data);
+							}
+						});
+					}
+				};
+				
+				
+				// 頁面渲染時確認是否允許商品數量修改按鈕可使用
+				function checkQtyButton() {
+					$('.cart-plus-minus-box').each(function() {
+						if ($(this).val() >= $(this).data('productstock')){
+							$(this).siblings('.inc').css('pointerEvents','none');
+						} 
+						if ($(this).val() <= 1) {
+							$(this).siblings('.dec').css('pointerEvents','none');
+						}
+					});
+				}
+				
+				
+				// 首次進入頁面，確認是否可使用修改商品數量之按鈕
+				checkQtyButton();
+				
+				
+				// toastr提示參數設置
+				toastr.options = {
+						  "closeButton": false,
+						  "debug": false,
+						  "newestOnTop": false,
+						  "progressBar": false,
+						  "positionClass": "toast-bottom-right",
+						  "preventDuplicates": false,
+						  "onclick": null,
+						  "showDuration": "2500",
+						  "hideDuration": "3000",
+						  "timeOut": "1000",
+						  "extendedTimeOut": "1000",
+						  "showEasing": "swing",
+						  "hideEasing": "linear",
+						  "showMethod": "fadeIn",
+						  "hideMethod": "fadeOut"
+				}
+				
+				
+				// 購物車內容Quickview事件繫結
+				$(document).on('mouseenter', '.cart-icon', function() {
+					getCartQuickview();
+				});
+				
+				
+				// 發送ajax請求(刪除Quickview購物車內容)
+				$(document).on('click', '.cartQuickviewDelete', function() {
+					$.ajax({
+						url: this.href,
+						type: 'delete',
+						success: function(){
+							toastr.success('已將商品自購物車刪除');
+							getCartQuantity();
+							getCartQuickview();
+							getCartContext();
+						}
+					});
+					return false;
+				});
+				
+				
+				// 發送ajax請求(變更加入購物車品項數量)
+				let preValue;
+				$(document).on('focus', '.cart-plus-minus-box', function() {
+					preValue = this.value;
+				});
+				$(document).on('change editAmount', '.cart-plus-minus-box', function() {
+					let amount = $(this).val();
+					let productStock = Number($(this).data('productstock'));
+					// 正則表達式驗證僅能輸入整數
+					let testNumber = /^-?\d+$/;
+					if (!testNumber.test(amount)) {
+						this.value = 1;
+					　　toastr.warning('請勿輸入數字以外之字元');
+					} else {
+						amount = Number(amount);
+						if (amount > productStock) {
+							this.value = preValue;
+							toastr.warning('此商品目前庫存量為: ' + productStock + '，修改數量已超過最大庫存數，請重新確認');
+						} else if (amount <= 0) {
+							this.value = preValue;
+							toastr.warning('購買數量不可為0或小於0，請重新確認');
+						}
+					}
+					amount = Number($(this).val());
+					if (amount >= productStock) {
+						$(this).siblings('.inc').css('pointerEvents','none');
+						$(this).siblings('.dec').css('pointerEvents','auto');
+					} else if (amount <= 1) {
+						$(this).siblings('.dec').css('pointerEvents','none');
+						$(this).siblings('.inc').css('pointerEvents','auto');
+					} else if (amount > 1 && amount < productStock) {
+						$(this).siblings('.qtybutton').css('pointerEvents','auto');
+					}
+				});
+				
+				
+				// 發送ajax請求(加入購物車)
+				$(document).on('click', '#addToCart', function() {
+					let productStock = Number($('.cart-plus-minus-box').data('productstock'));
+					let amount = $('#shoppingAmount').val();
+					if (amount > productStock) {
+						toastr.warning('此商品已無庫存，請靜候補貨');
+					} else {
+						let productId = $('#addToCart').data('productid');
+						$.ajax({
+							url: this.href,
+							type: 'post',
+							data: {'shoppingAmount' : amount, 'tempProductId' : productId},
+							success: function(data) {
+								if (data == 'added') {
+									toastr.success('成功加入購物車');
+									getCartQuantity();
+								} else if (data == 'already') {
+									toastr.warning('此商品已在您的購物車內');
+								} else {
+									toastr.warning('此商品已無庫存，請靜候補貨');
+								}
+							}
+						});
+					}
+					$(this).blur();
+					return false;
+				});
+				
+				
+				// 發送ajax請求(Shop:加入願望清單)
+				$(document).on('click', '#addToWishlist', function() {
+					$.ajax({
+						url: this.href,
+						type: 'post',
+						success: function(data) {
+							if (data == true) {
+								toastr.success('成功將此商品加入願望清單');
+							} else {
+								toastr.warning('此商品已在您的願望清單內');
+							}
+						}
+					});
+					$(this).blur();
+					return false;
+				});
+			})
+		</script>
+	</head>
+	<body>	
+		<!-- WRAPPER START -->
+		<div class="wrapper bg-dark-white">
+		
+			<!-- COMMONHEADAREA INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commonheadarea"></th:block>
+			<!-- COMMONHEADAREA INSERT END -->
+			
+			<!-- COMMONMOBILEMENU INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commonmobilemenu"></th:block>
+			<!-- COMMONMOBILEMENU INSERT END -->
+			
+			<!-- PRODUCT-AREA START -->
+			<div class="product-area single-pro-area pt-80 pb-80 product-style-2" th:object="${product}">
+				<div class="container">	
+					<div class="row shop-list single-pro-info no-sidebar">
+						<!-- Single-product start -->
+						<div class="col-lg-12">
+							<div class="single-product clearfix">
+								<!-- Single-pro-slider Big-photo start -->
+								<div class="single-pro-slider single-big-photo view-lightbox slider-for">
+									<div class="bigPhotoReigon" th:each="picture : *{productPicture}">
+										<img class="bigPhoto" th:src="${picture.productPath}" alt="" />
+										<a class="view-full-screen" th:href="${picture.productPath}"  data-lightbox="roadtrip" data-title="My caption">
+											<i class="zmdi zmdi-zoom-in"></i>
+										</a>
+									</div>
+								</div>	
+								<!-- Single-pro-slider Big-photo end -->								
+								<div class="product-info">
+									<div class="fix mb-20">
+										<h4 class="post-title floatleft" style="font-size: 22px;font-weight: bold;">[[*{productName}]]</h4>
+									</div>
+									<div class="fix mb-20">
+										<span class="pro-price" style="font-size: 22px;">$ [[${#numbers.formatDecimal(product.productPrice,1,'COMMA',0,'POINT')}]]</span>
+									</div>
+									<div class="product-description">
+										<p th:utext="${briefDescription}" style="font-size: 16px;line-height: 190%;"></p>
+									</div>
+									<div class="clearfix">
+										<div class="cart-plus-minus">
+											<input id="shoppingAmount" type="text" th:value="1" name="qtybutton" class="cart-plus-minus-box" th:data-productstock="*{productStock}">
+										</div>
+										<div class="product-action clearfix">
+											<a th:href="@{/wishlist(tempProductId=*{productId})}" id="addToWishlist" data-toggle="tooltip" data-placement="top" title="加入願望清單"><i class="zmdi zmdi-favorite-outline"></i></a>
+											<a th:href="@{/shoppingCart}" id="addToCart" data-toggle="tooltip" data-placement="top" title="加入購物車" th:data-productid="*{productId}"><i class="zmdi zmdi-shopping-cart-plus"></i></a>
+										</div>
+									</div>
+									<!-- Single-pro-slider Small-photo start -->
+									<div class="single-pro-slider single-sml-photo slider-nav">
+										<div class="smallPhotoReigon" th:each="picture : *{productPicture}">
+											<img class="smallPhoto" th:src="${picture.productPath}" alt="" />
+										</div>
+									</div>
+									<!-- Single-pro-slider Small-photo end -->
+								</div>
+							</div>
+						</div>
+						<!-- Single-product end -->
+					</div>
+					<!-- single-product-tab start -->
+					<div class="single-pro-tab">
+						<div class="row">
+							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+								<div class="single-pro-tab-menu">
+									<!-- Nav tabs -->
+									<ul class="">
+										<li class="active"><a href="#description" data-toggle="tab">產品特色</a></li>
+										<li><a href="#information" data-toggle="tab">產品規格</a></li>
+									</ul>
+								</div>
+							</div>
+							<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+								<!-- Tab panes -->
+								<div class="tab-content">
+									<div class="tab-pane active" id="description">
+										<div class="pro-tab-info pro-description">
+											<h3 class="tab-title title-border mb-30" style="font-size: 16px;">產品特色</h3>
+											<p th:utext="${productDescription}" style="font-size: 15px;line-height: 200%;"></p>
+										</div>
+									</div>
+									<div class="tab-pane" id="information">
+										<div class="pro-tab-info pro-information">
+											<h3 class="tab-title title-border mb-30" style="font-size: 16px;">產品規格</h3>
+											<p th:utext="${spec}" style="font-size: 15px;line-height: 200%;"></p>
+										</div>											
+									</div>
+								</div>									
+							</div>
+						</div>
+					</div>
+					<!-- single-product-tab end -->
+				</div>
+			</div>
+			<!-- PRODUCT-AREA END -->
+			
+			<!-- COMMONFOOTER INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: commmonfooter"></th:block>
+			<!-- COMMONFOOTER INSERT END -->
+			
+			<!-- QUICKVIEW INSERT START -->
+			<th:block th:replace="/mall/mallCommon :: quickview"></th:block>
+			<!-- QUICKVIEW INSERT END -->
+			
+		</div>
+		<!-- WRAPPER END -->
+
+		<!-- COMMONJS INSERT START -->
+		<th:block th:replace="/mall/mallcommon :: commonjs"></th:block>
+		<!-- COMMONJS INSERT END -->
+	</body>
+</html>
